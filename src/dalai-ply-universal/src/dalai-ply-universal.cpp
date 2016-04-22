@@ -51,9 +51,9 @@
             if ( dl_stream.is_open() ) {
 
                 /* Segmented buffer pointer variables */
-                double   * dl_scomp = ( double   * ) dl_buffer;
-                uint64_t * dl_tcomp = ( uint64_t * ) dl_buffer + 24;
-                uint8_t  * dl_dcomp = ( uint8_t  * ) dl_buffer + 32;
+                double   * dl_scomp = ( double   * ) ( dl_buffer      );
+                uint64_t * dl_tcomp = ( uint64_t * ) ( dl_buffer + 24 );
+                uint8_t  * dl_dcomp = ( uint8_t  * ) ( dl_buffer + 32 );
 
                 /* Exportation loop */
                 for ( unsigned long dl_i = 0; dl_i < dl_data.size(); dl_i ++ ) {
