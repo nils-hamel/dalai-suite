@@ -18,7 +18,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    # include "dalai-ply-universal.h"
+    # include "dalai-ply-universal.hpp"
 
 /*
     source - constructor/destructor methods
@@ -26,6 +26,50 @@
 
     int main( int argc, char ** argv ) {
 
-        return( 0 );
+        /* Stream variables */
+        FILE * dl_stream;
+
+        /* Polygone File Format reader variables */
+        pcl::PLYReader dl_ply;
+
+        /* Point cloud structure variables */
+        pcl::PointCloud < pcl::PointXYZRGB > dl_data;
+    
+        /* Polygone File Format content importation */
+        if ( dl_ply.read( lc_read_string( argc, argv, "--ply", "-i" ), dl_data ) == 0 ) {
+
+            /* Open output stream */
+            dl_stream = fopen( lc_read_string( argc, argv, "--universal", "-o" ), "w" );
+
+            /* Parsing point cloud vertex */
+            for ( size_t dh_i = 0; dh_i < dl_data.size(); dh_i ++ ) {
+
+                /* Point cloud exportation - spatial coordinates */
+                fprintf( dl_stream, "%.14e %.14e %.14e ", dl_data.points[dh_i].x, dl_data.points[dh_i].y, dl_data.points[dh_i].z );
+
+                /* Point cloud exportation - temporal coordinates */
+                fprintf( dl_stream, "%s ", argv[3] );
+
+                /* Point cloud exportation - colorimetry */
+                fprintf( dl_stream, "%.4f %.4f %.4f\n", ( float ) dl_data.points[dh_i].r / 255, ( float ) dl_data.points[dh_i].g / 255, ( float ) dl_data.points[dh_i].b / 255 );
+
+            }
+
+            /* Close output stream */
+            fclose( dl_stream );
+
+            /* Send message */
+            return( EXIT_SUCCESS );
+
+        } else {
+
+            /* Display message */
+            std::cerr << "dalai-suite : error : unable to access input ply" << std::endl;
+
+            /* Send message */
+            return( EXIT_FAILURE );
+
+        }
 
     }
+

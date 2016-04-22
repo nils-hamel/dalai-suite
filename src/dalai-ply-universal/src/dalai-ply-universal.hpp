@@ -43,16 +43,17 @@
     # define __DL_PLY_UNIVERSAL__
 
 /*
-    header - C/C++ compatibility
- */
-
-    # ifdef __cplusplus
-    extern "C" {
-    # endif
-
-/*
     header - includes
  */
+
+    # include <iostream>
+    # include <cstdlib>
+    # include <string>
+    # include <cstdint>
+    # include <common-args.h>
+    # include <pcl/point_cloud.h>
+    # include <pcl/point_types.h>
+    # include <pcl/io/ply_io.h>
 
 /*
     header - preprocessor definitions
@@ -78,14 +79,6 @@
      */
 
     int main( int argc, char ** argv );
-
-/*
-    header - C/C++ compatibility
- */
-
-    # ifdef __cplusplus
-    }
-    # endif
 
 /*
     header - inclusion guard

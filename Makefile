@@ -13,7 +13,7 @@
     MAKE_CMMKDR:=mkdir -p
     MAKE_CMMKLN:=ln -sf
 
-    BUILD_SUBMD:=
+    BUILD_SUBMD:=$(MAKE_LIBRAR)/libcommon
 
 #
 #   make - Modules
