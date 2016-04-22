@@ -26,45 +26,73 @@
 
     int main( int argc, char ** argv ) {
 
-        /* Stream variables */
-        FILE * dl_stream;
+        /* I/O buffer variables */
+        char dl_buffer[35] = { 0 };
+
+        /* Universal stream variables */
+        std::ofstream dl_stream;
 
         /* Polygone File Format reader variables */
         pcl::PLYReader dl_ply;
 
         /* Point cloud structure variables */
         pcl::PointCloud < pcl::PointXYZRGB > dl_data;
-    
+
         /* Polygone File Format content importation */
         if ( dl_ply.read( lc_read_string( argc, argv, "--ply", "-i" ), dl_data ) == 0 ) {
 
-            /* Open output stream */
-            dl_stream = fopen( lc_read_string( argc, argv, "--universal", "-o" ), "w" );
+            /* Create universal stream */
+            dl_stream.open( lc_read_string( argc, argv, "--universal", "-o" ), std::ios::out | std::ios::binary );
 
-            /* Parsing point cloud vertex */
-            for ( size_t dh_i = 0; dh_i < dl_data.size(); dh_i ++ ) {
+            /* Check universal stream */
+            if ( dl_stream.is_open() ) {
 
-                /* Point cloud exportation - spatial coordinates */
-                fprintf( dl_stream, "%.14e %.14e %.14e ", dl_data.points[dh_i].x, dl_data.points[dh_i].y, dl_data.points[dh_i].z );
+                /* Segmented buffer pointer variables */
+                double   * dl_scomp = ( double   * ) dl_buffer;
+                uint64_t * dl_tcomp = ( uint64_t * ) dl_buffer + 24;
+                uint8_t  * dl_dcomp = ( uint8_t  * ) dl_buffer + 32;
 
-                /* Point cloud exportation - temporal coordinates */
-                fprintf( dl_stream, "%s ", argv[3] );
+                /* Exportation loop */
+                for ( unsigned long dl_i = 0; dl_i < dl_data.size(); dl_i ++ ) {
 
-                /* Point cloud exportation - colorimetry */
-                fprintf( dl_stream, "%.4f %.4f %.4f\n", ( float ) dl_data.points[dh_i].r / 255, ( float ) dl_data.points[dh_i].g / 255, ( float ) dl_data.points[dh_i].b / 255 );
+                    /* Compose current buffer - space component */
+                    dl_scomp[0] = dl_data.points[dl_i].x;
+                    dl_scomp[1] = dl_data.points[dl_i].y;
+                    dl_scomp[2] = dl_data.points[dl_i].z;
+
+                    /* Compose current buffer - time component */
+                    dl_tcomp[0] = 0;
+
+                    /* Compose current buffer - colorimetry */
+                    dl_dcomp[0] = dl_data.points[dl_i].r;
+                    dl_dcomp[1] = dl_data.points[dl_i].g;
+                    dl_dcomp[2] = dl_data.points[dl_i].b;
+
+                    /* Write buffer in universal stream */
+
+                    dl_stream.write( dl_buffer, 35 );
+                }
+
+                /* Delete universal stream */
+                dl_stream.close();
+
+                /* Send message */
+                return( EXIT_SUCCESS );
+
+            } else {
+
+                /* Display message */
+                std::cerr << "dalai-suite : error : unable to access output file" << std::endl;
+
+                /* Send message */
+                return( EXIT_FAILURE );
 
             }
-
-            /* Close output stream */
-            fclose( dl_stream );
-
-            /* Send message */
-            return( EXIT_SUCCESS );
 
         } else {
 
             /* Display message */
-            std::cerr << "dalai-suite : error : unable to access input ply" << std::endl;
+            std::cerr << "dalai-suite : error : unable to access input file" << std::endl;
 
             /* Send message */
             return( EXIT_FAILURE );
