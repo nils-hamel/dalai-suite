@@ -26,9 +26,6 @@
 
     int main( int argc, char ** argv ) {
 
-        /* I/O buffer variables */
-        char dl_buffer[35] = { 0 };
-
         /* Universal stream variables */
         std::ofstream dl_stream;
 
@@ -37,6 +34,9 @@
 
         /* Point cloud structure variables */
         pcl::PointCloud < pcl::PointXYZRGB > dl_data;
+
+        /* I/O buffer variables */
+        char dl_buffer[35] = { 0 };
 
         /* Time component variables */
         uint64_t dl_time = lc_read_uint( argc, argv, "--time", "-t", std::time( NULL ) );
@@ -55,25 +55,25 @@
                 uint64_t * dl_tcomp = ( uint64_t * ) ( dl_buffer + 24 );
                 uint8_t  * dl_dcomp = ( uint8_t  * ) ( dl_buffer + 32 );
 
-                /* Exportation loop */
+                /* Parsing imported point cloud elements */
                 for ( unsigned long dl_i = 0; dl_i < dl_data.size(); dl_i ++ ) {
 
-                    /* Compose current buffer - space component */
+                    /* Compose i/o buffer - space components */
                     dl_scomp[0] = dl_data.points[dl_i].x;
                     dl_scomp[1] = dl_data.points[dl_i].y;
                     dl_scomp[2] = dl_data.points[dl_i].z;
 
-                    /* Compose current buffer - time component */
+                    /* Compose i/o buffer - time component */
                     dl_tcomp[0] = dl_time;
 
-                    /* Compose current buffer - colorimetry */
+                    /* Compose i/o buffer - colorimetry */
                     dl_dcomp[0] = dl_data.points[dl_i].r;
                     dl_dcomp[1] = dl_data.points[dl_i].g;
                     dl_dcomp[2] = dl_data.points[dl_i].b;
 
-                    /* Write buffer in universal stream */
-
+                    /* Write i/o buffer in universal stream */
                     dl_stream.write( dl_buffer, 35 );
+
                 }
 
                 /* Delete universal stream */
