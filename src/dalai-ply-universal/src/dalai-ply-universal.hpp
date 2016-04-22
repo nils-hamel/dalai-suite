@@ -49,6 +49,7 @@
     # include <iostream>
     # include <fstream>
     # include <cstdint>
+    # include <ctime>
     # include <common-args.h>
     # include <pcl/point_cloud.h>
     # include <pcl/point_types.h>

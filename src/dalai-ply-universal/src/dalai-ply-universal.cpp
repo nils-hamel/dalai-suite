@@ -38,6 +38,9 @@
         /* Point cloud structure variables */
         pcl::PointCloud < pcl::PointXYZRGB > dl_data;
 
+        /* Time component variables */
+        uint64_t dl_time = lc_read_uint( argc, argv, "--time", "-t", std::time( NULL ) );
+
         /* Polygone File Format content importation */
         if ( dl_ply.read( lc_read_string( argc, argv, "--ply", "-i" ), dl_data ) == 0 ) {
 
@@ -61,7 +64,7 @@
                     dl_scomp[2] = dl_data.points[dl_i].z;
 
                     /* Compose current buffer - time component */
-                    dl_tcomp[0] = 0;
+                    dl_tcomp[0] = dl_time;
 
                     /* Compose current buffer - colorimetry */
                     dl_dcomp[0] = dl_data.points[dl_i].r;
