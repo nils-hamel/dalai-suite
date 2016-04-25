@@ -57,7 +57,6 @@
     # include <iostream>
     # include <fstream>
     # include <cstdint>
-    # include <ctime>
     # include <common-args.h>
     # include <pcl/point_cloud.h>
     # include <pcl/point_types.h>
@@ -85,12 +84,11 @@
 
     /*! \brief main function
      *
-     *  The main function reads the paths of the input and output files and
-     *  the provided time. When no time is specified, current UNIX timestamp is
-     *  considered. The function then reads the content of the input file and
-     *  convert the information into the universal standard before to export it
-     *  in the output file. From this point of view, the main function simply
-     *  implements a format converter.
+     *  The main functions reads the provided universal stream and creates the
+     *  PCL point cloud structure holding the stream data. After stream reading,
+     *  the main function exports the computed point cloud to the desired output
+     *  file. From this point of view, the main function simply implements a
+     *  format converter.
      *
      *  \param argc Standard parameter
      *  \param argv Standard parameter

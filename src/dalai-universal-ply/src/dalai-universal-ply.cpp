@@ -18,7 +18,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    # include "dalai-ply-universal.hpp"
+    # include "dalai-universal-ply.hpp"
 
 /*
     source - constructor/destructor methods
@@ -32,10 +32,10 @@
         /* Universal stream variables */
         std::ifstream dl_stream;
 
-        /* Polygone File Format reader variables */
+        /* Writer variables */
         pcl::PLYWriter dl_ply;
 
-        /* Point cloud structure variables */
+        /* Point cloud variables */
         pcl::PointCloud < pcl::PointXYZRGB > dl_data;
 
         /* Path variables */
@@ -47,13 +47,13 @@
         /* Check universal stream */
         if ( dl_stream.is_open() ) {
 
-            /* Stream offset to end-of-file */
+            /* Stream offset to end */
             dl_stream.seekg( 0, std::ios::end );
 
             /* Allocating point cloud memory */
             dl_data.points.resize( dl_stream.tellg() / 35 );
 
-            /* Stream offset to begining of file */
+            /* Stream offset to begining */
             dl_stream.seekg( 0, std::ios::beg );
 
             /* Segmented buffer pointer variables */
