@@ -18,10 +18,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   dalai-ply-universal.hpp
+    /*! \file   dalai-universal-ply.hpp
      *  \author Nils Hamel <n.hamel@bluewin.ch>
      *
-     *  Dalai-suite - Polygon File Format to Universal Format converter
+     *  Dalai-suite - Universal Format to Polygon File Format converter
      */
 
     /*! \mainpage dalai-suite
@@ -47,8 +47,8 @@
     header - inclusion guard
  */
 
-    # ifndef __DL_PLY_UNIVERSAL__
-    # define __DL_PLY_UNIVERSAL__
+    # ifndef __DL_UNIVERSAL_PLY__
+    # define __DL_UNIVERSAL_PLY__
 
 /*
     header - includes
