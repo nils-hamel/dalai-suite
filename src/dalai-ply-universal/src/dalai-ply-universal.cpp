@@ -71,8 +71,13 @@
                     dl_dcomp[1] = dl_data.points[dl_i].g;
                     dl_dcomp[2] = dl_data.points[dl_i].b;
 
-                    /* Write i/o buffer in universal stream */
-                    dl_stream.write( dl_buffer, 35 );
+                    /* Vertex filtering - NaN removal */
+                    if ( ( dl_scomp[0] == dl_scomp[0] ) && ( dl_scomp[1] == dl_scomp[1] ) && ( dl_scomp[2] == dl_scomp[2] ) ) { 
+
+                        /* Write i/o buffer in universal stream */
+                        dl_stream.write( dl_buffer, 35 );
+
+                    }
 
                 }
 
