@@ -26,11 +26,8 @@
 
     char * lc_read_string( int const argc, char ** argv, char const * const er_long, char const * const er_short ) {
 
-        /* Parsing variables */
-        int er_parse = 0;
-
         /* Parses arguments and parameters */
-        for ( ; er_parse < argc; er_parse ++ ) {
+        for ( int er_parse = 0; er_parse < argc; er_parse ++ ) {
 
             /* Check argument */
             if ( ( strcmp( argv[er_parse], er_long ) == 0 ) || ( strcmp( argv[er_parse], er_short ) == 0 ) ) {
@@ -41,12 +38,8 @@
                     /* Return pointer */
                     return( argv[er_parse] );
 
-                } else {
-
-                    /* Return pointer */
-                    return( NULL );
-
-                }
+                /* Return pointer */
+                } else { return( NULL ); }
 
             }
 
@@ -57,13 +50,10 @@
 
     }
 
-    unsigned int lc_read_uint( int const argc, char ** argv, char const * const er_long, char const * const er_short, unsigned int er_default ) {
-
-        /* Parsing variables */
-        int er_parse = 0;
-
+    unsigned long long int lc_read_uint( int const argc, char ** argv, char const * const er_long, char const * const er_short, unsigned long long int er_default ) {
+        
         /* Parses arguments and parameters */
-        for( ; er_parse < argc; er_parse ++ ) {
+        for( int er_parse = 0; er_parse < argc; er_parse ++ ) {
 
             /* Check argument */
             if ( ( strcmp( argv[er_parse], er_long ) == 0 ) || ( strcmp( argv[er_parse], er_short ) == 0 ) ) {
@@ -72,14 +62,36 @@
                 if ( ( ++ er_parse ) < argc ) {
 
                     /* Return read value */
-                    return( strtoul( argv[er_parse], NULL, 10 ) );
+                    return( strtoull( argv[er_parse], NULL, 10 ) );
 
-                } else {
+                /* Return default value */
+                } else { return( er_default ); }
 
-                    /* Return default value */
-                    return( er_default );
+            }
 
-                }
+        }
+
+        /* Return default value */
+        return( er_default );
+
+    }
+
+    signed long long int lc_read_int( int const argc, char ** argv, char const * const er_long, char const * const er_short, signed long long int er_default ) {
+        
+        /* Parses arguments and parameters */
+        for( int er_parse = 0; er_parse < argc; er_parse ++ ) {
+
+            /* Check argument */
+            if ( ( strcmp( argv[er_parse], er_long ) == 0 ) || ( strcmp( argv[er_parse], er_short ) == 0 ) ) {
+
+                /* Check consistency */
+                if ( ( ++ er_parse ) < argc ) {
+
+                    /* Return read value */
+                    return( strtoll( argv[er_parse], NULL, 10 ) );
+
+                /* Return default value */
+                } else { return( er_default ); }
 
             }
 

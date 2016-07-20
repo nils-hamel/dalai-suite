@@ -98,7 +98,9 @@
      *  \param er_default Default value
      */
 
-    unsigned int lc_read_uint( int const argc, char ** argv, char const * const er_long, char const * const er_short, unsigned int er_default );
+    unsigned long long int lc_read_uint( int const argc, char ** argv, char const * const er_long, char const * const er_short, unsigned long long int er_default );
+
+    signed long long int lc_read_int( int const argc, char ** argv, char const * const er_long, char const * const er_short, signed long long int er_default );
 
 /*
     header - C/C++ compatibility

@@ -39,7 +39,7 @@
         char dl_buffer[35] = { 0 };
 
         /* Time component variables */
-        uint64_t dl_time = lc_read_uint( argc, argv, "--time", "-t", std::time( NULL ) );
+        int64_t dl_time = lc_read_int( argc, argv, "--time", "-t", std::time( NULL ) );
 
         /* Polygone File Format content importation */
         if ( dl_ply.read( lc_read_string( argc, argv, "--ply", "-i" ), dl_data ) == 0 ) {
@@ -51,9 +51,9 @@
             if ( dl_stream.is_open() ) {
 
                 /* Segmented buffer pointer variables */
-                double   * dl_scomp = ( double   * ) ( dl_buffer      );
-                uint64_t * dl_tcomp = ( uint64_t * ) ( dl_buffer + 24 );
-                uint8_t  * dl_dcomp = ( uint8_t  * ) ( dl_buffer + 32 );
+                double  * dl_scomp = ( double  * ) ( dl_buffer      );
+                int64_t * dl_tcomp = ( int64_t * ) ( dl_buffer + 24 );
+                uint8_t * dl_dcomp = ( uint8_t * ) ( dl_buffer + 32 );
 
                 /* Parsing imported point cloud elements */
                 for ( unsigned long dl_i = 0; dl_i < dl_data.size(); dl_i ++ ) {
