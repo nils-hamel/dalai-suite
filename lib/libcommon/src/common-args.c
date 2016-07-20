@@ -32,21 +32,13 @@
             /* Check argument */
             if ( ( strcmp( argv[er_parse], er_long ) == 0 ) || ( strcmp( argv[er_parse], er_short ) == 0 ) ) {
 
-                /* Check consistency */
-                if ( ( ++ er_parse ) < argc ) {
-
-                    /* Return pointer */
-                    return( argv[er_parse] );
-
-                /* Return pointer */
-                } else { return( NULL ); }
+                /* Check consistency - return value */
+                if ( ( ++ er_parse ) < argc ) return( argv[er_parse] ); else return( NULL );
 
             }
 
-        }
-
-        /* Return pointer */
-        return( NULL );
+        /* Return value */
+        } return( NULL );
 
     }
 
@@ -58,21 +50,13 @@
             /* Check argument */
             if ( ( strcmp( argv[er_parse], er_long ) == 0 ) || ( strcmp( argv[er_parse], er_short ) == 0 ) ) {
 
-                /* Check consistency */
-                if ( ( ++ er_parse ) < argc ) {
-
-                    /* Return read value */
-                    return( strtoull( argv[er_parse], NULL, 10 ) );
-
-                /* Return default value */
-                } else { return( er_default ); }
+                /* Check consistency - return value */
+                if ( ( ++ er_parse ) < argc ) return( strtoull( argv[er_parse], NULL, 10 ) ); else return( er_default );
 
             }
 
-        }
-
-        /* Return default value */
-        return( er_default );
+        /* Return value */
+        } return( er_default );
 
     }
 
@@ -84,21 +68,13 @@
             /* Check argument */
             if ( ( strcmp( argv[er_parse], er_long ) == 0 ) || ( strcmp( argv[er_parse], er_short ) == 0 ) ) {
 
-                /* Check consistency */
-                if ( ( ++ er_parse ) < argc ) {
-
-                    /* Return read value */
-                    return( strtoll( argv[er_parse], NULL, 10 ) );
-
-                /* Return default value */
-                } else { return( er_default ); }
+                /* Check consistency - return value */
+                if ( ( ++ er_parse ) < argc ) return( strtoll( argv[er_parse], NULL, 10 ) ); else return( er_default );
 
             }
 
-        }
-
         /* Return default value */
-        return( er_default );
+        } return( er_default );
 
     }
 
