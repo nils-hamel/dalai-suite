@@ -21,13 +21,10 @@
     # include "dalai-universal-ply.hpp"
 
 /*
-    source - constructor/destructor methods
+    source - main methods
  */
 
     int main( int argc, char ** argv ) {
-
-        /* I/O buffer variables */
-        char dl_buffer[35] = { 0 };
 
         /* Universal stream variables */
         std::ifstream dl_stream;
@@ -36,10 +33,14 @@
         pcl::PLYWriter dl_ply;
 
         /* Point cloud variables */
-        pcl::PointCloud < pcl::PointXYZRGB > dl_data;
+        pcl::PointCloud < pcl::PointXYZRGB > dl_cloud;
 
-        /* Path variables */
-        std::string dl_path( lc_read_string( argc, argv, "--ply", "-o" ) );
+        /* I/O buffer variables */
+        char dl_buffer[27] = { 0 };
+
+        /* I/O buffer pointers variables */
+        double  * dl_pose = ( double  * ) ( dl_buffer      );
+        uint8_t * dl_data = ( uint8_t * ) ( dl_buffer + 24 );
 
         /* Create universal stream */
         dl_stream.open( lc_read_string( argc, argv, "--universal", "-i" ), std::ios::in | std::ios::binary );
@@ -51,29 +52,26 @@
             dl_stream.seekg( 0, std::ios::end );
 
             /* Allocating point cloud memory */
-            dl_data.points.resize( dl_stream.tellg() / 35 );
+            dl_cloud.points.resize( dl_stream.tellg() / 27 );
 
             /* Stream offset to begining */
             dl_stream.seekg( 0, std::ios::beg );
 
-            /* Segmented buffer pointer variables */
-            double  * dl_scomp = ( double  * ) ( dl_buffer      );
-            uint8_t * dl_dcomp = ( uint8_t * ) ( dl_buffer + 32 );
-
             /* Parsing input stream */
-            for ( unsigned long dl_parse = 0; dl_parse < dl_data.size(); dl_parse ++ ) {
+            for ( unsigned long dl_parse = 0; dl_parse < dl_cloud.size(); dl_parse ++ ) {
 
                 /* Read input stream record */
-                dl_stream.read( dl_buffer, 35 );
+                dl_stream.read( dl_buffer, 27 );
 
                 /* Decompose i/o buffer - space components */
-                dl_data.points[dl_parse].x = dl_scomp[0];
-                dl_data.points[dl_parse].y = dl_scomp[1];
-                dl_data.points[dl_parse].z = dl_scomp[2];
+                dl_cloud.points[dl_parse].x = dl_pose[0];
+                dl_cloud.points[dl_parse].y = dl_pose[1];
+                dl_cloud.points[dl_parse].z = dl_pose[2];
 
-                dl_data.points[dl_parse].r = dl_dcomp[0];
-                dl_data.points[dl_parse].g = dl_dcomp[1];
-                dl_data.points[dl_parse].b = dl_dcomp[2];
+                /* Decompose i/o buffer - color components */
+                dl_cloud.points[dl_parse].r = dl_data[0];
+                dl_cloud.points[dl_parse].g = dl_data[1];
+                dl_cloud.points[dl_parse].b = dl_data[2];
 
             }
 
@@ -81,10 +79,20 @@
             dl_stream.close();
 
             /* Write output stream */
-            dl_ply.write( dl_path, dl_data, true, false );
+            if ( dl_ply.write( lc_read_string( argc, argv, "--ply", "-o" ), dl_cloud, true, false ) != 0 ) {
 
-            /* Send message */
-            return( EXIT_SUCCESS );
+                /* Display message */
+                std::cerr << "dalai-suite : error : unable to write output file" << std::endl;
+
+                /* Send message */
+                return( EXIT_FAILURE );
+
+            } else {
+
+                /* Send message */
+                return( EXIT_SUCCESS );
+
+            }
 
         } else {
 

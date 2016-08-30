@@ -21,7 +21,7 @@
     # include "dalai-ply-universal.hpp"
 
 /*
-    source - constructor/destructor methods
+    source - main methods
  */
 
     int main( int argc, char ** argv ) {
@@ -33,16 +33,17 @@
         pcl::PLYReader dl_ply;
 
         /* Point cloud structure variables */
-        pcl::PointCloud < pcl::PointXYZRGB > dl_data;
+        pcl::PointCloud < pcl::PointXYZRGB > dl_cloud;
 
         /* I/O buffer variables */
-        char dl_buffer[35] = { 0 };
+        char dl_buffer[27] = { 0 };
 
-        /* Time component variables */
-        int64_t dl_time = lc_read_int( argc, argv, "--time", "-t", std::time( NULL ) );
+        /* I/O buffer pointers variables */
+        double  * dl_pose = ( double  * ) ( dl_buffer      );
+        uint8_t * dl_data = ( uint8_t * ) ( dl_buffer + 24 );        
 
         /* Polygone File Format content importation */
-        if ( dl_ply.read( lc_read_string( argc, argv, "--ply", "-i" ), dl_data ) == 0 ) {
+        if ( dl_ply.read( lc_read_string( argc, argv, "--ply", "-i" ), dl_cloud ) == 0 ) {
 
             /* Create universal stream */
             dl_stream.open( lc_read_string( argc, argv, "--universal", "-o" ), std::ios::out | std::ios::binary );
@@ -50,34 +51,26 @@
             /* Check universal stream */
             if ( dl_stream.is_open() ) {
 
-                /* Segmented buffer pointer variables */
-                double  * dl_scomp = ( double  * ) ( dl_buffer      );
-                int64_t * dl_tcomp = ( int64_t * ) ( dl_buffer + 24 );
-                uint8_t * dl_dcomp = ( uint8_t * ) ( dl_buffer + 32 );
-
                 /* Parsing imported point cloud elements */
-                for ( unsigned long dl_i = 0; dl_i < dl_data.size(); dl_i ++ ) {
+                for ( unsigned long dl_i = 0; dl_i < dl_cloud.size(); dl_i ++ ) {
 
                     /* Compose i/o buffer - space components */
-                    dl_scomp[0] = dl_data.points[dl_i].x;
-                    dl_scomp[1] = dl_data.points[dl_i].y;
-                    dl_scomp[2] = dl_data.points[dl_i].z;
+                    dl_pose[0] = dl_cloud.points[dl_i].x;
+                    dl_pose[1] = dl_cloud.points[dl_i].y;
+                    dl_pose[2] = dl_cloud.points[dl_i].z;
 
-                    /* Compose i/o buffer - time component */
-                    dl_tcomp[0] = dl_time;
+                    /* Vertex filtering */
+                    if ( dl_pose[0] != dl_pose[0] ) continue;
+                    if ( dl_pose[1] != dl_pose[1] ) continue;
+                    if ( dl_pose[2] != dl_pose[2] ) continue;
 
-                    /* Compose i/o buffer - colorimetry */
-                    dl_dcomp[0] = dl_data.points[dl_i].r;
-                    dl_dcomp[1] = dl_data.points[dl_i].g;
-                    dl_dcomp[2] = dl_data.points[dl_i].b;
+                    /* Compose i/o buffer - color components */
+                    dl_data[0] = dl_cloud.points[dl_i].r;
+                    dl_data[1] = dl_cloud.points[dl_i].g;
+                    dl_data[2] = dl_cloud.points[dl_i].b;
 
-                    /* Vertex filtering - NaN removal */
-                    if ( ( dl_scomp[0] == dl_scomp[0] ) && ( dl_scomp[1] == dl_scomp[1] ) && ( dl_scomp[2] == dl_scomp[2] ) ) { 
-
-                        /* Write i/o buffer in universal stream */
-                        dl_stream.write( dl_buffer, 35 );
-
-                    }
+                    /* Write i/o buffer in universal stream */
+                    dl_stream.write( dl_buffer, 27 );
 
                 }
 
