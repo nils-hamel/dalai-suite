@@ -21,59 +21,81 @@
     # include "common-args.h"
 
 /*
+    source - switches parsers
+ */
+
+    int lc_read_flag( int const argc, char ** argv, char const * const er_long, char const * const er_short ) {
+
+        /* Parses arguments and parameters */
+        for ( int er_parse = 0 ; er_parse < argc; er_parse ++ ) {
+
+            /* Check argument */
+            if ( ( strcmp( argv[er_parse], er_long ) == 0 ) || ( strcmp( argv[er_parse], er_short ) == 0 ) ) {
+
+                /* Return positive answer */
+                return( LC_TRUE );
+
+            }
+
+        /* Return negative value */
+        } return( LC_FALSE );
+
+    }
+
+/*
     source - arguments and parameters parsers
  */
 
     char * lc_read_string( int const argc, char ** argv, char const * const er_long, char const * const er_short ) {
-
+        
         /* Parses arguments and parameters */
-        for ( int er_parse = 0; er_parse < argc; er_parse ++ ) {
+        for ( int er_parse = 0 ; er_parse < argc; er_parse ++ ) {
 
             /* Check argument */
             if ( ( strcmp( argv[er_parse], er_long ) == 0 ) || ( strcmp( argv[er_parse], er_short ) == 0 ) ) {
 
-                /* Check consistency - return value */
+                /* Check consistency - return pointer */
                 if ( ( ++ er_parse ) < argc ) return( argv[er_parse] ); else return( NULL );
 
             }
 
-        /* Return value */
+        /* Return pointer */
         } return( NULL );
 
     }
 
-    unsigned long long int lc_read_uint( int const argc, char ** argv, char const * const er_long, char const * const er_short, unsigned long long int er_default ) {
+    unsigned int lc_read_uint( int const argc, char ** argv, char const * const er_long, char const * const er_short, unsigned int er_default ) {
         
         /* Parses arguments and parameters */
-        for( int er_parse = 0; er_parse < argc; er_parse ++ ) {
+        for( int er_parse = 0 ; er_parse < argc; er_parse ++ ) {
 
             /* Check argument */
             if ( ( strcmp( argv[er_parse], er_long ) == 0 ) || ( strcmp( argv[er_parse], er_short ) == 0 ) ) {
 
-                /* Check consistency - return value */
-                if ( ( ++ er_parse ) < argc ) return( strtoull( argv[er_parse], NULL, 10 ) ); else return( er_default );
+                /* Check consistency - return parameter */
+                if ( ( ++ er_parse ) < argc ) return( LC_ATOUI( argv[er_parse] ) ); else return( er_default );
 
             }
 
-        /* Return value */
+        /* Return parameter */
         } return( er_default );
 
     }
 
-    signed long long int lc_read_int( int const argc, char ** argv, char const * const er_long, char const * const er_short, signed long long int er_default ) {
-        
+    double lc_read_double( int const argc, char ** argv, char const * const er_long, char const * const er_short, double er_default ) {
+
         /* Parses arguments and parameters */
-        for( int er_parse = 0; er_parse < argc; er_parse ++ ) {
+        for( int er_parse = 0 ; er_parse < argc; er_parse ++ ) {
 
             /* Check argument */
             if ( ( strcmp( argv[er_parse], er_long ) == 0 ) || ( strcmp( argv[er_parse], er_short ) == 0 ) ) {
 
-                /* Check consistency - return value */
-                if ( ( ++ er_parse ) < argc ) return( strtoll( argv[er_parse], NULL, 10 ) ); else return( er_default );
+                /* Check consistency - return parameter */
+                if ( ( ++ er_parse ) < argc ) return( LC_ATODP( argv[er_parse] ) ); else return( er_default );
 
             }
 
-        /* Return default value */
+        /* Return parameter */
         } return( er_default );
 
     }
