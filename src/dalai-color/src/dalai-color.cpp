@@ -26,12 +26,17 @@
 
     void dl_color( double dl_height, uint8_t * const dl_data, double const dl_ledge, double const dl_hedge ) {
 
-        /* Clamp height value */
-        dl_height = dl_height < dl_ledge ? dl_ledge : dl_height;
-        dl_height = dl_height > dl_hedge ? dl_hedge : dl_height;
+        /* Height pre-normalisation */
+        dl_height = ( dl_height - dl_ledge ) / ( dl_hedge - dl_ledge );
 
-        /* Normalise height value */
-        dl_height = ( ( ( dl_height - dl_ledge ) / ( dl_hedge - dl_ledge ) ) * 0.7 + 0.3 ) * 3.14;
+        /* Height periodic range clamping */
+        dl_height = dl_height - floor( dl_height );
+
+        /* Height range mirroring */
+        dl_height = dl_height > 0.5 ? 1.0 - dl_height : dl_height;
+
+        /* Height normalisation */
+        dl_height = ( 0.3 + 0.7 * dl_height * 2 ) * 3.14;
 
         /* Compute element color */
         dl_data[0] = 127.0 + 128.0 * sin( dl_height );
