@@ -62,6 +62,8 @@
     header - includes
  */
 
+    # include <stdint.h>
+
 /*
     header - preprocessor definitions
  */
@@ -77,6 +79,12 @@
 /*
     header - type definition
  */
+
+    /* Universal format floating point */
+    typedef double lc_real_t;
+
+    /* Universal format colorimetry */
+    typedef uint8_t lc_data_t;
 
 /*
     header - structures
