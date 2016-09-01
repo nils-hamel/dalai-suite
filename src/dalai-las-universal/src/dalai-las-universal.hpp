@@ -18,10 +18,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   dalai-color.hpp
+    /*! \file   dalai-las-universal.hpp
      *  \author Nils Hamel <n.hamel@bluewin.ch>
      *
-     *  Dalai-suite - Polygon File Format to Universal Format converter
+     *  Dalai-suite - las (asprs) to universal format converter
      */
 
     /*! \mainpage dalai-suite
@@ -47,8 +47,8 @@
     header - inclusion guard
  */
 
-    # ifndef __DL_COLOR__
-    # define __DL_COLOR__
+    # ifndef __DL_LAS_UNIVERSAL__
+    # define __DL_LAS_UNIVERSAL__
 
 /*
     header - includes
@@ -57,8 +57,8 @@
     # include <iostream>
     # include <fstream>
     # include <cstdint>
-    # include <cmath>
     # include <common-args.h>
+    # include <liblas/liblas.hpp>
 
 /*
     header - preprocessor definitions
@@ -80,28 +80,8 @@
     header - function prototypes
  */
 
-    /*! \brief color mapping methods
+    /*! \brief main function
      *
-     *  This function assigns a color to the provided color array based on the
-     *  provided height value. It starts by clamping the height value using the
-     *  boundary values provided as parameters. The heights is then normalised
-     *  on this intervalle and the color is computed following the implemented
-     *  colormap.
-     *
-     *  \param dl_height Point height
-     *  \param dl_data   Point color array pointer (unsigned 8-bits, RGB)
-     *  \param dl_ledge  Height clamping range lower boundary
-     *  \param dl_hedge  Height clamping range upper boundary
-     */
-
-    void dl_color( double dl_height, uint8_t * const dl_data, double const dl_ledge, double const dl_hedge );
-
-    /*! \brief main methods
-     *
-     *  The main function reads the arguments and parameters and opens the input
-     *  points cloud in memory. Parsing the cloud points, it assign to points a
-     *  color provided by a colormap based on points height (third component).
-     *  The modified points cloud is then exported in the output stream.
      *
      *  \param argc Standard parameter
      *  \param argv Standard parameter
