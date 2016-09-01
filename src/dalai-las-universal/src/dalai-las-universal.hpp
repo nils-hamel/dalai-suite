@@ -82,6 +82,10 @@
 
     /*! \brief main function
      *
+     *  The main function reads the provided input LAS file content and exports
+     *  it in the desired universal format file. Both coordinates and colors are
+     *  exported to the output file. When the LAS file is colorless, black
+     *  color is assigned to the points.
      *
      *  \param argc Standard parameter
      *  \param argv Standard parameter
