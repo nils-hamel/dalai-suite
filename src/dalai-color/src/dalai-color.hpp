@@ -18,7 +18,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   dalai-ply-universal.hpp
+    /*! \file   dalai-color.hpp
      *  \author Nils Hamel <n.hamel@bluewin.ch>
      *
      *  Dalai-suite - Polygon File Format to Universal Format converter
@@ -82,13 +82,26 @@
 
     /*! \brief color mapping methods
      *
+     *  This function assign a color to the provided color array based on the
+     *  provided height value. It starts by clamping the height value using the
+     *  boundary value provided as parameters. The heights is the normalised on
+     *  this intervalle and the color is computed following the implemented
+     *  colormap.
      *
+     *  \param dl_height Point height
+     *  \param dl_data   Point color array pointer (unsigned 8-bits, RGB)
+     *  \param dl_ledge  Height clamping range lower boundary
+     *  \param dl_hedge  Height clamping range upper boundary
      */
 
-    void dl_color( double dl_height, uint8_t * dl_data, double dl_cmin, double dl_cmax );
+    void dl_color( double dl_height, uint8_t * const dl_data, double const dl_ledge, double const dl_hedge );
 
     /*! \brief main methods
      *
+     *  The main function reads the arguments and parameters and opens the input
+     *  points cloud in memory. Parsing the cloud points, it assign to points a
+     *  color provided by a color map based on points height (third component).
+     *  The modified points cloud is the exported in the output stream.
      *
      *  \param argc Standard parameter
      *  \param argv Standard parameter
