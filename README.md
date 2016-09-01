@@ -8,6 +8,7 @@ The _dalai-suite_ comes with the following package dependencies (Ubuntu 14.04 LT
 
 * build-essential
 * libpcl-all
+* liblas-c-dev
 
 The code documentation is built using Doxygen.
 
