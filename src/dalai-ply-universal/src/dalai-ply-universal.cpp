@@ -26,35 +26,38 @@
 
     int main( int argc, char ** argv ) {
 
-        /* Universal stream variables */
+        /* Status variables */
+        int dl_status( EXIT_SUCCESS );
+
+        /* Stream variables */
         std::ofstream dl_stream;
 
-        /* Polygone File Format reader variables */
+        /* Reader class variables */
         pcl::PLYReader dl_ply;
 
-        /* Point cloud structure variables */
+        /* Point cloud class variables */
         pcl::PointCloud < pcl::PointXYZRGB > dl_cloud;
 
-        /* I/O buffer variables */
+        /* Stream buffer variables */
         char dl_buffer[27] = { 0 };
 
-        /* I/O buffer pointers variables */
-        double  * dl_pose = ( double  * ) ( dl_buffer      );
-        uint8_t * dl_data = ( uint8_t * ) ( dl_buffer + 24 );        
+        /* Stream buffer pointers variables */
+        lc_real_t * dl_pose( ( lc_real_t * ) ( dl_buffer      ) );
+        lc_data_t * dl_data( ( lc_data_t * ) ( dl_buffer + 24 ) );        
 
-        /* Polygone File Format content importation */
+        /* Polygone file format content importation */
         if ( dl_ply.read( lc_read_string( argc, argv, "--ply", "-i" ), dl_cloud ) == 0 ) {
 
-            /* Create universal stream */
+            /* Create output stream */
             dl_stream.open( lc_read_string( argc, argv, "--universal", "-o" ), std::ios::out | std::ios::binary );
 
-            /* Check universal stream */
+            /* Check output stream */
             if ( dl_stream.is_open() ) {
 
-                /* Parsing imported point cloud elements */
+                /* Parsing point cloud */
                 for ( unsigned long dl_i = 0; dl_i < dl_cloud.size(); dl_i ++ ) {
 
-                    /* Compose i/o buffer - space components */
+                    /* Assign point coordinates */
                     dl_pose[0] = dl_cloud.points[dl_i].x;
                     dl_pose[1] = dl_cloud.points[dl_i].y;
                     dl_pose[2] = dl_cloud.points[dl_i].z;
@@ -64,29 +67,26 @@
                     if ( dl_pose[1] != dl_pose[1] ) continue;
                     if ( dl_pose[2] != dl_pose[2] ) continue;
 
-                    /* Compose i/o buffer - color components */
+                    /* Assign point color components */
                     dl_data[0] = dl_cloud.points[dl_i].r;
                     dl_data[1] = dl_cloud.points[dl_i].g;
                     dl_data[2] = dl_cloud.points[dl_i].b;
 
-                    /* Write i/o buffer in universal stream */
+                    /* Output stream exportation */
                     dl_stream.write( dl_buffer, 27 );
 
                 }
 
-                /* Delete universal stream */
+                /* Delete output stream */
                 dl_stream.close();
-
-                /* Send message */
-                return( EXIT_SUCCESS );
 
             } else {
 
                 /* Display message */
                 std::cerr << "dalai-suite : error : unable to access output file" << std::endl;
 
-                /* Send message */
-                return( EXIT_FAILURE );
+                /* Push message */
+                dl_status = EXIT_FAILURE;
 
             }
 
@@ -95,10 +95,13 @@
             /* Display message */
             std::cerr << "dalai-suite : error : unable to access input file" << std::endl;
 
-            /* Send message */
-            return( EXIT_FAILURE );
+            /* Push message */
+            dl_status = EXIT_FAILURE;
 
         }
+
+        /* Send message */
+        return( dl_status );
 
     }
 

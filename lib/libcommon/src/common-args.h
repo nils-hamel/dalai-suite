@@ -21,7 +21,7 @@
     /*! \file   common-args.h
      *  \author Nils Hamel <n.hamel@bluewin.ch>
      *
-     *  Arguments and parameters parsers
+     *  dalai-suite - arguments and parameters parsers
      */
 
 /*

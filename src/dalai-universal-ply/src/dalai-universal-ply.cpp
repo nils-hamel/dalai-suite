@@ -26,32 +26,32 @@
 
     int main( int argc, char ** argv ) {
 
-        /* Universal stream variables */
+        /* Status variables */
+        int dl_status( EXIT_SUCCESS );
+
+        /* Stream variables */
         std::ifstream dl_stream;
 
-        /* Writer variables */
+        /* Writer class variables */
         pcl::PLYWriter dl_ply;
 
-        /* Point cloud variables */
+        /* Point cloud class variables */
         pcl::PointCloud < pcl::PointXYZRGB > dl_cloud;
 
-        /* I/O buffer variables */
+        /* Stream buffer variables */
         char dl_buffer[27] = { 0 };
 
-        /* I/O buffer pointers variables */
-        double  * dl_pose = ( double  * ) ( dl_buffer      );
-        uint8_t * dl_data = ( uint8_t * ) ( dl_buffer + 24 );
+        /* Stream buffer pointers variables */
+        lc_real_t * dl_pose( ( lc_real_t * ) ( dl_buffer      ) );
+        lc_data_t * dl_data( ( lc_data_t * ) ( dl_buffer + 24 ) );
 
-        /* Create universal stream */
-        dl_stream.open( lc_read_string( argc, argv, "--universal", "-i" ), std::ios::in | std::ios::binary );
+        /* Create input stream */
+        dl_stream.open( lc_read_string( argc, argv, "--universal", "-i" ), std::ios::ate | std::ios::in | std::ios::binary );
 
-        /* Check universal stream */
+        /* Check input stream */
         if ( dl_stream.is_open() ) {
 
-            /* Stream offset to end */
-            dl_stream.seekg( 0, std::ios::end );
-
-            /* Allocating point cloud memory */
+            /* Creating point cloud memory allocation */
             dl_cloud.points.resize( dl_stream.tellg() / 27 );
 
             /* Stream offset to begining */
@@ -60,15 +60,15 @@
             /* Parsing input stream */
             for ( unsigned long dl_parse = 0; dl_parse < dl_cloud.size(); dl_parse ++ ) {
 
-                /* Read input stream record */
+                /* Read input stream */
                 dl_stream.read( dl_buffer, 27 );
 
-                /* Decompose i/o buffer - space components */
+                /* Assign point coordinates */
                 dl_cloud.points[dl_parse].x = dl_pose[0];
                 dl_cloud.points[dl_parse].y = dl_pose[1];
                 dl_cloud.points[dl_parse].z = dl_pose[2];
 
-                /* Decompose i/o buffer - color components */
+                    /* Assign point color components */
                 dl_cloud.points[dl_parse].r = dl_data[0];
                 dl_cloud.points[dl_parse].g = dl_data[1];
                 dl_cloud.points[dl_parse].b = dl_data[2];
@@ -84,25 +84,26 @@
                 /* Display message */
                 std::cerr << "dalai-suite : error : unable to write output file" << std::endl;
 
-                /* Send message */
-                return( EXIT_FAILURE );
-
-            } else {
-
-                /* Send message */
-                return( EXIT_SUCCESS );
+                /* Push message */
+                dl_status = EXIT_FAILURE;
 
             }
+
+            /* Clear point cloud */
+            dl_cloud.clear();
 
         } else {
 
             /* Display message */
             std::cerr << "dalai-suite : error : unable to access input file" << std::endl;
 
-            /* Send message */
-            return( EXIT_FAILURE );
+            /* Push message */
+            dl_status = EXIT_FAILURE;
 
         }
+
+        /* Send message */
+        return( dl_status );
 
     }
 

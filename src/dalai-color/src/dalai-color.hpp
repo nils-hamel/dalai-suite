@@ -21,7 +21,7 @@
     /*! \file   dalai-color.hpp
      *  \author Nils Hamel <n.hamel@bluewin.ch>
      *
-     *  Dalai-suite - Polygon File Format to Universal Format converter
+     *  dalai-suite - space-based colormap assignation
      */
 
     /*! \mainpage dalai-suite
@@ -56,7 +56,6 @@
 
     # include <iostream>
     # include <fstream>
-    # include <cstdint>
     # include <cmath>
     # include <common-args.h>
 

@@ -66,6 +66,11 @@
                     dl_pose[1] = dl_point.GetY();
                     dl_pose[2] = dl_point.GetZ();
 
+                    /* Vertex filtering */
+                    if ( dl_pose[0] != dl_pose[0] ) continue;
+                    if ( dl_pose[1] != dl_pose[1] ) continue;
+                    if ( dl_pose[2] != dl_pose[2] ) continue;
+
                     /* Assign point color components */
                     dl_data[0] = dl_point.GetColor().GetRed();
                     dl_data[1] = dl_point.GetColor().GetGreen();

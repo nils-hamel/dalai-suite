@@ -21,7 +21,7 @@
     /*! \file   dalai-ply-universal.hpp
      *  \author Nils Hamel <n.hamel@bluewin.ch>
      *
-     *  Dalai-suite - Polygon File Format to Universal Format converter
+     *  dalai-suite - polygone file format (PLY, stanford) to universal format
      */
 
     /*! \mainpage dalai-suite
@@ -56,8 +56,6 @@
 
     # include <iostream>
     # include <fstream>
-    # include <cstdint>
-    # include <ctime>
     # include <common-args.h>
     # include <pcl/point_cloud.h>
     # include <pcl/point_types.h>
@@ -85,12 +83,9 @@
 
     /*! \brief main function
      *
-     *  The main function reads the paths of the input and output files and
-     *  the provided time. When no time is specified, current UNIX timestamp is
-     *  considered. The function then reads the content of the input file and
-     *  convert the information into the universal standard before to export it
-     *  in the output file. From this point of view, the main function simply
-     *  implements a format converter.
+     *  The main function reads the provided input PLY file content and exports
+     *  it in the output stream. Both coordinates and colors are exported in the
+     *  output file.
      *
      *  \param argc Standard parameter
      *  \param argv Standard parameter

@@ -21,7 +21,7 @@
     /*! \file   common.h
      *  \author Nils Hamel <n.hamel@bluewin.ch>
      *
-     *  Common header
+     *  dalai-suite - common header
      */
 
     /*! \mainpage dalai-suite

@@ -50,24 +50,24 @@
         int dl_status = EXIT_SUCCESS;
 
         /* Stream size variables */
-        size_t dl_size = 0;
+        size_t dl_size( 0 );
 
         /* Stream buffer variables */
-        char * dl_buffer = NULL;
-        char * dl_bound  = NULL;
+        char * dl_buffer( NULL );
+        char * dl_bound ( NULL );
 
         /* Stream variables */
         std::ifstream dl_istream;
         std::ofstream dl_ostream;
 
         /* Thread count variables */
-        int dl_thread = lc_read_uint( argc, argv, "--thread", "-t", 1 );
+        int dl_thread( lc_read_uint( argc, argv, "--thread", "-t", 1 ) );
 
         /* Color mapping variables */
-        double dl_ledge = lc_read_double( argc, argv, "--minimum", "-m",  0.0 );
-        double dl_hedge = lc_read_double( argc, argv, "--maximum", "-x", 50.0 );
+        double dl_ledge( lc_read_double( argc, argv, "--minimum", "-m",  0.0 ) );
+        double dl_hedge( lc_read_double( argc, argv, "--maximum", "-x", 50.0 ) );
 
-        /* Create create stream */
+        /* Create input stream */
         dl_istream.open( lc_read_string( argc, argv, "--input", "-i" ), std::ios::ate | std::ios::in | std::ios::binary );
 
         /* Check input stream */
@@ -88,7 +88,7 @@
                 /* Delete input stream */
                 dl_istream.close();
 
-                /* Compute buffer edge */
+                /* Compute stream buffer edge */
                 dl_bound = dl_buffer + dl_size;
 
             # ifdef __OPENMP__
@@ -97,7 +97,7 @@
             # pragma omp for
             # endif
 
-                /* Parsing stream elements */
+                /* Parsing stream buffer elements */
                 for ( char * dl_parse = dl_buffer; dl_parse < dl_bound; dl_parse += 27 ) {
 
                     /* Compute element color */
@@ -124,7 +124,7 @@
                 } else {
 
                     /* Display message */
-                    std::cerr << "dalai-suite : error : unable to write output stream" << std::endl;
+                    std::cerr << "dalai-suite : error : unable to write output file" << std::endl;
 
                     /* Push message */
                     dl_status = EXIT_FAILURE;

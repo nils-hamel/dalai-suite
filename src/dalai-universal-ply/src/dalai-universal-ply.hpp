@@ -21,7 +21,7 @@
     /*! \file   dalai-universal-ply.hpp
      *  \author Nils Hamel <n.hamel@bluewin.ch>
      *
-     *  Dalai-suite - Universal Format to Polygon File Format converter
+     *  dalai-suite - universal format to polygone file format (PLY, stanford)
      */
 
     /*! \mainpage dalai-suite
@@ -56,7 +56,6 @@
 
     # include <iostream>
     # include <fstream>
-    # include <cstdint>
     # include <common-args.h>
     # include <pcl/point_cloud.h>
     # include <pcl/point_types.h>
@@ -84,11 +83,9 @@
 
     /*! \brief main function
      *
-     *  The main functions reads the provided universal stream and creates the
-     *  PCL point cloud structure holding the stream data. After stream reading,
-     *  the main function exports the computed point cloud to the desired output
-     *  file. From this point of view, the main function simply implements a
-     *  format converter.
+     *  The main functions reads the provided universal format file and creates
+     *  a point cloud structure holding the points and colors. The point cloud
+     *  is then exported in the provided output polygone file format.
      *
      *  \param argc Standard parameter
      *  \param argv Standard parameter

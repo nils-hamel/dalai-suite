@@ -21,7 +21,7 @@
     /*! \file   dalai-las-universal.hpp
      *  \author Nils Hamel <n.hamel@bluewin.ch>
      *
-     *  Dalai-suite - las (asprs) to universal format converter
+     *  Dalai-suite - laser (LAS, asprs) to universal format
      */
 
     /*! \mainpage dalai-suite
