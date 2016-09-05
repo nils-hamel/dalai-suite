@@ -66,7 +66,7 @@
         std::ofstream dl_ostream;
 
         /* Thread count variables */
-        int dl_thread( lc_read_uint( argc, argv, "--thread", "-t", 1 ) );
+        int dl_thread( lc_read_signed( argc, argv, "--thread", "-t", 1 ) );
 
         /* Color mapping variables */
         double dl_ledge( lc_read_double( argc, argv, "--minimum", "-m",  0.0 ) );
