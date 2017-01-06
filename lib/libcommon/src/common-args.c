@@ -2,7 +2,7 @@
  *  dalai-suite - geodetic system
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
- *      Copyright (c) 2016 EPFL CDH DHLAB
+ *      Copyright (c) 2016-2017 EPFL CDH DHLAB
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@
 
             }
 
-        } 
+        }
 
         /* Return answer */
         return( LC_FALSE );
@@ -49,7 +49,7 @@
  */
 
     char * lc_read_string( int const argc, char ** argv, char const * const er_long, char const * const er_short ) {
-        
+
         /* Parsing arguments and parameters */
         for ( int er_parse = 0 ; er_parse < argc; er_parse ++ ) {
 
@@ -60,7 +60,7 @@
                 if ( ( ++ er_parse ) < argc ) {
 
                     /* Return parameter */
-                    return( argv[er_parse] ); 
+                    return( argv[er_parse] );
 
                 /* Return default value */
                 } else { return( NULL ); }
@@ -135,10 +135,10 @@
                 /* Check consistency */
                 if ( ( ++ er_parse ) < argc ) {
 
-                    /* Convert and return parameter */                    
+                    /* Convert and return parameter */
                     return( atof( argv[er_parse] ) );
 
-                /* Return default value */            
+                /* Return default value */
                 } else { return( er_default ); }
 
             }

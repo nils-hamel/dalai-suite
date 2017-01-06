@@ -2,7 +2,7 @@
  *  dalai-suite - geodetic system
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
- *      Copyright (c) 2016 EPFL CDH DHLAB
+ *      Copyright (c) 2016-2017 EPFL CDH DHLAB
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@
 
         /* Stream buffer pointers variables */
         lc_real_t * dl_pose( ( lc_real_t * ) ( dl_buffer      ) );
-        lc_data_t * dl_data( ( lc_data_t * ) ( dl_buffer + 24 ) );        
+        lc_data_t * dl_data( ( lc_data_t * ) ( dl_buffer + 24 ) );
 
         /* Polygone file format content importation */
         if ( dl_ply.read( lc_read_string( argc, argv, "--ply", "-i" ), dl_cloud ) == 0 ) {
