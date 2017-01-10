@@ -26,89 +26,145 @@
 
     int main( int argc, char ** argv ) {
 
-        /* Status variables */
-        int dl_status( EXIT_SUCCESS );
+        /* message variables */
+        int  dl_message( EXIT_SUCCESS );
 
-        /* Stream variables */
-        std::ifstream dl_istream;
-        std::ofstream dl_ostream;
+        /* color availability variables */
+        bool dl_color( false );
 
-        /* Stream buffer variables */
+        /* format variables */
+        int  dl_format( 0 );
+
+        /* classifcation index variables */
+        int  dl_class( 0 );
+
+        /* classification colormap variables */
+        char dl_colormap[20][3] = DL_COLORMAP;
+
+        /* stream buffer variables */
         char dl_buffer[27] = { 0 };
 
-        /* Stream buffer pointers variables */
+        /* buffer mapping variables */
         lc_real_t * dl_pose( ( lc_real_t * ) ( dl_buffer      ) );
         lc_data_t * dl_data( ( lc_data_t * ) ( dl_buffer + 24 ) );
 
-        /* Create input stream */
+        /* stream variables */
+        std::ifstream dl_istream;
+        std::ofstream dl_ostream;
+
+        /* create input stream */
         dl_istream.open( lc_read_string( argc, argv, "--las", "-i" ), std::ios::in | std::ios::binary );
 
-        /* Check input stream */
+        /* check input stream */
         if ( dl_istream.is_open() == true ) {
 
-            /* Create output stream */
-            dl_ostream.open( lc_read_string( argc, argv, "--universal", "-o" ), std::ios::out | std::ios::binary );
+            /* reader variables */
+            liblas::Reader dl_las( dl_istream );
 
-            /* Check output stream */
-            if ( dl_ostream.is_open() == true ) {
+            /* check input stream format */
+            if ( ( dl_las.GetHeader().GetVersionMajor() == 1 ) && ( dl_las.GetHeader().GetVersionMinor() <= 4 ) ) {
 
-                /* Reader class variables */
-                liblas::Reader dl_las( dl_istream );
+                /* check is classification colormap is forced */
+                if ( lc_read_flag( argc, argv, "--classification", "-c" ) == LC_FALSE ) {
 
-                /* Parsing input stream */
-                while ( dl_las.ReadNextPoint() == true ) {
+                    /* retrieve input file format */
+                    dl_format = dl_las.GetHeader().GetDataFormatId();
 
-                    /* Point class variables */
-                    liblas::Point const & dl_point = dl_las.GetPoint();
+                    /* check color availability */
+                    if ( ( dl_format == 2 ) || ( dl_format == 3 ) || ( dl_format == 5 ) ) {
 
-                    /* Assign point coordinates */
-                    dl_pose[0] = dl_point.GetX();
-                    dl_pose[1] = dl_point.GetY();
-                    dl_pose[2] = dl_point.GetZ();
+                        /* reset color availability */
+                        dl_color = true;
 
-                    /* Vertex filtering */
-                    if ( dl_pose[0] != dl_pose[0] ) continue;
-                    if ( dl_pose[1] != dl_pose[1] ) continue;
-                    if ( dl_pose[2] != dl_pose[2] ) continue;
-
-                    /* Assign point color components */
-                    dl_data[0] = dl_point.GetColor().GetRed();
-                    dl_data[1] = dl_point.GetColor().GetGreen();
-                    dl_data[2] = dl_point.GetColor().GetBlue();
-
-                    /* Output stream exportation */
-                    dl_ostream.write( dl_buffer, 27 );
+                    }
 
                 }
 
-                /* Delete output stream */
-                dl_ostream.close();
+                /* create output stream */
+                dl_ostream.open( lc_read_string( argc, argv, "--universal", "-o" ), std::ios::out | std::ios::binary );
+
+                /* check output stream */
+                if ( dl_ostream.is_open() == true ) {
+
+                    /* parsing input stream */
+                    while ( dl_las.ReadNextPoint() == true ) {
+
+                        /* retrieve point coordinates */
+                        dl_pose[0] = dl_las.GetPoint().GetX();
+                        dl_pose[1] = dl_las.GetPoint().GetY();
+                        dl_pose[2] = dl_las.GetPoint().GetZ();
+
+                        /* vertex filtering - avoiding nan */
+                        if ( dl_pose[0] != dl_pose[0] ) continue;
+                        if ( dl_pose[1] != dl_pose[1] ) continue;
+                        if ( dl_pose[2] != dl_pose[2] ) continue;
+
+                        /* check colorimetry mode */
+                        if ( dl_color == true ) {
+
+                            /* retrieve point color components */
+                            dl_data[0] = dl_las.GetPoint().GetColor().GetRed();
+                            dl_data[1] = dl_las.GetPoint().GetColor().GetGreen();
+                            dl_data[2] = dl_las.GetPoint().GetColor().GetBlue();
+
+                        } else {
+
+                            /* retrieve point classification */
+                            dl_class = dl_las.GetPoint().GetClassification().GetClass();
+
+                            /* check classification index */
+                            if ( dl_class > 18 ) dl_class = 0;
+
+                            /* assign classification colormap element */
+                            dl_data[0] = dl_colormap[dl_class][0];
+                            dl_data[1] = dl_colormap[dl_class][1];
+                            dl_data[2] = dl_colormap[dl_class][2];
+
+                        }
+
+                        /* output stream exportation */
+                        dl_ostream.write( dl_buffer, 27 );
+
+                    }
+
+                    /* delete output stream */
+                    dl_ostream.close();
+
+                } else {
+
+                    /* display message */
+                    std::cerr << "dalai-suite : error : unable to access output stream" << std::endl;
+
+                    /* push message */
+                    dl_message = EXIT_FAILURE;
+
+                }
 
             } else {
 
-                /* Display message */
-                std::cerr << "dalai-suite : error : unable to access output file" << std::endl;
+                /* display message */
+                std::cerr << "dalai-suite : error : supports only las versions 1.0 to 1.4" << std::endl;
 
-                /* Push message */
-                dl_status = EXIT_FAILURE;
+                /* push message */
+                dl_message = EXIT_FAILURE;
 
             }
 
-            /* Delete input stream */
+            /* delete input stream */
             dl_istream.close();
 
         } else {
 
-            /* Display message */
+            /* display message */
             std::cerr << "dalai-suite : error : unable to access input file" << std::endl;
 
-            /* Push message */
-            dl_status = EXIT_FAILURE;
+            /* push message */
+            dl_message = EXIT_FAILURE;
 
         }
 
-        /* Send message */
-        return( dl_status );
+        /* send message */
+        return( dl_message );
 
     }
 
