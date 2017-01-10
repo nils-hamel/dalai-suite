@@ -5,7 +5,7 @@
 #   make - Configuration
 #
 
-    CONFIG_NAME:=dalai-las-universal
+    CONFIG_NAME:=dalai-las-uf3
     CONFIG_CODE:=cpp
     CONFIG_TYPE:=suite
 
@@ -26,7 +26,7 @@
     MAKE_STABLD:=ar
     MAKE_DOCBLD:=doxygen
 
-    BUILD_FLAGS:=-Wall -funsigned-char -O3 
+    BUILD_FLAGS:=-Wall -funsigned-char -O3
     BUILD_LINKD:=-llas
     BUILD_SUBMD:=$(MAKE_LIBRAR)/libcommon
 

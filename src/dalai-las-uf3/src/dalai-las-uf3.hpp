@@ -1,5 +1,5 @@
 /*
- *  dalai-suite - geodetic system
+ *  dalai-suite - las-uf3
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
  *      Copyright (c) 2016-2017 EPFL CDH DHLAB
@@ -18,10 +18,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   dalai-las-universal.hpp
+    /*! \file   dalai-las-uf3.hpp
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  Dalai-suite - laser (LAS, asprs) to universal format
+     *  dalai-suite - las-uf3
      */
 
     /*! \mainpage dalai-suite
@@ -47,8 +47,8 @@
     header - inclusion guard
  */
 
-    # ifndef __DL_LAS_UNIVERSAL__
-    # define __DL_LAS_UNIVERSAL__
+    # ifndef __DL_LAS_UF3__
+    # define __DL_LAS_UF3__
 
 /*
     header - includes
@@ -85,13 +85,25 @@
 
     /*! \brief main function
      *
-     *  The main function reads the provided input LAS file content and exports
-     *  it in the desired universal format file. Both coordinates and colors are
-     *  exported to the output file. When the LAS file is colorless, black
-     *  color is assigned to the points.
+     *  The main function converts the provided las (asprs) file and converts
+     *  it into a universal format 3 file :
      *
-     *  \param argc Standard parameter
-     *  \param argv Standard parameter
+     *      ./dalai-las-uf3 --las/-i [las_file]
+     *                      --uf3/-o [uf3_file]
+     *                      --classification/-c
+     *
+     *  The function starts by reading the input file header in order to detect
+     *  if colours are provided. If colours are not provided by the input file,
+     *  the main function reads each point classification value and considers a
+     *  colormap to assign colours to points exported in the output file.
+     *
+     *  The function allows to force usage of classification values and colormap
+     *  even if colours are available by using the last argument (as a switch).
+     *
+     *  \param argc Main function parameters
+     *  \param argv Main function parameters
+     *
+     *  \return Standard exit code
      */
 
     int main( int argc, char ** argv );

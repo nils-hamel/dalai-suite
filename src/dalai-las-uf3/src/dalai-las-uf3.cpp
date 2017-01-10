@@ -1,5 +1,5 @@
 /*
- *  dalai-suite - geodetic system
+ *  dalai-suite - las-uf3
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
  *      Copyright (c) 2016-2017 EPFL CDH DHLAB
@@ -18,7 +18,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    # include "dalai-las-universal.hpp"
+    # include "dalai-las-uf3.hpp"
 
 /*
     source - main methods
@@ -81,7 +81,7 @@
                 }
 
                 /* create output stream */
-                dl_ostream.open( lc_read_string( argc, argv, "--universal", "-o" ), std::ios::out | std::ios::binary );
+                dl_ostream.open( lc_read_string( argc, argv, "--uf3", "-o" ), std::ios::out | std::ios::binary );
 
                 /* check output stream */
                 if ( dl_ostream.is_open() == true ) {
