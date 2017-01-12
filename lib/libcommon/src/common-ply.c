@@ -29,7 +29,7 @@
         /* created structure variables */
         lc_ply_t lc_ply = LC_PLY_C;
 
-        /* create ply handle */
+        /* create and check stream handle */
         if ( ( lc_ply.ph_handle = fopen( ( char * ) lc_path, "rb" ) ) == NULL ) {
 
             /* send message */
@@ -37,7 +37,7 @@
 
         }
 
-        /* read ply header */
+        /* read and check stream header */
         if ( lc_ply_io_i_header( & lc_ply ) == LC_FALSE ) {
 
             /* send message */
@@ -55,7 +55,7 @@
         /* deleted structure variables */
         lc_ply_t lc_delete = LC_PLY_C;
 
-        /* check ply handle */
+        /* check stream handle */
         if ( lc_ply->ph_handle != NULL ) {
 
             /* close ply handle */
@@ -63,7 +63,7 @@
 
         }
 
-        /* check chunk allocation */
+        /* check chunk memory allocation */
         if ( lc_ply->ph_chunk != NULL ) {
 
             /* release memory */
@@ -128,23 +128,24 @@
 
     int lc_ply_io_i_header( lc_ply_t * const lc_ply ) {
 
+        /* returned value variables */
+        int lc_return = LC_TRUE;
+
+        /* char variables */
+        unsigned char lc_char = 0;
+
         /* token buffer variables */
         unsigned char lc_token[256] = { 0 };
 
         /* token pointer variables */
         unsigned char * lc_accum = lc_token;
 
-        /* char variables */
-        int lc_char = 0;
-
-        /* mode variables */
-        int lc_mode = LC_PLY_RM_DETECT;
-        int lc_smod = LC_PLY_RM_STANDARD;
-
-        /* type stack */
+        /* properties type variables */
         int lc_type = LC_PLY_TP_NONE;
 
-        int lc_property = 0;
+        /* reading mode variables */
+        int lc_mode = LC_PLY_RM_DETECT;
+        int lc_smod = LC_PLY_RM_STANDARD;
 
         /* check consistency */
         if ( lc_ply->ph_handle == NULL ) {
@@ -155,231 +156,241 @@
         }
 
         /* reading header */
-        while ( LC_TRUE ) {
+        while ( lc_mode != LC_PLY_RM_VALIDATE ) {
 
-            /* read header char */
+            /* read stream character */
             lc_char = fgetc( lc_ply->ph_handle );
 
-            /* check and append char */
+            /* check and append character */
             if ( lc_char > 0x20 ) ( * lc_accum ++ ) = lc_char;
 
-            /* check end of word */
-            if ( ( lc_char == 0x20 ) || ( lc_char == 0x0a ) ) {
+            /* search for separation characters */
+            if ( ( lc_char != 0x20 ) && ( lc_char != 0x0a ) ) continue;
 
-                /* validate token */
-                ( * lc_accum ) = 0x00;
+            /* validate token */
+            ( * lc_accum ) = 0x00;
 
-                /* check mode */
-                if ( lc_mode == LC_PLY_RM_DETECT ) {
+            /* switch on mode */
+            if ( lc_mode == LC_PLY_RM_DETECT ) {
 
-                    /* analyse token */
-                    if ( strcmp( ( char * ) lc_token, "ply" ) != 0 ) {
+                /* analyse validated token */
+                if ( strcmp( ( char * ) lc_token, "ply" ) != 0 ) {
 
-                        /* send message */
-                        return( LC_FALSE );
+                    /* send message */
+                    return( LC_FALSE );
 
-                    }
+                }
+
+                /* update mode */
+                lc_mode = LC_PLY_RM_STANDARD;
+
+            } else if ( lc_mode == LC_PLY_RM_STANDARD ) {
+
+                /* analyse validated token */
+                if ( strcmp( ( char * ) lc_token, "end_header" ) == 0 ) {
+
+                    /* stream data offset */
+                    lc_ply->ph_position = ftell( lc_ply->ph_handle );
 
                     /* update mode */
-                    lc_mode = LC_PLY_RM_STANDARD;
+                    lc_mode = LC_PLY_RM_VALIDATE;
 
-                } else if ( lc_mode == LC_PLY_RM_STANDARD ) {
+                } else if ( strcmp( ( char * ) lc_token, "format" ) == 0 ) {
 
-                    /* analyse token */
-                    if ( strcmp( ( char * ) lc_token, "end_header" ) == 0 ) {
+                    /* update mode */
+                    lc_mode = LC_PLY_RM_FORMAT;
 
-                        /* initialise position */
-                        lc_ply->ph_position = ftell( lc_ply->ph_handle );
+                } else if ( strcmp( ( char * ) lc_token, "element" ) == 0 ) {
 
-                        /* send message */
-                        return( LC_TRUE );
+                    /* update mode */
+                    lc_mode = LC_PLY_RM_ELEMENT;
 
-                    } else if ( strcmp( ( char * ) lc_token, "format" ) == 0 ) {
+                } else if ( strcmp( ( char * ) lc_token, "property" ) == 0 ) {
 
-                        /* update mode */
-                        lc_mode = LC_PLY_RM_FORMAT;
-
-                    } else if ( strcmp( ( char * ) lc_token, "element" ) == 0 ) {
-
-                        /* update mode */
-                        lc_mode = LC_PLY_RM_ELEMENT;
-
-                    } else if ( strcmp( ( char * ) lc_token, "property" ) == 0 ) {
+                    /* check element type */
+                    if ( lc_smod == LC_PLY_RM_VERTEX ) {
 
                         /* update mode */
                         lc_mode = LC_PLY_RM_PROPERTY;
 
                     }
 
-                } else if ( lc_mode == LC_PLY_RM_FORMAT ) {
+                }
 
-                    /* analyse token */
-                    if ( strcmp( ( char * ) lc_token, "binary_little_endian" ) == 0 ) {
+            } else if ( lc_mode == LC_PLY_RM_FORMAT ) {
 
-                        /* update header structure */
-                        lc_ply->ph_format = LC_PLY_LEBIN;
+                /* analyse validated token */
+                if ( strcmp( ( char * ) lc_token, "binary_little_endian" ) == 0 ) {
 
-                    } else {
-
-                        /* send message */
-                        return( LC_FALSE );
-
-                    }
+                    /* retrieve stream format */
+                    lc_ply->ph_format = LC_PLY_BINARY_LE;
 
                     /* update mode */
                     lc_mode = LC_PLY_RM_STANDARD;
 
-                } else if ( lc_mode == LC_PLY_RM_ELEMENT ) {
+                } else {
 
-                    if ( strcmp( ( char * ) lc_token, "vertex" ) == 0 ) {
+                    /* push message */
+                    lc_return = LC_FALSE;
 
-                        /* update mode */
-                        lc_mode = LC_PLY_RM_VERTEX;
-
-                        /* update sub-mode */
-                        lc_smod = LC_PLY_RM_VERTEX;
-
-                        lc_property = 0;
-
-                    } else {
-
-                        /* update mode */
-                        lc_mode = LC_PLY_RM_STANDARD;
-
-                        /* update sub-mode */
-                        lc_smod = LC_PLY_RM_STANDARD;
-
-                    }
-
-                } else if ( lc_mode == LC_PLY_RM_VERTEX ) {
-
-                    /* converts token */
-                    lc_ply->ph_vertex = strtoll( ( char * ) lc_token, NULL, 10 );
-
-                    /* update mode */
-                    lc_mode = LC_PLY_RM_STANDARD;
-
-                } else if ( lc_mode == LC_PLY_RM_PROPERTY ) {
-
-                    if ( strcmp( ( char * ) lc_token, "double" ) == 0 ) {
-
-                        /* push type */
-                        lc_type = LC_PLY_TP_DOUBLE;
-
-                        /* update mode */
-                        lc_mode = LC_PLY_RM_DATA;
-
-                    } else if ( strcmp( ( char * ) lc_token, "float" ) == 0 ) {
-
-                        /* push type */
-                        lc_type = LC_PLY_TP_FLOAT;
-
-                        /* update mode */
-                        lc_mode = LC_PLY_RM_DATA;
-
-                    } else if ( strcmp( ( char * ) lc_token, "uchar" ) == 0 ) {
-
-                        /* push type */
-                        lc_type = LC_PLY_TP_UCHAR;
-
-                        /* update mode */
-                        lc_mode = LC_PLY_RM_DATA;
-
-                    } else {
-
-                        /* update mode */
-                        lc_mode = LC_PLY_RM_STANDARD;
-
-                    }
-
-                } else if ( ( lc_mode == LC_PLY_RM_DATA ) && ( lc_smod == LC_PLY_RM_VERTEX ) ) {
-
-                    if ( strcmp( ( char * ) lc_token, "x" ) == 0 ) {
-
-                        lc_ply->ph_vpush[0] = lc_property;
-                        lc_ply->ph_vtype[0] = lc_type;
-                        lc_ply->ph_vdata[0] = lc_ply->ph_vsize;
-
-                    } else if ( strcmp( ( char * ) lc_token, "y" ) == 0 ) {
-
-                        lc_ply->ph_vpush[1] = lc_property;
-                        lc_ply->ph_vtype[1] = lc_type;
-                        lc_ply->ph_vdata[1] = lc_ply->ph_vsize;
-
-                    } else if ( strcmp( ( char * ) lc_token, "z" ) == 0 ) {
-
-                        lc_ply->ph_vpush[2] = lc_property;
-                        lc_ply->ph_vtype[2] = lc_type;
-                        lc_ply->ph_vdata[2] = lc_ply->ph_vsize;
-
-                    } else if ( strcmp( ( char * ) lc_token, "red" ) == 0 ) {
-
-                        lc_ply->ph_vpush[3] = lc_property;
-                        lc_ply->ph_vtype[3] = lc_type;
-                        lc_ply->ph_vdata[3] = lc_ply->ph_vsize;
-
-                    } else if ( strcmp( ( char * ) lc_token, "green" ) == 0 ) {
-
-                        lc_ply->ph_vpush[4] = lc_property;
-                        lc_ply->ph_vtype[4] = lc_type;
-                        lc_ply->ph_vdata[4] = lc_ply->ph_vsize;
-
-                    } else if ( strcmp( ( char * ) lc_token, "blue" ) == 0 ) {
-
-                        lc_ply->ph_vpush[5] = lc_property;
-                        lc_ply->ph_vtype[5] = lc_type;
-                        lc_ply->ph_vdata[5] = lc_ply->ph_vsize;
-
-                    } else if ( strcmp( ( char * ) lc_token, "alpha" ) == 0 ) {
-
-                        lc_ply->ph_vpush[6] = lc_property;
-                        lc_ply->ph_vtype[6] = lc_type;
-                        lc_ply->ph_vdata[6] = lc_ply->ph_vsize;
-
-                    } else {
-
-                        return( LC_FALSE );
-
-                    }
-
-                    /* update size */
-                    switch ( lc_type ) {
-
-                        case LC_PLY_TP_DOUBLE : { lc_ply->ph_vsize += 8; } break;
-                        case LC_PLY_TP_FLOAT  : { lc_ply->ph_vsize += 4; } break;
-                        case LC_PLY_TP_UCHAR  : { lc_ply->ph_vsize += 1; } break;
-
-                    };
-
-                    /* update property count */
-                    lc_property ++;
-
-                    /* update mode */
-                    lc_mode = LC_PLY_RM_STANDARD;
+                    /* updated mode */
+                    lc_mode = LC_PLY_RM_VALIDATE;
 
                 }
 
-                /* reset token */
-                lc_accum = lc_token;
+            } else if ( lc_mode == LC_PLY_RM_ELEMENT ) {
+
+                /* analyse validated token */
+                if ( strcmp( ( char * ) lc_token, "vertex" ) == 0 ) {
+
+                    /* update mode */
+                    lc_mode = LC_PLY_RM_VERTEX;
+
+                    /* update sub-mode */
+                    lc_smod = LC_PLY_RM_VERTEX;
+
+                } else {
+
+                    /* update mode */
+                    lc_mode = LC_PLY_RM_STANDARD;
+
+                    /* update sub-mode */
+                    lc_smod = LC_PLY_RM_STANDARD;
+
+                }
+
+            } else if ( lc_mode == LC_PLY_RM_VERTEX ) {
+
+                /* retrieve vertex count */
+                lc_ply->ph_vertex = strtoll( ( char * ) lc_token, NULL, 10 );
+
+                /* update mode */
+                lc_mode = LC_PLY_RM_STANDARD;
+
+            } else if ( lc_mode == LC_PLY_RM_PROPERTY ) {
+
+                /* analyse validated token */
+                if ( ( strcmp( ( char * ) lc_token, "double" ) == 0 ) || ( strcmp( ( char * ) lc_token, "float64" ) == 0 ) )  {
+
+                    /* retrieve property type */
+                    lc_type = LC_PLY_TP_DOUBLE;
+
+                    /* update mode */
+                    lc_mode = LC_PLY_RM_DATA;
+
+                } else if ( ( strcmp( ( char * ) lc_token, "float" ) == 0 ) || ( strcmp( ( char * ) lc_token, "float32" ) == 0 ) ) {
+
+                    /* retrieve property type */
+                    lc_type = LC_PLY_TP_FLOAT;
+
+                    /* update mode */
+                    lc_mode = LC_PLY_RM_DATA;
+
+                } else if ( ( strcmp( ( char * ) lc_token, "uchar" ) == 0 ) || ( strcmp( ( char * ) lc_token, "uint8" ) == 0 ) ) {
+
+                    /* retrieve property type */
+                    lc_type = LC_PLY_TP_UCHAR;
+
+                    /* update mode */
+                    lc_mode = LC_PLY_RM_DATA;
+
+                } else {
+
+                    /* push message */
+                    lc_return = LC_FALSE;
+
+                    /* update mode */
+                    lc_mode = LC_PLY_RM_VALIDATE;
+
+                }
+
+            } else if ( lc_mode == LC_PLY_RM_DATA ) {
+
+                /* analyse validated token */
+                if ( strcmp( ( char * ) lc_token, "x" ) == 0 ) {
+
+                    /* retrieve data type */
+                    lc_ply->ph_vtype[0] = lc_type;
+
+                    /* retrieve data record offset */
+                    lc_ply->ph_vdata[0] = lc_ply->ph_vsize;
+
+                } else if ( strcmp( ( char * ) lc_token, "y" ) == 0 ) {
+
+                    /* retrieve data type */
+                    lc_ply->ph_vtype[1] = lc_type;
+
+                    /* retrieve data record offset */
+                    lc_ply->ph_vdata[1] = lc_ply->ph_vsize;
+
+                } else if ( strcmp( ( char * ) lc_token, "z" ) == 0 ) {
+
+                    /* retrieve data type */
+                    lc_ply->ph_vtype[2] = lc_type;
+
+                    /* retrieve data record offset */
+                    lc_ply->ph_vdata[2] = lc_ply->ph_vsize;
+
+                } else if ( strcmp( ( char * ) lc_token, "red" ) == 0 ) {
+
+                    /* retrieve data type */
+                    lc_ply->ph_vtype[3] = lc_type;
+
+                    /* retrieve data record offset */
+                    lc_ply->ph_vdata[3] = lc_ply->ph_vsize;
+
+                } else if ( strcmp( ( char * ) lc_token, "green" ) == 0 ) {
+
+                    /* retrieve data type */
+                    lc_ply->ph_vtype[4] = lc_type;
+
+                    /* retrieve data record offset */
+                    lc_ply->ph_vdata[4] = lc_ply->ph_vsize;
+
+                } else if ( strcmp( ( char * ) lc_token, "blue" ) == 0 ) {
+
+                    /* retrieve data type */
+                    lc_ply->ph_vtype[5] = lc_type;
+
+                    /* retrieve data record offset */
+                    lc_ply->ph_vdata[5] = lc_ply->ph_vsize;
+
+                }
+
+                /* switch on data type */
+                switch ( lc_type ) {
+
+                    /* update record size */
+                    case LC_PLY_TP_DOUBLE : { lc_ply->ph_vsize += 8; } break;
+                    case LC_PLY_TP_FLOAT  : { lc_ply->ph_vsize += 4; } break;
+                    case LC_PLY_TP_UCHAR  : { lc_ply->ph_vsize += 1; } break;
+
+                };
+
+                /* update mode */
+                lc_mode = LC_PLY_RM_STANDARD;
 
             }
+
+            /* reset token */
+            lc_accum = lc_token;
 
         }
 
         /* send message */
-        return( LC_TRUE );
+        return( lc_return );
 
     }
 
     long long int lc_ply_io_i_chunk( lc_ply_t * const lc_ply, long long int const lc_size ) {
 
+        /* memory swap variables */
+        char * lc_swap = NULL;
+
         /* returned value variables */
         long long int lc_return = 0;
 
-        /* memory swap variables */
-        unsigned char * lc_swap = NULL;
-
-        /* check consistency */
+        /* check chunk reading consistency */
         if ( lc_ply->ph_position >= ( lc_ply->ph_vertex * lc_ply->ph_vsize ) ) {
 
             /* send message */
@@ -387,7 +398,7 @@
 
         }
 
-        /* create chuck allocation */
+        /* chunk memory allocation management */
         if ( ( lc_swap = realloc( lc_ply->ph_chunk, lc_size * lc_ply->ph_vsize ) ) == NULL ) {
 
             /* send message */
@@ -395,19 +406,19 @@
 
         }
 
-        /* assign allocated memory */
+        /* assign chunk memory allocation */
         lc_ply->ph_chunk = lc_swap;
 
-        /* seek to position */
+        /* set reading pointer to chunk */
         fseek( lc_ply->ph_handle, lc_ply->ph_position, SEEK_SET );
 
-        /* read and check chunck */
+        /* read stream chunk */
         lc_return = fread( lc_ply->ph_chunk, 1, lc_size * lc_ply->ph_vsize, lc_ply->ph_handle );
 
-        /* update stream position */
+        /* update stream chunk position */
         lc_ply->ph_position += lc_return;
 
-        /* returned readed records */
+        /* return amount of read records */
         return( lc_return / lc_ply->ph_vsize );
 
     }

@@ -58,36 +58,28 @@
  */
 
     /* define pseudo-constructor */
-    # define LC_PLY_C { NULL, 0, 0, 0, { 0 }, { 0 }, { 0 }, 0, NULL, LC_TRUE }
+    # define LC_PLY_C { NULL, 0, 0, 0, { 0 }, { 0 }, 0, NULL, LC_TRUE }
 
     /* define ply format */
-    # define LC_PLY_ASCII 1
-    # define LC_PLY_LEBIN 2
-    # define LC_PLY_BEBIN 3
+    # define LC_PLY_ASCII      ( 1 )
+    # define LC_PLY_BINARY_LE  ( 2 )
+    # define LC_PLY_BINARY_BE  ( 3 )
 
     /* define header reading modes */
-    # define LC_PLY_RM_DETECT   0
-    # define LC_PLY_RM_STANDARD 1
-    # define LC_PLY_RM_FORMAT   2
-    # define LC_PLY_RM_ELEMENT  3
-    # define LC_PLY_RM_VERTEX   4
-    # define LC_PLY_RM_PROPERTY 5
-    # define LC_PLY_RM_DATA     6
+    # define LC_PLY_RM_VALIDATE 0
+    # define LC_PLY_RM_DETECT   1
+    # define LC_PLY_RM_STANDARD 2
+    # define LC_PLY_RM_FORMAT   3
+    # define LC_PLY_RM_ELEMENT  4
+    # define LC_PLY_RM_VERTEX   5
+    # define LC_PLY_RM_PROPERTY 6
+    # define LC_PLY_RM_DATA     7
 
     /* define data types */
     # define LC_PLY_TP_NONE     0
     # define LC_PLY_TP_DOUBLE   1
     # define LC_PLY_TP_FLOAT    2
     # define LC_PLY_TP_UCHAR    3
-
-    /* define data */
-    # define LC_PLY_PR_X     1
-    # define LC_PLY_PR_Y     2
-    # define LC_PLY_PR_Z     3
-    # define LC_PLY_PR_RED   4
-    # define LC_PLY_PR_GREEN 5
-    # define LC_PLY_PR_BLUE  6
-    # define LC_PLY_PR_ALPHA 7
 
 /*
     header - preprocessor macros
@@ -103,20 +95,20 @@
 
     typedef struct lc_ply_header_struct {
 
-        FILE * ph_handle;
+        FILE *        ph_handle;
 
-        int ph_format;
+        int           ph_format;
 
         long long int ph_vertex;
 
-        int ph_vsize;
-        int ph_vpush[7];
-        int ph_vtype[7];
-        int ph_vdata[7];
+        int           ph_vsize;
+        //int           ph_vpush[6];
+        int           ph_vtype[6];
+        int           ph_vdata[6];
 
         long long int ph_position;
 
-        unsigned char * ph_chunk;
+        char *        ph_chunk;
 
     int _status; } lc_ply_header_t, lc_ply_t;
 
