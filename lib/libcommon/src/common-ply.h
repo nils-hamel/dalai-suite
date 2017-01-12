@@ -58,28 +58,35 @@
  */
 
     /* define pseudo-constructor */
-    # define LC_PLY_C { NULL, 0, 0, 0, { 0 }, { 0 }, 0, NULL, LC_TRUE }
+    # define LC_PLY_C           { NULL, 0, 0, 0, { 0 }, { 0 }, 0, NULL, LC_TRUE }
 
     /* define ply format */
-    # define LC_PLY_ASCII      ( 1 )
-    # define LC_PLY_BINARY_LE  ( 2 )
-    # define LC_PLY_BINARY_BE  ( 3 )
+    # define LC_PLY_ASCII       ( 1 )
+    # define LC_PLY_BINARY_LE   ( 2 )
+    # define LC_PLY_BINARY_BE   ( 3 )
 
     /* define header reading modes */
-    # define LC_PLY_RM_VALIDATE 0
-    # define LC_PLY_RM_DETECT   1
-    # define LC_PLY_RM_STANDARD 2
-    # define LC_PLY_RM_FORMAT   3
-    # define LC_PLY_RM_ELEMENT  4
-    # define LC_PLY_RM_VERTEX   5
-    # define LC_PLY_RM_PROPERTY 6
-    # define LC_PLY_RM_DATA     7
+    # define LC_PLY_RM_VALIDATE ( 0 )
+    # define LC_PLY_RM_DETECT   ( 1 )
+    # define LC_PLY_RM_STANDARD ( 2 )
+    # define LC_PLY_RM_FORMAT   ( 3 )
+    # define LC_PLY_RM_ELEMENT  ( 4 )
+    # define LC_PLY_RM_VERTEX   ( 5 )
+    # define LC_PLY_RM_PROPERTY ( 6 )
+    # define LC_PLY_RM_DATA     ( 7 )
 
     /* define data types */
-    # define LC_PLY_TP_NONE     0
-    # define LC_PLY_TP_DOUBLE   1
-    # define LC_PLY_TP_FLOAT    2
-    # define LC_PLY_TP_UCHAR    3
+    # define LC_PLY_TP_NONE     ( 0  )
+    # define LC_PLY_TP_DOUBLE   ( 1  )
+    # define LC_PLY_TP_FLOAT    ( 2  )
+    # define LC_PLY_TP_UCHAR    ( 3  )
+    # define LC_PLY_TP_CHAR     ( 4  )
+    # define LC_PLY_TP_USHORT   ( 5  )
+    # define LC_PLY_TP_SHORT    ( 6  )
+    # define LC_PLY_TP_UINT     ( 7  )
+    # define LC_PLY_TP_INT      ( 8  )
+    # define LC_PLY_TP_ULONG    ( 9  )
+    # define LC_PLY_TP_LONG     ( 10 )
 
 /*
     header - preprocessor macros

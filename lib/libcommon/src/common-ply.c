@@ -184,7 +184,8 @@
                 /* update mode */
                 lc_mode = LC_PLY_RM_STANDARD;
 
-            } else if ( lc_mode == LC_PLY_RM_STANDARD ) {
+            } else
+            if ( lc_mode == LC_PLY_RM_STANDARD ) {
 
                 /* analyse validated token */
                 if ( strcmp( ( char * ) lc_token, "end_header" ) == 0 ) {
@@ -195,17 +196,20 @@
                     /* update mode */
                     lc_mode = LC_PLY_RM_VALIDATE;
 
-                } else if ( strcmp( ( char * ) lc_token, "format" ) == 0 ) {
+                } else
+                if ( strcmp( ( char * ) lc_token, "format" ) == 0 ) {
 
                     /* update mode */
                     lc_mode = LC_PLY_RM_FORMAT;
 
-                } else if ( strcmp( ( char * ) lc_token, "element" ) == 0 ) {
+                } else
+                if ( strcmp( ( char * ) lc_token, "element" ) == 0 ) {
 
                     /* update mode */
                     lc_mode = LC_PLY_RM_ELEMENT;
 
-                } else if ( strcmp( ( char * ) lc_token, "property" ) == 0 ) {
+                } else
+                if ( strcmp( ( char * ) lc_token, "property" ) == 0 ) {
 
                     /* check element type */
                     if ( lc_smod == LC_PLY_RM_VERTEX ) {
@@ -217,7 +221,8 @@
 
                 }
 
-            } else if ( lc_mode == LC_PLY_RM_FORMAT ) {
+            } else
+            if ( lc_mode == LC_PLY_RM_FORMAT ) {
 
                 /* analyse validated token */
                 if ( strcmp( ( char * ) lc_token, "binary_little_endian" ) == 0 ) {
@@ -238,7 +243,8 @@
 
                 }
 
-            } else if ( lc_mode == LC_PLY_RM_ELEMENT ) {
+            } else
+            if ( lc_mode == LC_PLY_RM_ELEMENT ) {
 
                 /* analyse validated token */
                 if ( strcmp( ( char * ) lc_token, "vertex" ) == 0 ) {
@@ -259,7 +265,8 @@
 
                 }
 
-            } else if ( lc_mode == LC_PLY_RM_VERTEX ) {
+            } else
+            if ( lc_mode == LC_PLY_RM_VERTEX ) {
 
                 /* retrieve vertex count */
                 lc_ply->ph_vertex = strtoll( ( char * ) lc_token, NULL, 10 );
@@ -267,7 +274,8 @@
                 /* update mode */
                 lc_mode = LC_PLY_RM_STANDARD;
 
-            } else if ( lc_mode == LC_PLY_RM_PROPERTY ) {
+            } else
+            if ( lc_mode == LC_PLY_RM_PROPERTY ) {
 
                 /* analyse validated token */
                 if ( ( strcmp( ( char * ) lc_token, "double" ) == 0 ) || ( strcmp( ( char * ) lc_token, "float64" ) == 0 ) )  {
@@ -278,7 +286,8 @@
                     /* update mode */
                     lc_mode = LC_PLY_RM_DATA;
 
-                } else if ( ( strcmp( ( char * ) lc_token, "float" ) == 0 ) || ( strcmp( ( char * ) lc_token, "float32" ) == 0 ) ) {
+                } else
+                if ( ( strcmp( ( char * ) lc_token, "float" ) == 0 ) || ( strcmp( ( char * ) lc_token, "float32" ) == 0 ) ) {
 
                     /* retrieve property type */
                     lc_type = LC_PLY_TP_FLOAT;
@@ -286,10 +295,74 @@
                     /* update mode */
                     lc_mode = LC_PLY_RM_DATA;
 
-                } else if ( ( strcmp( ( char * ) lc_token, "uchar" ) == 0 ) || ( strcmp( ( char * ) lc_token, "uint8" ) == 0 ) ) {
+                } else
+                if ( ( strcmp( ( char * ) lc_token, "uchar" ) == 0 ) || ( strcmp( ( char * ) lc_token, "uint8" ) == 0 ) ) {
 
                     /* retrieve property type */
                     lc_type = LC_PLY_TP_UCHAR;
+
+                    /* update mode */
+                    lc_mode = LC_PLY_RM_DATA;
+
+                } else
+                if ( ( strcmp( ( char * ) lc_token, "char" ) == 0 ) || ( strcmp( ( char * ) lc_token, "int8" ) == 0 ) ) {
+
+                    /* retrieve property type */
+                    lc_type = LC_PLY_TP_CHAR;
+
+                    /* update mode */
+                    lc_mode = LC_PLY_RM_DATA;
+
+                } else
+                if ( ( strcmp( ( char * ) lc_token, "ushort" ) == 0 ) || ( strcmp( ( char * ) lc_token, "uint16" ) == 0 ) ) {
+
+                    /* retrieve property type */
+                    lc_type = LC_PLY_TP_USHORT;
+
+                    /* update mode */
+                    lc_mode = LC_PLY_RM_DATA;
+
+                } else
+                if ( ( strcmp( ( char * ) lc_token, "short" ) == 0 ) || ( strcmp( ( char * ) lc_token, "int16" ) == 0 ) ) {
+
+                    /* retrieve property type */
+                    lc_type = LC_PLY_TP_SHORT;
+
+                    /* update mode */
+                    lc_mode = LC_PLY_RM_DATA;
+
+                } else
+                if ( ( strcmp( ( char * ) lc_token, "uint" ) == 0 ) || ( strcmp( ( char * ) lc_token, "uint32" ) == 0 ) ) {
+
+                    /* retrieve property type */
+                    lc_type = LC_PLY_TP_UINT;
+
+                    /* update mode */
+                    lc_mode = LC_PLY_RM_DATA;
+
+                } else
+                if ( ( strcmp( ( char * ) lc_token, "int" ) == 0 ) || ( strcmp( ( char * ) lc_token, "int32" ) == 0 ) ) {
+
+                    /* retrieve property type */
+                    lc_type = LC_PLY_TP_INT;
+
+                    /* update mode */
+                    lc_mode = LC_PLY_RM_DATA;
+
+                } else
+                if ( ( strcmp( ( char * ) lc_token, "ulong" ) == 0 ) || ( strcmp( ( char * ) lc_token, "uint64" ) == 0 ) ) {
+
+                    /* retrieve property type */
+                    lc_type = LC_PLY_TP_ULONG;
+
+                    /* update mode */
+                    lc_mode = LC_PLY_RM_DATA;
+
+                } else
+                if ( ( strcmp( ( char * ) lc_token, "long" ) == 0 ) || ( strcmp( ( char * ) lc_token, "int64" ) == 0 ) ) {
+
+                    /* retrieve property type */
+                    lc_type = LC_PLY_TP_LONG;
 
                     /* update mode */
                     lc_mode = LC_PLY_RM_DATA;
@@ -304,7 +377,8 @@
 
                 }
 
-            } else if ( lc_mode == LC_PLY_RM_DATA ) {
+            } else
+            if ( lc_mode == LC_PLY_RM_DATA ) {
 
                 /* analyse validated token */
                 if ( strcmp( ( char * ) lc_token, "x" ) == 0 ) {
@@ -315,7 +389,8 @@
                     /* retrieve data record offset */
                     lc_ply->ph_vdata[0] = lc_ply->ph_vsize;
 
-                } else if ( strcmp( ( char * ) lc_token, "y" ) == 0 ) {
+                } else
+                if ( strcmp( ( char * ) lc_token, "y" ) == 0 ) {
 
                     /* retrieve data type */
                     lc_ply->ph_vtype[1] = lc_type;
@@ -323,7 +398,8 @@
                     /* retrieve data record offset */
                     lc_ply->ph_vdata[1] = lc_ply->ph_vsize;
 
-                } else if ( strcmp( ( char * ) lc_token, "z" ) == 0 ) {
+                } else
+                if ( strcmp( ( char * ) lc_token, "z" ) == 0 ) {
 
                     /* retrieve data type */
                     lc_ply->ph_vtype[2] = lc_type;
@@ -331,7 +407,8 @@
                     /* retrieve data record offset */
                     lc_ply->ph_vdata[2] = lc_ply->ph_vsize;
 
-                } else if ( strcmp( ( char * ) lc_token, "red" ) == 0 ) {
+                } else
+                if ( strcmp( ( char * ) lc_token, "red" ) == 0 ) {
 
                     /* retrieve data type */
                     lc_ply->ph_vtype[3] = lc_type;
@@ -339,7 +416,8 @@
                     /* retrieve data record offset */
                     lc_ply->ph_vdata[3] = lc_ply->ph_vsize;
 
-                } else if ( strcmp( ( char * ) lc_token, "green" ) == 0 ) {
+                } else
+                if ( strcmp( ( char * ) lc_token, "green" ) == 0 ) {
 
                     /* retrieve data type */
                     lc_ply->ph_vtype[4] = lc_type;
@@ -347,7 +425,8 @@
                     /* retrieve data record offset */
                     lc_ply->ph_vdata[4] = lc_ply->ph_vsize;
 
-                } else if ( strcmp( ( char * ) lc_token, "blue" ) == 0 ) {
+                } else
+                if ( strcmp( ( char * ) lc_token, "blue" ) == 0 ) {
 
                     /* retrieve data type */
                     lc_ply->ph_vtype[5] = lc_type;
@@ -364,6 +443,13 @@
                     case LC_PLY_TP_DOUBLE : { lc_ply->ph_vsize += 8; } break;
                     case LC_PLY_TP_FLOAT  : { lc_ply->ph_vsize += 4; } break;
                     case LC_PLY_TP_UCHAR  : { lc_ply->ph_vsize += 1; } break;
+                    case LC_PLY_TP_CHAR   : { lc_ply->ph_vsize += 1; } break;
+                    case LC_PLY_TP_USHORT : { lc_ply->ph_vsize += 2; } break;
+                    case LC_PLY_TP_SHORT  : { lc_ply->ph_vsize += 2; } break;
+                    case LC_PLY_TP_UINT   : { lc_ply->ph_vsize += 4; } break;
+                    case LC_PLY_TP_INT    : { lc_ply->ph_vsize += 4; } break;
+                    case LC_PLY_TP_ULONG  : { lc_ply->ph_vsize += 8; } break;
+                    case LC_PLY_TP_LONG   : { lc_ply->ph_vsize += 8; } break;
 
                 };
 
