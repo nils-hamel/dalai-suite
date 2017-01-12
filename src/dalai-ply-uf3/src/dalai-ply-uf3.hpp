@@ -87,12 +87,28 @@
 
     /*! \brief main function
      *
-     *  The main function reads the provided input PLY file content and exports
-     *  it in the output stream. Both coordinates and colors are exported in the
-     *  output file.
+     *  The main function reads the provided ply file content and converts it
+     *  into a universal format file :
+     *
+     *      ./dalai-ply-uf3 --ply/-i [ply_file]
+     *                      --uf3/-o [uf3_file]
+     *
+     *  The function starts by allocating i/o buffer memory and opens streams
+     *  toward input and output file. It the reads the content of the input
+     *  file by chunk. The chunks are converted into universal format before to
+     *  be exported in the output file. The function ends by closing the streams
+     *  and releasing the allocated memory.
+     *
+     *  Due to the complexity of the ply format, the main function only accept
+     *  little endian binary format. In addition, the function, thats operates
+     *  through the common library ply module, only considers vertex elements
+     *  x, y, z, red, green and blue. All other element and properties are not
+     *  handled by the function (i.e. the common library module).
      *
      *  \param argc Standard parameter
      *  \param argv Standard parameter
+     *
+     *  \return Returns standard exit code
      */
 
     int main( int argc, char ** argv );

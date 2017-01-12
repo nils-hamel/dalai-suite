@@ -26,11 +26,11 @@
 
     int main( int argc, char ** argv ) {
 
-        /* input stream variables */
-        lc_ply_t dl_istream = LC_PLY_C;
-
         /* output stream variables */
         std::ofstream dl_ostream;
+
+        /* input stream variables */
+        lc_ply_t dl_istream = LC_PLY_C;
 
         /* i/o buffer variables */
         char   * dl_buffer( nullptr );
