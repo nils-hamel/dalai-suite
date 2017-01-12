@@ -1,5 +1,5 @@
 /*
- *  dalai-suite - geodetic system
+ *  dalai-suite - common library
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
  *      Copyright (c) 2016-2017 EPFL CDH DHLAB
@@ -21,7 +21,7 @@
     /*! \file   common.h
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  dalai-suite - common header
+     *  dalai-suite common library
      */
 
     /*! \mainpage dalai-suite
@@ -59,7 +59,11 @@
     # endif
 
 /*
-    header - includes
+    header - internal includes
+ */
+
+/*
+    header - external includes
  */
 
     # include <stdint.h>

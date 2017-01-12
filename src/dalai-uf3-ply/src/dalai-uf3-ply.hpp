@@ -1,5 +1,5 @@
 /*
- *  dalai-suite - geodetic system
+ *  dalai-suite - uf3-ply
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
  *      Copyright (c) 2016-2017 EPFL CDH DHLAB
@@ -18,10 +18,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   dalai-universal-ply.hpp
+    /*! \file   dalai-uf3-ply.hpp
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  dalai-suite - universal format to polygone file format (PLY, stanford)
+     *  dalai-suite uf3-ply
      */
 
     /*! \mainpage dalai-suite
@@ -47,23 +47,27 @@
     header - inclusion guard
  */
 
-    # ifndef __DL_UNIVERSAL_PLY__
-    # define __DL_UNIVERSAL_PLY__
+    # ifndef __DL_UF3_PLY__
+    # define __DL_UF3_PLY__
 
 /*
-    header - includes
+    header - internal includes
+ */
+
+/*
+    header - external includes
  */
 
     # include <iostream>
     # include <fstream>
     # include <common-args.h>
-    # include <pcl/point_cloud.h>
-    # include <pcl/point_types.h>
-    # include <pcl/io/ply_io.h>
 
 /*
     header - preprocessor definitions
  */
+
+    /* define universal format chunk size */
+    # define DL_UF3_PLY_CHUNK ( 131072ll )
 
 /*
     header - preprocessor macros
@@ -81,7 +85,7 @@
     header - function prototypes
  */
 
-    /*! \brief main function
+    /*! \brief main methods
      *
      *  The main functions reads the provided universal format file and creates
      *  a point cloud structure holding the points and colors. The point cloud

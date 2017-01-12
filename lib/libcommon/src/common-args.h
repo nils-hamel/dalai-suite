@@ -1,5 +1,5 @@
 /*
- *  dalai-suite - geodetic system
+ *  dalai-suite - common library
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
  *      Copyright (c) 2016-2017 EPFL CDH DHLAB
@@ -21,7 +21,7 @@
     /*! \file   common-args.h
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  dalai-suite - arguments and parameters parsers
+     *  dalai-suite common library - arguments and parameters module
      */
 
 /*
@@ -40,7 +40,13 @@
     # endif
 
 /*
-    header - includes
+    header - internal includes
+ */
+
+    # include "common.h"
+
+/*
+    header - external includes
  */
 
     # include <stdio.h>
@@ -48,7 +54,6 @@
     # include <string.h>
     # include <stdint.h>
     # include <inttypes.h>
-    # include "common.h"
 
 /*
     header - preprocessor definitions
