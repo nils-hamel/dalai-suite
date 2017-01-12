@@ -128,6 +128,18 @@
 
     void lc_ply_delete( lc_ply_t * const lc_ply );
 
+    double lc_ply_get_x( lc_ply_t const * const lc_ply, long long int lc_index );
+
+    double lc_ply_get_y( lc_ply_t const * const lc_ply, long long int lc_index );
+
+    double lc_ply_get_z( lc_ply_t const * const lc_ply, long long int lc_index );
+
+    char lc_ply_get_red( lc_ply_t const * const lc_ply, long long int lc_index );
+
+    char lc_ply_get_green( lc_ply_t const * const lc_ply, long long int lc_index );
+
+    char lc_ply_get_blue( lc_ply_t const * const lc_ply, long long int lc_index );
+
     int lc_ply_io_i_header( lc_ply_t * const lc_ply );
 
     long long int lc_ply_io_i_chunk( lc_ply_t * const lc_ply, long long int const lc_size );

@@ -1,5 +1,5 @@
 /*
- *  dalai-suite - geodetic system
+ *  dalai-suite - ply-uf3
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
  *      Copyright (c) 2016-2017 EPFL CDH DHLAB
@@ -18,10 +18,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   dalai-ply-universal.hpp
+    /*! \file   dalai-ply-uf3.hpp
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  dalai-suite - polygone file format (PLY, stanford) to universal format
+     *  dalai-suite ply-uf3
      */
 
     /*! \mainpage dalai-suite
@@ -47,23 +47,27 @@
     header - inclusion guard
  */
 
-    # ifndef __DL_PLY_UNIVERSAL__
-    # define __DL_PLY_UNIVERSAL__
+    # ifndef __DL_PLY_UF3__
+    # define __DL_PLY_UF3__
 
 /*
-    header - includes
+    header - internal includes
+ */
+
+/*
+    header - external includes
  */
 
     # include <iostream>
     # include <fstream>
-    # include <common-args.h>
-    # include <pcl/point_cloud.h>
-    # include <pcl/point_types.h>
-    # include <pcl/io/ply_io.h>
+    # include <common-include.h>
 
 /*
     header - preprocessor definitions
  */
+
+    /* define ply format chunk size */
+    # define DL_PLY_UF3_CHUNK ( 131072ll )
 
 /*
     header - preprocessor macros

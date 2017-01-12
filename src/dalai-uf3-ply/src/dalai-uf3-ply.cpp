@@ -26,6 +26,10 @@
 
     int main( int argc, char ** argv ) {
 
+        /* stream variables */
+        std::ifstream dl_istream;
+        std::ofstream dl_ostream;
+
         /* i/o buffer variables */
         char   * dl_ibuffer( nullptr );
         char   * dl_obuffer( nullptr );
@@ -35,10 +39,6 @@
         float  * dl_opose( nullptr );
         char   * dl_idata( nullptr );
         char   * dl_odata( nullptr );
-
-        /* stream variables */
-        std::ifstream dl_istream;
-        std::ofstream dl_ostream;
 
         /* stream size variables */
         long long int dl_size( 0 );
