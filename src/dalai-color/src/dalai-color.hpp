@@ -21,7 +21,7 @@
     /*! \file   dalai-color.hpp
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  dalai-suite color
+     *  dalai-suite - color
      */
 
     /*! \mainpage dalai-suite

@@ -21,7 +21,7 @@
     /*! \file   common-ply.h
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  dalai-suite common library - ply module
+     *  dalai-suite - common library - ply module
      */
 
 /*

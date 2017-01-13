@@ -21,7 +21,7 @@
     /*! \file   common-include.h
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  dalai-suite common library - inclusion header
+     *  dalai-suite - common library - inclusion module
      */
 
 /*

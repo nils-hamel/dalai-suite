@@ -21,7 +21,7 @@
     /*! \file   dalai-uf3-ply.hpp
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  dalai-suite uf3-ply
+     *  dalai-suite - uf3-ply
      */
 
     /*! \mainpage dalai-suite

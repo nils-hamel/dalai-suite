@@ -21,7 +21,7 @@
     /*! \file   common-args.h
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  dalai-suite common library - arguments and parameters module
+     *  dalai-suite - common library - arguments and parameters module
      */
 
 /*
