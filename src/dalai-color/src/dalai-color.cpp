@@ -1,5 +1,5 @@
 /*
- *  dalai-suite - geodetic system
+ *  dalai-suite - color
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
  *      Copyright (c) 2016-2017 EPFL CDH DHLAB

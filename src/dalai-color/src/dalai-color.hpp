@@ -1,5 +1,5 @@
 /*
- *  dalai-suite - geodetic system
+ *  dalai-suite - color
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
  *      Copyright (c) 2016-2017 EPFL CDH DHLAB
@@ -21,7 +21,7 @@
     /*! \file   dalai-color.hpp
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  dalai-suite - space-based colormap assignation
+     *  dalai-suite color
      */
 
     /*! \mainpage dalai-suite
@@ -51,7 +51,11 @@
     # define __DL_COLOR__
 
 /*
-    header - includes
+    header - internal includes
+ */
+
+/*
+    header - external includes
  */
 
     # include <iostream>
