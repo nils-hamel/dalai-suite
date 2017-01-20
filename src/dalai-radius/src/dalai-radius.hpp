@@ -60,7 +60,13 @@
 
     # include <iostream>
     # include <fstream>
+    # include <sstream>
     # include <cmath>
+    # include <limits>
+    # include <cstring>
+    # include <cstdlib>
+    # include <unistd.h>
+    # include <dirent.h>
     # include <common-include.h>
 
 /*
@@ -85,7 +91,15 @@
     header - function prototypes
  */
 
+    bool dl_radius_temp_create( char * const dl_tpath );
+
+    void dl_radius_temp_delete( char const * const dl_tpath );
+
     double dl_radius_mean( std::ifstream & dl_istream, long long int dl_size, long long int dl_count );
+
+    bool dl_radius_hash_create( std::ifstream & dl_istream, char * dl_tpath, long long int dl_size, double dl_radius, double dl_factor );
+
+    bool dl_radius_filter( std::ofstream & dl_ostream, char const * const dl_path, double dl_radius, double dl_factor );
 
     /*! \brief main function
      *
