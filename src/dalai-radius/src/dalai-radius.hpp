@@ -65,6 +65,7 @@
     # include <limits>
     # include <cstring>
     # include <cstdlib>
+    # include <cstdint>
     # include <unistd.h>
     # include <dirent.h>
     # include <common-include.h>
@@ -110,28 +111,28 @@
      *
      */
 
-    bool dl_radius_hash( std::ifstream & dl_istream, char * dl_tpath, long long int dl_size, double dl_radius, double dl_factor );
+    bool dl_radius_hash( std::ifstream & dl_istream, char const * const dl_tpath, int64_t const dl_size, double const dl_radius );
 
     /*! \brief filtering methods
      *
      *
      */
 
-    double dl_radius_mean( std::ifstream & dl_istream, long long int dl_size, long long int dl_count );
+    double dl_radius_mean( std::ifstream & dl_istream, int64_t const dl_size, int64_t const dl_count );
 
     /*! \brief filtering methods
      *
      *
      */
 
-    bool dl_radius_filter( std::ofstream & dl_ostream, char const * const dl_path, double dl_radius, double dl_factor );
+    bool dl_radius_filter( std::ofstream & dl_ostream, char const * const dl_tpath, double const dl_radius, double const dl_factor );
 
     /*! \brief filtering methods
      *
      *
      */
 
-    bool dl_radius_filter_uniform( std::ifstream & dl_istream, std::ofstream & dl_ostream, long long int dl_size, double dl_radius, double dl_factor );
+    bool dl_radius_filter_uniform( std::ifstream & dl_istream, std::ofstream & dl_ostream, int64_t const dl_size, double const dl_radius, double const dl_factor );
 
     /*! \brief main function
      *

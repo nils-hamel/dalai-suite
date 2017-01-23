@@ -51,7 +51,7 @@
     source - hashing methods
  */
 
-    bool dl_radius_hash( std::ifstream & dl_istream, char * dl_tpath, long long int dl_size, double dl_radius, double dl_factor ) {
+    bool dl_radius_hash( std::ifstream & dl_istream, char const * const dl_tpath, int64_t const dl_size, double const dl_radius ) {
 
         /* chunk buffer variables */
         char * dl_chunk( nullptr );
@@ -59,11 +59,11 @@
         /* array mapping variables */
         double * dl_pose( nullptr );
 
-        /* status variables */
-        long long int dl_count( 0 );
-
         /* hashing variables */
         double dl_hash( dl_radius * 100.0 );
+
+        /* status variables */
+        int64_t dl_count( 0 );
 
         /* hash files path variables */
         std::stringstream dl_file;
@@ -98,7 +98,7 @@
             dl_count = dl_istream.gcount();
 
             /* parsing chunk elements */
-            for ( long long int dl_parse( 0 ); dl_parse < dl_count; dl_parse += 27 ) {
+            for ( int64_t dl_parse( 0 ); dl_parse < dl_count; dl_parse += 27 ) {
 
                 /* compute array mapping */
                 dl_pose = ( double * ) ( dl_chunk + dl_parse );
@@ -140,7 +140,7 @@
     source - filtering methods
  */
 
-    double dl_radius_mean( std::ifstream & dl_istream, long long int dl_size, long long int dl_count ) {
+    double dl_radius_mean( std::ifstream & dl_istream, int64_t const dl_size, int64_t const dl_count ) {
 
         /* array variables */
         char   * dl_point( nullptr );
@@ -158,7 +158,7 @@
         double dl_return( 0.0 );
 
         /* selection step variables */
-        long long int dl_step( ( dl_size / 27 ) / dl_count );
+        int64_t dl_step( ( dl_size / 27 ) / dl_count );
 
         /* allocate and check buffer memory */
         if ( ( dl_point = new char[dl_count * 27] ) != nullptr ) {
@@ -184,7 +184,7 @@
                     dl_istream.seekg( 0 );
 
                     /* import selected points */
-                    for ( long long int dl_parse( 0 ), dl_limit( dl_count * 27 ); dl_parse < dl_limit; dl_parse += 27 ) {
+                    for ( int64_t dl_parse( 0 ), dl_limit( dl_count * 27 ); dl_parse < dl_limit; dl_parse += 27 ) {
 
                         /* stream position */
                         dl_istream.seekg( dl_parse * dl_step );
@@ -207,13 +207,13 @@
                         dl_istream.read( dl_chunk, DL_RADIUS_CHUNK * 27 );
 
                         /* parsing chunk records */
-                        for ( long long int dl_parse( 0 ), dl_limit( dl_istream.gcount() ) ; dl_parse < dl_limit ; dl_parse += 27 ) {
+                        for ( int64_t dl_parse( 0 ), dl_limit( dl_istream.gcount() ) ; dl_parse < dl_limit ; dl_parse += 27 ) {
 
                             /* create array mapping */
                             dl_posec = ( double * ) ( dl_chunk + dl_parse );
 
                             /* parsing seleced points */
-                            for ( long long int dl_index( 0 ); dl_index < dl_count; dl_index ++ ) {
+                            for ( int64_t dl_index( 0 ); dl_index < dl_count; dl_index ++ ) {
 
                                 /* create array mapping */
                                 dl_posep = ( double * ) ( dl_point + dl_index * 27 );
@@ -239,7 +239,7 @@
                     } while ( dl_istream.gcount() > 0 );
 
                     /* compute mean-minimum distance */
-                    for ( long long int dl_parse( 0 ); dl_parse < dl_count; dl_parse ++ ) {
+                    for ( int64_t dl_parse( 0 ); dl_parse < dl_count; dl_parse ++ ) {
 
                         /* accumulate distances */
                         dl_return += sqrt( dl_dists[dl_parse] );
@@ -269,7 +269,7 @@
 
     }
 
-    bool dl_radius_filter( std::ofstream & dl_ostream, char const * const dl_tpath, double dl_radius, double dl_factor ) {
+    bool dl_radius_filter( std::ofstream & dl_ostream, char const * const dl_tpath, double const dl_radius, double const dl_factor ) {
 
         /* stream variables */
         std::ifstream dl_istream;
@@ -330,7 +330,7 @@
 
     }
 
-    bool dl_radius_filter_uniform( std::ifstream & dl_istream, std::ofstream & dl_ostream, long long int dl_size, double dl_radius, double dl_factor ) {
+    bool dl_radius_filter_uniform( std::ifstream & dl_istream, std::ofstream & dl_ostream, int64_t const dl_size, double const dl_radius, double const dl_factor ) {
 
         /* distance variables */
         double dl_distance( 0.0 );
@@ -359,7 +359,7 @@
                 dl_istream.read( dl_chunk, dl_size );
 
                 /* reset minimum distance array */
-                for ( long long int dl_parse( 0 ), dl_limit( dl_size / 27 ); dl_parse < dl_limit; dl_parse ++ ) {
+                for ( int64_t dl_parse( 0 ), dl_limit( dl_size / 27 ); dl_parse < dl_limit; dl_parse ++ ) {
 
                     /* initialise distance */
                     dl_dists[dl_parse] = std::numeric_limits<double>::max();
@@ -367,7 +367,7 @@
                 }
 
                 /* search minimum distances */
-                for ( long long int dl_parse( 0 ), dl_limit( dl_size - 27 ); dl_parse < dl_limit; dl_parse += 27 ) {
+                for ( int64_t dl_parse( 0 ), dl_limit( dl_size - 27 ); dl_parse < dl_limit; dl_parse += 27 ) {
 
                     /* compute array mapping */
                     dl_pose1 = ( double * ) ( dl_chunk + dl_parse );
@@ -392,7 +392,7 @@
                 }
 
                 /* filtering loop */
-                for ( long long int dl_parse( 0 ), dl_limit( dl_size / 27 ); dl_parse < dl_limit; dl_parse ++ ) {
+                for ( int64_t dl_parse( 0 ), dl_limit( dl_size / 27 ); dl_parse < dl_limit; dl_parse ++ ) {
 
                     /* check filtering condition */
                     if ( sqrt( dl_dists[dl_parse] ) < ( dl_radius * dl_factor ) ) {
@@ -441,10 +441,10 @@
         double dl_mean( 0.0 );
 
         /* stream record variables */
-        long long int dl_size( 0 );
+        int64_t dl_size( 0 );
 
         /* mean count variables */
-        long long int dl_count( lc_read_signed( argc, argv, "--count", "-c", 32 ) );
+        int64_t dl_count( lc_read_signed( argc, argv, "--count", "-c", 32 ) );
 
         /* filtering factor variables */
         double dl_factor( lc_read_double( argc, argv, "--factor", "-f", 2.0 ) );
@@ -473,7 +473,7 @@
             if ( ( dl_mean = dl_radius_mean( dl_istream, dl_size, dl_count ) ) > 0.0 ) {
 
                 /* create hashing storage */
-                if ( dl_radius_hash( dl_istream, dl_tpath, dl_size, dl_mean, dl_factor ) == true ) {
+                if ( dl_radius_hash( dl_istream, dl_tpath, dl_size, dl_mean ) == true ) {
 
                     /* create output stream */
                     dl_ostream.open( lc_read_string( argc, argv, "--output", "-o" ), std::ios::out | std::ios::binary );
