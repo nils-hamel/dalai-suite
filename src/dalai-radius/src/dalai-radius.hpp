@@ -91,15 +91,47 @@
     header - function prototypes
  */
 
+    /*! \brief storage methods
+     *
+     *
+     */
+
     bool dl_radius_temp_create( char * const dl_tpath );
+
+    /*! \brief storage methods
+     *
+     *
+     */
 
     void dl_radius_temp_delete( char const * const dl_tpath );
 
+    /*! \brief hashing methods
+     *
+     *
+     */
+
+    bool dl_radius_hash( std::ifstream & dl_istream, char * dl_tpath, long long int dl_size, double dl_radius, double dl_factor );
+
+    /*! \brief filtering methods
+     *
+     *
+     */
+
     double dl_radius_mean( std::ifstream & dl_istream, long long int dl_size, long long int dl_count );
 
-    bool dl_radius_hash_create( std::ifstream & dl_istream, char * dl_tpath, long long int dl_size, double dl_radius, double dl_factor );
+    /*! \brief filtering methods
+     *
+     *
+     */
 
     bool dl_radius_filter( std::ofstream & dl_ostream, char const * const dl_path, double dl_radius, double dl_factor );
+
+    /*! \brief filtering methods
+     *
+     *
+     */
+
+    bool dl_radius_filter_uniform( std::ifstream & dl_istream, std::ofstream & dl_ostream, long long int dl_size, double dl_radius, double dl_factor );
 
     /*! \brief main function
      *
