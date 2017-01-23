@@ -27,7 +27,7 @@
     bool dl_radius_temp_create( char * const dl_tpath ) {
 
         /* compose temporary directory */
-        sprintf( dl_tpath, "%s", "/tmp/dalai-radius-XXXXXXXX" );
+        sprintf( dl_tpath, "%s", "/tmp/dalai-radius-XXXXXX" );
 
         /* create temporary directory */
         if ( mkdtemp( dl_tpath ) != nullptr ) {
@@ -53,6 +53,12 @@
 
     bool dl_radius_hash( std::ifstream & dl_istream, char const * const dl_tpath, int64_t const dl_size, double const dl_radius ) {
 
+        /* output stream variables */
+        std::ofstream dl_ostream;
+
+        /* hash files path variables */
+        char dl_path[256];
+
         /* chunk buffer variables */
         char * dl_chunk( nullptr );
 
@@ -61,15 +67,6 @@
 
         /* hashing variables */
         double dl_hash( dl_radius * 100.0 );
-
-        /* status variables */
-        int64_t dl_count( 0 );
-
-        /* hash files path variables */
-        std::stringstream dl_file;
-
-        /* output stream variables */
-        std::ofstream dl_ostream;
 
         /* returned value variables */
         bool dl_message( true );
@@ -94,23 +91,17 @@
             /* read input stream chunk */
             dl_istream.read( dl_chunk, DL_RADIUS_CHUNK * 27 );
 
-            /* retrieve read chunk size */
-            dl_count = dl_istream.gcount();
-
             /* parsing chunk elements */
-            for ( int64_t dl_parse( 0 ); dl_parse < dl_count; dl_parse += 27 ) {
+            for ( int64_t dl_parse( 0 ), dl_limit( dl_istream.gcount() ); dl_parse < dl_limit; dl_parse += 27 ) {
 
                 /* compute array mapping */
                 dl_pose = ( double * ) ( dl_chunk + dl_parse );
 
-                /* clear path string */
-                dl_file.str( "" );
-
                 /* compose path string */
-                dl_file << dl_tpath << "/" << ( long long int ) ( dl_pose[0] / dl_hash ) << "_" << ( long long int ) ( dl_pose[1] / dl_hash ) << "_" << ( long long int ) ( dl_pose[2] / dl_hash ) << ".uf3";
+                sprintf( dl_path, "%s/%" PRId64 "_%" PRId64 "_%" PRId64 ".uf3", dl_tpath, ( int64_t ) ( dl_pose[0] / dl_hash ), ( int64_t ) ( dl_pose[1] / dl_hash ), ( int64_t ) ( dl_pose[2] / dl_hash ) );
 
                 /* create output stream */
-                dl_ostream.open( dl_file.str().c_str(), std::ios::binary | std::ios::out | std::ios::app );
+                dl_ostream.open( dl_path, std::ios::binary | std::ios::out | std::ios::app );
 
                 /* check output stream */
                 if ( dl_ostream.is_open() == true ) {
@@ -122,11 +113,11 @@
                     dl_ostream.close();
 
                 /* push message */
-                } else { dl_message = false; dl_count = 0; }
+                } else { dl_message = false; }
 
             }
 
-        } while ( dl_count > 0 );
+        } while ( ( dl_istream.gcount() > 0 ) && ( dl_message == true ) );
 
         /* release buffer memory */
         delete [] dl_chunk;
@@ -170,7 +161,7 @@
                 if ( ( dl_chunk = new char[DL_RADIUS_CHUNK * 27] ) != nullptr ) {
 
                     /* initialise distances array */
-                    for ( long long int dl_parse( 0 ); dl_parse < dl_count; dl_parse ++ ) {
+                    for ( int64_t dl_parse( 0 ); dl_parse < dl_count; dl_parse ++ ) {
 
                         /* setting initial distance */
                         dl_dists[dl_parse] = std::numeric_limits<double>::max();
@@ -293,7 +284,7 @@
             return( false );
 
         }
-
+int64_t __dl_count( 0 );
         /* directory entities enumeration */
         while ( ( ( dl_entity = readdir( dl_directory ) ) != nullptr ) && ( dl_message == true ) ) {
 
@@ -308,7 +299,7 @@
 
                 /* check input stream */
                 if ( dl_istream.is_open() == true ) {
-
+__dl_count ++;
                     /* uniform filtering method */
                     dl_radius_filter_uniform( dl_istream, dl_ostream, dl_istream.tellg(), dl_radius, dl_factor );
 
@@ -318,13 +309,16 @@
                 /* push message */
                 } else { dl_message = false; }
 
+                /* remove processed file */
+                std::remove( dl_path );
+
             }
 
         }
 
         /* close directory */
         closedir( dl_directory );
-
+std::cerr << __dl_count << std::endl;
         /* send message */
         return( dl_message );
 
@@ -335,6 +329,12 @@
         /* distance variables */
         double dl_distance( 0.0 );
 
+        /* condition variables */
+        double dl_condition( dl_radius * dl_radius * dl_factor * dl_factor );
+
+        /* indexation variables */
+        int64_t dl_filter( 0 );
+
         /* buffer variables */
         char   * dl_chunk( nullptr );
         double * dl_dists( nullptr );
@@ -342,6 +342,14 @@
         /* array mapping variables */
         double * dl_pose1( nullptr );
         double * dl_pose2( nullptr );
+
+        /* check size consistency */
+        if ( dl_size <= 27 ) {
+
+            /* send message */
+            return( true );
+
+        }
 
         /* allocate and check buffer memory */
         if ( ( dl_chunk = new char[dl_size] ) != nullptr ) {
@@ -391,21 +399,35 @@
 
                 }
 
+                /* reset delayed indexation */
+                dl_filter = 0;
+
                 /* filtering loop */
                 for ( int64_t dl_parse( 0 ), dl_limit( dl_size / 27 ); dl_parse < dl_limit; dl_parse ++ ) {
 
                     /* check filtering condition */
-                    if ( sqrt( dl_dists[dl_parse] ) < ( dl_radius * dl_factor ) ) {
+                    if ( dl_dists[dl_parse] < dl_condition ) {
 
-                        /* export filtered element */
-                        dl_ostream.write( dl_chunk + ( dl_parse * 27 ), 27 );
+                        /* check delayed indexation */
+                        if ( dl_filter < dl_parse ) {
+
+                            /* index filtered element */
+                            std::memcpy( dl_chunk + ( dl_filter * 27 ), dl_chunk + ( dl_parse * 27 ), 27 );
+
+                        }
+
+                        /* update delayed indexation */
+                        dl_filter ++;
 
                     }
 
                 }
 
+                /* write filtered elements */
+                dl_ostream.write( dl_chunk, dl_filter * 27 );
+
                 /* release buffer memory */
-                delete  [] dl_dists;
+                delete [] dl_dists;
 
             /* send message */
             } else { return( false ); }

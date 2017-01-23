@@ -74,7 +74,7 @@
     header - preprocessor definitions
  */
 
-    # define DL_RADIUS_CHUNK ( 131072ll )
+    # define DL_RADIUS_CHUNK ( 2097152ll )
 
 /*
     header - preprocessor macros
