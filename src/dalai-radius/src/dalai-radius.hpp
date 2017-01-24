@@ -74,7 +74,12 @@
     header - preprocessor definitions
  */
 
-    # define DL_RADIUS_CHUNK ( 2097152ll )
+    /* define chunk size */
+    # define DL_RADIUS_CHUNK      ( 2097152ll )
+
+    /* define filtering mode */
+    # define DL_RADIUS_UNIFORM    ( 0 )
+    # define DL_RADIUS_ADAPTATIVE ( 1 )
 
 /*
     header - preprocessor macros
@@ -125,14 +130,14 @@
      *
      */
 
-    bool dl_radius_filter( std::ofstream & dl_ostream, char const * const dl_tpath, double const dl_radius, double const dl_factor );
+    bool dl_radius_filter( std::ofstream & dl_ostream, char const * const dl_tpath, double const dl_radius, double const dl_factor, int const dl_mode );
 
     /*! \brief filtering methods
      *
      *
      */
 
-    bool dl_radius_filter_uniform( std::ifstream & dl_istream, std::ofstream & dl_ostream, int64_t const dl_size, double const dl_radius, double const dl_factor );
+    bool dl_radius_filter_segment( std::ifstream & dl_istream, std::ofstream & dl_ostream, int64_t const dl_size, double const dl_radius, double const dl_factor, int const dl_mode );
 
     /*! \brief main function
      *

@@ -142,14 +142,14 @@
         double * dl_posec( nullptr );
         double * dl_posep( nullptr );
 
+        /* selection step variables */
+        int64_t dl_step( ( dl_size / 27 ) / dl_count );
+
         /* distance variables */
         double dl_radius( 0.0 );
 
         /* returned value variables */
         double dl_return( 0.0 );
-
-        /* selection step variables */
-        int64_t dl_step( ( dl_size / 27 ) / dl_count );
 
         /* allocate and check buffer memory */
         if ( ( dl_point = new char[dl_count * 27] ) != nullptr ) {
@@ -260,7 +260,7 @@
 
     }
 
-    bool dl_radius_filter( std::ofstream & dl_ostream, char const * const dl_tpath, double const dl_radius, double const dl_factor ) {
+    bool dl_radius_filter( std::ofstream & dl_ostream, char const * const dl_tpath, double const dl_radius, double const dl_factor, int const dl_mode ) {
 
         /* stream variables */
         std::ifstream dl_istream;
@@ -284,7 +284,7 @@
             return( false );
 
         }
-int64_t __dl_count( 0 );
+
         /* directory entities enumeration */
         while ( ( ( dl_entity = readdir( dl_directory ) ) != nullptr ) && ( dl_message == true ) ) {
 
@@ -299,9 +299,9 @@ int64_t __dl_count( 0 );
 
                 /* check input stream */
                 if ( dl_istream.is_open() == true ) {
-__dl_count ++;
+
                     /* uniform filtering method */
-                    dl_radius_filter_uniform( dl_istream, dl_ostream, dl_istream.tellg(), dl_radius, dl_factor );
+                    dl_radius_filter_segment( dl_istream, dl_ostream, dl_istream.tellg(), dl_radius, dl_factor, dl_mode );
 
                     /* delete input stream */
                     dl_istream.close();
@@ -318,13 +318,13 @@ __dl_count ++;
 
         /* close directory */
         closedir( dl_directory );
-std::cerr << __dl_count << std::endl;
+
         /* send message */
         return( dl_message );
 
     }
 
-    bool dl_radius_filter_uniform( std::ifstream & dl_istream, std::ofstream & dl_ostream, int64_t const dl_size, double const dl_radius, double const dl_factor ) {
+    bool dl_radius_filter_segment( std::ifstream & dl_istream, std::ofstream & dl_ostream, int64_t const dl_size, double const dl_radius, double const dl_factor, int const dl_mode ) {
 
         /* distance variables */
         double dl_distance( 0.0 );
@@ -399,6 +399,25 @@ std::cerr << __dl_count << std::endl;
 
                 }
 
+                /* check adaptative mode */
+                if ( dl_mode == DL_RADIUS_ADAPTATIVE ) {
+
+                    /* reset condition */
+                    dl_condition = 0.0;
+
+                    /* compute local mean distance */
+                    for ( int64_t dl_parse( 0 ), dl_limit( dl_size / 27 ); dl_parse < dl_limit; dl_parse ++ ) {
+
+                        /* accumulate distances */
+                        dl_condition += dl_dists[dl_parse];
+
+                    }
+
+                    /* compute mean distance and adaptative condition */
+                    dl_condition = ( dl_condition / ( dl_size / 27 ) ) * dl_factor * dl_factor;
+
+                }
+
                 /* reset delayed indexation */
                 dl_filter = 0;
 
@@ -459,6 +478,9 @@ std::cerr << __dl_count << std::endl;
         /* temporary path variables */
         char dl_tpath[256];
 
+        /* mode variables */
+        int dl_mode( DL_RADIUS_UNIFORM );
+
         /* mean distance variables */
         double dl_mean( 0.0 );
 
@@ -466,7 +488,7 @@ std::cerr << __dl_count << std::endl;
         int64_t dl_size( 0 );
 
         /* mean count variables */
-        int64_t dl_count( lc_read_signed( argc, argv, "--count", "-c", 32 ) );
+        int64_t dl_count( lc_read_signed( argc, argv, "--count", "-c", 64 ) );
 
         /* filtering factor variables */
         double dl_factor( lc_read_double( argc, argv, "--factor", "-f", 2.0 ) );
@@ -479,6 +501,19 @@ std::cerr << __dl_count << std::endl;
 
             /* send message */
             return( EXIT_FAILURE );
+
+        }
+
+        /* check filtering mode */
+        if ( lc_read_flag( argc, argv, "--uniform", "-u" ) == LC_TRUE ) {
+
+            /* assign mode */
+            dl_mode = DL_RADIUS_UNIFORM;
+
+        } else if ( lc_read_flag( argc, argv, "--adaptative", "-a" ) == LC_TRUE ) {
+
+            /* assign mode */
+            dl_mode = DL_RADIUS_ADAPTATIVE;
 
         }
 
@@ -504,7 +539,7 @@ std::cerr << __dl_count << std::endl;
                     if ( dl_ostream.is_open() == true ) {
 
                         /* filtering method */
-                        if ( dl_radius_filter( dl_ostream, dl_tpath, dl_mean, dl_factor ) != true ) {
+                        if ( dl_radius_filter( dl_ostream, dl_tpath, dl_mean, dl_factor, dl_mode ) != true ) {
 
                             /* display message */
                             std::cerr << "dalai-suite : error : unable to apply filter" << std::endl;
