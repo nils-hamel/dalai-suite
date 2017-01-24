@@ -1,5 +1,5 @@
 /*
- *  dalai-suite - radius
+ *  dalai-suite - filter
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
  *      Copyright (c) 2016-2017 EPFL CDH DHLAB
@@ -18,16 +18,16 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    # include "dalai-radius.hpp"
+    # include "dalai-filter.hpp"
 
 /*
     source - storage methods
  */
 
-    bool dl_radius_temporary( char * const dl_path, int dl_mode ) {
+    bool dl_filter_temporary( char * const dl_path, int dl_mode ) {
 
         /* check mode value */
-        if ( dl_mode == DL_RADIUS_CREATE ) {
+        if ( dl_mode == DL_FILTER_CREATE ) {
 
             /* compose temporary storage path */
             sprintf( dl_path, "%s", "/tmp/dalai-suite-XXXXXX" );
@@ -60,7 +60,7 @@
     source - hashing methods
  */
 
-    bool dl_radius_hash( std::ifstream & dl_istream, char const * const dl_opath, double const dl_mean ) {
+    bool dl_filter_hash( std::ifstream & dl_istream, char const * const dl_opath, double const dl_mean ) {
 
         /* stream path variables */
         char dl_fpath[8192];
@@ -89,7 +89,7 @@
         }
 
         /* allocate and check buffer memory */
-        if ( ( dl_chunk = new char[DL_RADIUS_CHUNK * 27] ) == nullptr ) {
+        if ( ( dl_chunk = new char[DL_FILTER_CHUNK * 27] ) == nullptr ) {
 
             /* send message */
             return( false );
@@ -106,7 +106,7 @@
         do {
 
             /* read input stream chunk */
-            dl_istream.read( dl_chunk, DL_RADIUS_CHUNK * 27 );
+            dl_istream.read( dl_chunk, DL_FILTER_CHUNK * 27 );
 
             /* parsing input stream chunk */
             for ( int64_t dl_parse( 0 ), dl_limit( dl_istream.gcount() ); dl_parse < dl_limit; dl_parse += 27 ) {
@@ -148,7 +148,7 @@
     source - filtering methods
  */
 
-    double dl_radius_stat( std::ifstream & dl_istream, int64_t const dl_size, int64_t const dl_count ) {
+    double dl_filter_stat( std::ifstream & dl_istream, int64_t const dl_size, int64_t const dl_count ) {
 
         /* distance variables */
         double dl_distance( 0.0 );
@@ -171,7 +171,7 @@
         } else {
 
             /* allocate and check buffer memory */
-            if ( ( dl_chunks = new char[DL_RADIUS_CHUNK * 27] ) == nullptr ) {
+            if ( ( dl_chunks = new char[DL_FILTER_CHUNK * 27] ) == nullptr ) {
 
                 /* release buffers memory */
                 delete [] dl_sample;
@@ -232,7 +232,7 @@
         do {
 
             /* read input stream chunk */
-            dl_istream.read( dl_chunks, DL_RADIUS_CHUNK * 27 );
+            dl_istream.read( dl_chunks, DL_FILTER_CHUNK * 27 );
 
             /* parsing input stream chunk */
             for ( int64_t dl_parse( 0 ), dl_limit( dl_istream.gcount() ); dl_parse < dl_limit; dl_parse += 27 ) {
@@ -287,7 +287,7 @@
 
     }
 
-    bool dl_radius_filter( std::ofstream & dl_ostream, char const * const dl_opath, double const dl_mean, double const dl_factor, int const dl_mode ) {
+    bool dl_filter( std::ofstream & dl_ostream, char const * const dl_opath, double const dl_mean, double const dl_factor, int const dl_mode ) {
 
         /* path variables */
         char dl_fpath[256];
@@ -328,7 +328,7 @@
             if ( dl_istream.is_open() == true ) {
 
                 /* apply filtering method */
-                dl_radius_filter_threshold( dl_istream, dl_ostream, dl_istream.tellg(), dl_mean, dl_factor, dl_mode );
+                dl_filter_threshold( dl_istream, dl_ostream, dl_istream.tellg(), dl_mean, dl_factor, dl_mode );
 
                 /* delete stream */
                 dl_istream.close();
@@ -349,7 +349,7 @@
 
     }
 
-    bool dl_radius_filter_threshold( std::ifstream & dl_istream, std::ofstream & dl_ostream, int64_t const dl_size, double const dl_mean, double const dl_factor, int const dl_mode ) {
+    bool dl_filter_threshold( std::ifstream & dl_istream, std::ofstream & dl_ostream, int64_t const dl_size, double const dl_mean, double const dl_factor, int const dl_mode ) {
 
         /* buffer variables */
         char   * dl_chunk( nullptr );
@@ -440,7 +440,7 @@
         }
 
         /* analyse mode value */
-        if ( dl_mode == DL_RADIUS_ADAPTATIVE ) {
+        if ( dl_mode == DL_FILTER_ADAPTATIVE ) {
 
             /* reset condition value */
             dl_condition = 0.0;
@@ -523,7 +523,7 @@
         int dl_return( EXIT_SUCCESS );
 
         /* create and check temporary storage */
-        if ( dl_radius_temporary( dl_tpath, DL_RADIUS_CREATE ) != true ) {
+        if ( dl_filter_temporary( dl_tpath, DL_FILTER_CREATE ) != true ) {
 
             /* display message */
             std::cerr << "dalai-suite : error : unable to create temporary storage" << std::endl;
@@ -540,10 +540,10 @@
         if ( dl_istream.is_open() == true ) {
 
             /* compute and check minimums mean */
-            if ( ( dl_mean = dl_radius_stat( dl_istream, dl_istream.tellg(), dl_count ) ) > 0.0 ) {
+            if ( ( dl_mean = dl_filter_stat( dl_istream, dl_istream.tellg(), dl_count ) ) > 0.0 ) {
 
                 /* create hashed storage */
-                if ( dl_radius_hash( dl_istream, dl_tpath, dl_mean ) == true ) {
+                if ( dl_filter_hash( dl_istream, dl_tpath, dl_mean ) == true ) {
 
                     /* create output stream */
                     dl_ostream.open( lc_read_string( argc, argv, "--output", "-o" ), std::ios::out | std::ios::binary );
@@ -555,7 +555,7 @@
                         if ( lc_read_flag( argc, argv, "--uniform", "-u" ) == LC_TRUE ) {
 
                             /* filtering method */
-                            if ( dl_radius_filter( dl_ostream, dl_tpath, dl_mean, dl_factor, DL_RADIUS_UNIFORM ) != true ) {
+                            if ( dl_filter( dl_ostream, dl_tpath, dl_mean, dl_factor, DL_FILTER_UNIFORM ) != true ) {
 
                                 /* display message */
                                 std::cerr << "dalai-suite : error : unable to apply filter" << std::endl;
@@ -569,7 +569,7 @@
                         if ( lc_read_flag( argc, argv, "--adaptative", "-a" ) == LC_TRUE ) {
 
                             /* filtering method */
-                            if ( dl_radius_filter( dl_ostream, dl_tpath, dl_mean, dl_factor, DL_RADIUS_ADAPTATIVE ) != true ) {
+                            if ( dl_filter( dl_ostream, dl_tpath, dl_mean, dl_factor, DL_FILTER_ADAPTATIVE ) != true ) {
 
                                 /* display message */
                                 std::cerr << "dalai-suite : error : unable to apply filter" << std::endl;
@@ -636,7 +636,7 @@
         }
 
         /* delete temporary storage */
-        dl_radius_temporary( dl_tpath, DL_RADIUS_DELETE );
+        dl_filter_temporary( dl_tpath, DL_FILTER_DELETE );
 
         /* send message */
         return( dl_return );

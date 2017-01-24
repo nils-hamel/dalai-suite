@@ -5,7 +5,7 @@
 #   make - Configuration
 #
 
-    CONFIG_NAME:=dalai-radius
+    CONFIG_NAME:=dalai-filter
     CONFIG_CODE:=cpp
     CONFIG_TYPE:=suite
 

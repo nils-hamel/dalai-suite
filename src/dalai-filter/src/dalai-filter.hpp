@@ -1,5 +1,5 @@
 /*
- *  dalai-suite - radius
+ *  dalai-suite - filter
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
  *      Copyright (c) 2016-2017 EPFL CDH DHLAB
@@ -18,10 +18,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   dalai-radius.hpp
+    /*! \file   dalai-filter.hpp
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  dalai-suite - radius
+     *  dalai-suite - filter
      */
 
     /*! \mainpage dalai-suite
@@ -47,8 +47,8 @@
     header - inclusion guard
  */
 
-    # ifndef __DL_RADIUS__
-    # define __DL_RADIUS__
+    # ifndef __DL_FILTER__
+    # define __DL_FILTER__
 
 /*
     header - internal includes
@@ -75,15 +75,15 @@
  */
 
     /* define chunk size */
-    # define DL_RADIUS_CHUNK      ( 2097152ll )
+    # define DL_FILTER_CHUNK      ( 2097152ll )
 
     /* define filtering mode */
-    # define DL_RADIUS_UNIFORM    ( 0 )
-    # define DL_RADIUS_ADAPTATIVE ( 1 )
+    # define DL_FILTER_UNIFORM    ( 0 )
+    # define DL_FILTER_ADAPTATIVE ( 1 )
 
     /* define temporary storage mode */
-    # define DL_RADIUS_CREATE     ( 0 )
-    # define DL_RADIUS_DELETE     ( 1 )
+    # define DL_FILTER_CREATE     ( 0 )
+    # define DL_FILTER_DELETE     ( 1 )
 
 /*
     header - preprocessor macros
@@ -106,35 +106,35 @@
      *
      */
 
-    bool dl_radius_temporary( char * const dl_path, int dl_mode );
+    bool dl_filter_temporary( char * const dl_path, int dl_mode );
 
     /*! \brief hashing methods
      *
      *
      */
 
-    bool dl_radius_hash( std::ifstream & dl_istream, char const * const dl_opath, double const dl_mean );
+    bool dl_filter_hash( std::ifstream & dl_istream, char const * const dl_opath, double const dl_mean );
 
     /*! \brief filtering methods
      *
      *
      */
 
-    double dl_radius_stat( std::ifstream & dl_istream, int64_t const dl_size, int64_t const dl_count );
+    double dl_filter_stat( std::ifstream & dl_istream, int64_t const dl_size, int64_t const dl_count );
 
     /*! \brief filtering methods
      *
      *
      */
 
-    bool dl_radius_filter( std::ofstream & dl_ostream, char const * const dl_opath, double const dl_mean, double const dl_factor, int const dl_mode );
+    bool dl_filter( std::ofstream & dl_ostream, char const * const dl_opath, double const dl_mean, double const dl_factor, int const dl_mode );
 
     /*! \brief filtering methods
      *
      *
      */
 
-    bool dl_radius_filter_threshold( std::ifstream & dl_istream, std::ofstream & dl_ostream, int64_t const dl_size, double const dl_mean, double const dl_factor, int const dl_mode );
+    bool dl_filter_threshold( std::ifstream & dl_istream, std::ofstream & dl_ostream, int64_t const dl_size, double const dl_mean, double const dl_factor, int const dl_mode );
 
     /*! \brief main function
      *
