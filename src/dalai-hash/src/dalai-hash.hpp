@@ -90,22 +90,75 @@
     header - function prototypes
  */
 
-    /*! \brief statistical methods
+    /*! \brief statistical methodss
      *
+     *  This function computes and returns the mean value of the point cloud
+     *  elements distance to their closest element. To achieve this computation
+     *  in a reasonable amount of time, the following strategy is considered.
      *
+     *  The function starts by sampling \b dl_count elements in the point cloud
+     *  provided through the stream descriptor. For each sampled element, it
+     *  searches the distance to its closest element. It finally computes the
+     *  mean value of the found minimal distances on the sampled set.
+     *
+     *  The approximation of the minimums mean value gets better as \b dl_count
+     *  increases. Nevertheless, a value of 32 already allows to compute a very
+     *  good approximation of the minimums mean value.
+     *
+     *  \param  dl_istream Input stream descriptor
+     *  \param  dl_size    Size, in bytes, of the input stream
+     *  \param  dl_count   Number of sampled elements
+     *
+     *  \return Returns mean minimum distance
      */
 
     double dl_hash_stat( std::ifstream & dl_istream, int64_t const dl_size, int64_t const dl_count );
 
     /*! \brief hashing methods
      *
+     *  This function imports the point cloud provided by the input stream and
+     *  hashes it in the output directory. The hashing consists in cutting the
+     *  provided point cloud into many smaller point clouds.
      *
+     *  The function reads the input stream elements one by one and uses the
+     *  provided hashing parameter and the minimums mean value to determine in
+     *  which sub point cloud each element has to be written. The hash function
+     *  is driven by the following values computation :
+     *
+     *      h_i = ( int ) floor( p_i / ( dl_param * dl_mean ) )
+     *
+     *  with i = x,y,z. The three computed h_i values are then used to composed
+     *  the sub point clouds file name. All elements sharing the same h_i values
+     *  are then written in the same sub-point-cloud.
+     *
+     *  \param  dl_istream Input stream descriptor
+     *  \param  dl_opath   Output path
+     *  \param  dl_param   Hashing parameter
+     *  \param  dl_mean    Minimums mean value
+     *
+     *  \return Returns \b true on success, \b false otherwise
      */
 
     bool dl_hash( std::ifstream & dl_istream, char const * const dl_opath, double const dl_param, double const dl_mean );
 
     /*! \brief main function
      *
+     *  The main function hashes the provided point cloud into a set of smaller
+     *  sub point clouds stored in the output directory :
+     *
+     *      ./dalai-hash --uf3/-i    [input uf3 file]
+     *                   --output/-o [output path directory]
+     *                   --count/-c  [sampled element count]
+     *                   --param/-p  [hashing parameter]
+     *
+     *  The functions starts by gathering the parameters and opens the provided
+     *  input file. It computes the point cloud minimum distances mean value
+     *  and hashes the point cloud using the \b dl_hash() function. The hashed
+     *  sub point clouds are written in the provided output directory.
+     *
+     *  The count value gives the amount of points to consider to compute the
+     *  minimums mean value. The hashing parameter is used with the mean value
+     *  to determine the size of the hashed point clouds.
      *
      *  \param argc Standard parameter
      *  \param argv Standard parameter
