@@ -81,6 +81,10 @@
     # define DL_RADIUS_UNIFORM    ( 0 )
     # define DL_RADIUS_ADAPTATIVE ( 1 )
 
+    /* define temporary storage mode */
+    # define DL_RADIUS_CREATE     ( 0 )
+    # define DL_RADIUS_DELETE     ( 1 )
+
 /*
     header - preprocessor macros
  */
@@ -102,42 +106,35 @@
      *
      */
 
-    bool dl_radius_temp_create( char * const dl_tpath );
-
-    /*! \brief storage methods
-     *
-     *
-     */
-
-    void dl_radius_temp_delete( char const * const dl_tpath );
+    bool dl_radius_temporary( char * const dl_path, int dl_mode );
 
     /*! \brief hashing methods
      *
      *
      */
 
-    bool dl_radius_hash( std::ifstream & dl_istream, char const * const dl_tpath, int64_t const dl_size, double const dl_radius );
+    bool dl_radius_hash( std::ifstream & dl_istream, char const * const dl_opath, double const dl_mean );
 
     /*! \brief filtering methods
      *
      *
      */
 
-    double dl_radius_mean( std::ifstream & dl_istream, int64_t const dl_size, int64_t const dl_count );
+    double dl_radius_stat( std::ifstream & dl_istream, int64_t const dl_size, int64_t const dl_count );
 
     /*! \brief filtering methods
      *
      *
      */
 
-    bool dl_radius_filter( std::ofstream & dl_ostream, char const * const dl_tpath, double const dl_radius, double const dl_factor, int const dl_mode );
+    bool dl_radius_filter( std::ofstream & dl_ostream, char const * const dl_opath, double const dl_mean, double const dl_factor, int const dl_mode );
 
     /*! \brief filtering methods
      *
      *
      */
 
-    bool dl_radius_filter_segment( std::ifstream & dl_istream, std::ofstream & dl_ostream, int64_t const dl_size, double const dl_radius, double const dl_factor, int const dl_mode );
+    bool dl_radius_filter_threshold( std::ifstream & dl_istream, std::ofstream & dl_ostream, int64_t const dl_size, double const dl_mean, double const dl_factor, int const dl_mode );
 
     /*! \brief main function
      *

@@ -24,26 +24,35 @@
     source - storage methods
  */
 
-    bool dl_radius_temp_create( char * const dl_tpath ) {
+    bool dl_radius_temporary( char * const dl_path, int dl_mode ) {
 
-        /* compose temporary directory */
-        sprintf( dl_tpath, "%s", "/tmp/dalai-radius-XXXXXX" );
+        /* check mode value */
+        if ( dl_mode == DL_RADIUS_CREATE ) {
 
-        /* create temporary directory */
-        if ( mkdtemp( dl_tpath ) != nullptr ) {
+            /* compose temporary storage path */
+            sprintf( dl_path, "%s", "/tmp/dalai-suite-XXXXXX" );
+
+            /* create temporary storage */
+            if ( mkdtemp( dl_path ) != nullptr ) {
+
+                /* send message */
+                return( true );
 
             /* send message */
-            return( true );
+            } else { return( false ); }
 
-        /* send message */
-        } else { return( false ); }
+        } else {
 
-    }
+            /* delete temporary storage */
+            if ( rmdir( dl_path ) == 0 ) {
 
-    void dl_radius_temp_delete( char const * const dl_tpath ) {
+                /* send message */
+                return( true );
 
-        /* delete temporary directory */
-        rmdir( dl_tpath );
+            /* send message */
+            } else { return( false ); }
+
+        }
 
     }
 
@@ -51,25 +60,33 @@
     source - hashing methods
  */
 
-    bool dl_radius_hash( std::ifstream & dl_istream, char const * const dl_tpath, int64_t const dl_size, double const dl_radius ) {
+    bool dl_radius_hash( std::ifstream & dl_istream, char const * const dl_opath, double const dl_mean ) {
 
-        /* output stream variables */
+        /* stream path variables */
+        char dl_fpath[8192];
+
+        /* stream variables */
         std::ofstream dl_ostream;
 
-        /* hash files path variables */
-        char dl_path[256];
-
-        /* chunk buffer variables */
+        /* buffer variables */
         char * dl_chunk( nullptr );
 
         /* array mapping variables */
         double * dl_pose( nullptr );
 
-        /* hashing variables */
-        double dl_hash( dl_radius * 100.0 );
+        /* hashing parameter variables */
+        double dl_hash( dl_mean * 100 );
 
         /* returned value variables */
-        bool dl_message( true );
+        bool dl_return( true );
+
+        /* check consistency */
+        if ( dl_opath == nullptr ) {
+
+            /* send message */
+            return( false );
+
+        }
 
         /* allocate and check buffer memory */
         if ( ( dl_chunk = new char[DL_RADIUS_CHUNK * 27] ) == nullptr ) {
@@ -85,23 +102,23 @@
         /* reset input stream */
         dl_istream.seekg( 0 );
 
-        /* input stream hashing */
+        /* parsing input stream chunks */
         do {
 
             /* read input stream chunk */
             dl_istream.read( dl_chunk, DL_RADIUS_CHUNK * 27 );
 
-            /* parsing chunk elements */
+            /* parsing input stream chunk */
             for ( int64_t dl_parse( 0 ), dl_limit( dl_istream.gcount() ); dl_parse < dl_limit; dl_parse += 27 ) {
 
-                /* compute array mapping */
+                /* compute and assign array mapping */
                 dl_pose = ( double * ) ( dl_chunk + dl_parse );
 
-                /* compose path string */
-                sprintf( dl_path, "%s/%" PRId64 "_%" PRId64 "_%" PRId64 ".uf3", dl_tpath, ( int64_t ) ( dl_pose[0] / dl_hash ), ( int64_t ) ( dl_pose[1] / dl_hash ), ( int64_t ) ( dl_pose[2] / dl_hash ) );
+                /* compute stream path */
+                sprintf( dl_fpath, "%s/%+" PRId64 "_%+" PRId64 "_%+" PRId64 ".uf3", dl_opath, ( int64_t ) floor( dl_pose[0] / dl_hash ), ( int64_t ) floor( dl_pose[1] / dl_hash ), ( int64_t ) floor( dl_pose[2] / dl_hash ) );
 
                 /* create output stream */
-                dl_ostream.open( dl_path, std::ios::binary | std::ios::out | std::ios::app );
+                dl_ostream.open( dl_fpath, std::ios::app | std::ios::out | std::ios::binary );
 
                 /* check output stream */
                 if ( dl_ostream.is_open() == true ) {
@@ -109,21 +126,21 @@
                     /* export chunk element */
                     dl_ostream.write( dl_chunk + dl_parse, 27 );
 
-                    /* close output stream */
+                    /* delete output stream */
                     dl_ostream.close();
 
                 /* push message */
-                } else { dl_message = false; }
+                } else { dl_return = false; }
 
             }
 
-        } while ( ( dl_istream.gcount() > 0 ) && ( dl_message == true ) );
+        } while ( ( dl_istream.gcount() > 0 ) && ( dl_return == true ) );
 
         /* release buffer memory */
         delete [] dl_chunk;
 
         /* send message */
-        return( dl_message );
+        return( dl_return );
 
     }
 
@@ -131,142 +148,152 @@
     source - filtering methods
  */
 
-    double dl_radius_mean( std::ifstream & dl_istream, int64_t const dl_size, int64_t const dl_count ) {
-
-        /* array variables */
-        char   * dl_point( nullptr );
-        char   * dl_chunk( nullptr );
-        double * dl_dists( nullptr );
-
-        /* array mapping variables */
-        double * dl_posec( nullptr );
-        double * dl_posep( nullptr );
-
-        /* selection step variables */
-        int64_t dl_step( ( dl_size / 27 ) / dl_count );
+    double dl_radius_stat( std::ifstream & dl_istream, int64_t const dl_size, int64_t const dl_count ) {
 
         /* distance variables */
-        double dl_radius( 0.0 );
+        double dl_distance( 0.0 );
 
-        /* returned value variables */
-        double dl_return( 0.0 );
+        /* buffer variables */
+        char   * dl_sample( nullptr );
+        char   * dl_chunks( nullptr );
+        double * dl_values( nullptr );
+
+        /* array mapping variables */
+        double * dl_posei( nullptr );
+        double * dl_poses( nullptr );
 
         /* allocate and check buffer memory */
-        if ( ( dl_point = new char[dl_count * 27] ) != nullptr ) {
-
-            /* allocate and check buffer memory */
-            if ( ( dl_dists = new double[dl_count] ) != nullptr ) {
-
-                /* allocate and check buffer memory */
-                if ( ( dl_chunk = new char[DL_RADIUS_CHUNK * 27] ) != nullptr ) {
-
-                    /* initialise distances array */
-                    for ( int64_t dl_parse( 0 ); dl_parse < dl_count; dl_parse ++ ) {
-
-                        /* setting initial distance */
-                        dl_dists[dl_parse] = std::numeric_limits<double>::max();
-
-                    }
-
-                    /* clear stream state */
-                    dl_istream.clear();
-
-                    /* reset input stream position */
-                    dl_istream.seekg( 0 );
-
-                    /* import selected points */
-                    for ( int64_t dl_parse( 0 ), dl_limit( dl_count * 27 ); dl_parse < dl_limit; dl_parse += 27 ) {
-
-                        /* stream position */
-                        dl_istream.seekg( dl_parse * dl_step );
-
-                        /* read stream record */
-                        dl_istream.read( dl_point + dl_parse, 27 );
-
-                    }
-
-                    /* clear stream state */
-                    dl_istream.clear();
-
-                    /* reset input stream position */
-                    dl_istream.seekg( 0 );
-
-                    /* parsing stream chunks */
-                    do {
-
-                        /* read stream chunk */
-                        dl_istream.read( dl_chunk, DL_RADIUS_CHUNK * 27 );
-
-                        /* parsing chunk records */
-                        for ( int64_t dl_parse( 0 ), dl_limit( dl_istream.gcount() ) ; dl_parse < dl_limit ; dl_parse += 27 ) {
-
-                            /* create array mapping */
-                            dl_posec = ( double * ) ( dl_chunk + dl_parse );
-
-                            /* parsing seleced points */
-                            for ( int64_t dl_index( 0 ); dl_index < dl_count; dl_index ++ ) {
-
-                                /* create array mapping */
-                                dl_posep = ( double * ) ( dl_point + dl_index * 27 );
-
-                                /* compute and check distance */
-                                if ( ( dl_radius =
-
-                                    ( dl_posec[0] - dl_posep[0] ) * ( dl_posec[0] - dl_posep[0] ) +
-                                    ( dl_posec[1] - dl_posep[1] ) * ( dl_posec[1] - dl_posep[1] ) +
-                                    ( dl_posec[2] - dl_posep[2] ) * ( dl_posec[2] - dl_posep[2] )
-
-                                ) > 0.0 ) {
-
-                                    /* search for minimum distance - assignation of minimum */
-                                    if ( dl_radius < dl_dists[dl_index] ) dl_dists[dl_index] = dl_radius;
-
-                                }
-
-                            }
-
-                        }
-
-                    } while ( dl_istream.gcount() > 0 );
-
-                    /* compute mean-minimum distance */
-                    for ( int64_t dl_parse( 0 ); dl_parse < dl_count; dl_parse ++ ) {
-
-                        /* accumulate distances */
-                        dl_return += sqrt( dl_dists[dl_parse] );
-
-                    }
-
-                    /* release buffer memory */
-                    delete [] dl_chunk;
-
-                /* send message */
-                } else { return( 0.0 ); }
-
-                /* release buffer memory */
-                delete [] dl_dists;
+        if ( ( dl_sample = new char[dl_count * 27] ) == nullptr ) {
 
             /* send message */
-            } else { return( 0.0 ); }
+            return( 0.0 );
 
-            /* release buffer memory */
-            delete [] dl_point;
+        } else {
 
-        /* send message */
-        } else { return( 0.0 ); }
+            /* allocate and check buffer memory */
+            if ( ( dl_chunks = new char[DL_RADIUS_CHUNK * 27] ) == nullptr ) {
 
-        /* return computed mean radius */
-        return( dl_return / dl_count );
+                /* release buffers memory */
+                delete [] dl_sample;
+
+                /* send message */
+                return( 0.0 );
+
+            } else {
+
+                /* allocate and check buffer memory */
+                if ( ( dl_values = new double[dl_count] ) == nullptr ) {
+
+                    /* release buffers memory */
+                    delete [] dl_sample;
+                    delete [] dl_chunks;
+
+                    /* send message */
+                    return( 0.0 );
+
+                }
+
+            }
+
+        }
+
+        /* initialise values array */
+        for ( int64_t dl_parse( 0 ); dl_parse < dl_count; dl_parse ++ ) {
+
+            /* assign initial value */
+            dl_values[dl_parse] = std::numeric_limits<double>::max();
+
+        }
+
+        /* clear input stream */
+        dl_istream.clear();
+
+        /* reset input stream */
+        dl_istream.seekg( 0 );
+
+        /* create sample array */
+        for ( int64_t dl_parse = 0; dl_parse < dl_count; dl_parse ++ ) {
+
+            /* assign stream position */
+            dl_istream.seekg( dl_parse * ( ( ( dl_size / 27 ) / dl_count ) * 27 ) );
+
+            /* read sample values */
+            dl_istream.read( dl_sample + ( dl_parse * 27 ), 27 );
+
+        }
+
+        /* clear input stream */
+        dl_istream.clear();
+
+        /* reset input stream */
+        dl_istream.seekg( 0 );
+
+        /* reading input stream chunks */
+        do {
+
+            /* read input stream chunk */
+            dl_istream.read( dl_chunks, DL_RADIUS_CHUNK * 27 );
+
+            /* parsing input stream chunk */
+            for ( int64_t dl_parse( 0 ), dl_limit( dl_istream.gcount() ); dl_parse < dl_limit; dl_parse += 27 ) {
+
+                /* compute and assign array mapping */
+                dl_posei = ( double * ) ( dl_chunks + dl_parse );
+
+                /* parsing sample array */
+                for ( int64_t dl_index( 0 ); dl_index < dl_count; dl_index ++ ) {
+
+                    /* compute and assign array mapping */
+                    dl_poses = ( double * ) ( dl_sample + ( dl_index * 27 ) );
+
+                    /* compute and check distance */
+                    if ( ( dl_distance =
+
+                        ( dl_posei[0] - dl_poses[0] ) * ( dl_posei[0] - dl_poses[0] ) +
+                        ( dl_posei[1] - dl_poses[1] ) * ( dl_posei[1] - dl_poses[1] ) +
+                        ( dl_posei[2] - dl_poses[2] ) * ( dl_posei[2] - dl_poses[2] )
+
+                    ) < dl_values[dl_index] ) {
+
+                        /* avoid identical point */
+                        if ( dl_distance > 0.0 ) dl_values[dl_index] = dl_distance;
+
+                    }
+
+                }
+
+            }
+
+        } while ( dl_istream.gcount() > 0 );
+
+        /* prepare statistical mean computation */
+        dl_distance = 0.0;
+
+        /* compute statistical mean value */
+        for ( int64_t dl_parse( 0 ); dl_parse < dl_count; dl_parse ++ ) {
+
+            /* accumulate distances */
+            dl_distance += sqrt( dl_values[dl_parse] );
+
+        }
+
+        /* release buffer memory */
+        delete [] dl_sample;
+        delete [] dl_chunks;
+        delete [] dl_values;
+
+        /* send message - mean minimum value */
+        return( dl_distance / dl_count );
 
     }
 
-    bool dl_radius_filter( std::ofstream & dl_ostream, char const * const dl_tpath, double const dl_radius, double const dl_factor, int const dl_mode ) {
+    bool dl_radius_filter( std::ofstream & dl_ostream, char const * const dl_opath, double const dl_mean, double const dl_factor, int const dl_mode ) {
+
+        /* path variables */
+        char dl_fpath[256];
 
         /* stream variables */
         std::ifstream dl_istream;
-
-        /* hashed chunks path variables */
-        char dl_path[256];
 
         /* directory structure variables */
         DIR * dl_directory( nullptr );
@@ -275,10 +302,10 @@
         struct dirent * dl_entity( nullptr );
 
         /* returned value variables */
-        bool dl_message( true );
+        bool dl_return( true );
 
         /* open and check directory */
-        if ( ( dl_directory = opendir( dl_tpath ) ) == nullptr ) {
+        if ( ( dl_directory = opendir( dl_opath ) ) == nullptr ) {
 
             /* send message */
             return( false );
@@ -286,33 +313,31 @@
         }
 
         /* directory entities enumeration */
-        while ( ( ( dl_entity = readdir( dl_directory ) ) != nullptr ) && ( dl_message == true ) ) {
+        while ( ( ( dl_entity = readdir( dl_directory ) ) != nullptr ) && ( dl_return == true ) ) {
 
             /* directory entity filtering */
-            if ( dl_entity->d_type == DT_REG ) {
+            if ( dl_entity->d_type != DT_REG ) continue;
 
-                /* compose input stream path */
-                sprintf( dl_path, "%s/%s", dl_tpath, dl_entity->d_name );
+            /* compose stream path */
+            sprintf( dl_fpath, "%s/%s", dl_opath, dl_entity->d_name );
 
-                /* create input stream */
-                dl_istream.open( dl_path, std::ios::in | std::ios::ate | std::ios::binary );
+            /* create stream */
+            dl_istream.open( dl_fpath, std::ios::in | std::ios::ate | std::ios::binary );
 
-                /* check input stream */
-                if ( dl_istream.is_open() == true ) {
+            /* check stream */
+            if ( dl_istream.is_open() == true ) {
 
-                    /* uniform filtering method */
-                    dl_radius_filter_segment( dl_istream, dl_ostream, dl_istream.tellg(), dl_radius, dl_factor, dl_mode );
+                /* apply filtering method */
+                dl_radius_filter_threshold( dl_istream, dl_ostream, dl_istream.tellg(), dl_mean, dl_factor, dl_mode );
 
-                    /* delete input stream */
-                    dl_istream.close();
+                /* delete stream */
+                dl_istream.close();
 
-                /* push message */
-                } else { dl_message = false; }
+                /* delete stream file */
+                std::remove( dl_fpath );
 
-                /* remove processed file */
-                std::remove( dl_path );
-
-            }
+            /* push message */
+            } else { dl_return = false; }
 
         }
 
@@ -320,20 +345,11 @@
         closedir( dl_directory );
 
         /* send message */
-        return( dl_message );
+        return( dl_return );
 
     }
 
-    bool dl_radius_filter_segment( std::ifstream & dl_istream, std::ofstream & dl_ostream, int64_t const dl_size, double const dl_radius, double const dl_factor, int const dl_mode ) {
-
-        /* distance variables */
-        double dl_distance( 0.0 );
-
-        /* condition variables */
-        double dl_condition( dl_radius * dl_radius * dl_factor * dl_factor );
-
-        /* indexation variables */
-        int64_t dl_filter( 0 );
+    bool dl_radius_filter_threshold( std::ifstream & dl_istream, std::ofstream & dl_ostream, int64_t const dl_size, double const dl_mean, double const dl_factor, int const dl_mode ) {
 
         /* buffer variables */
         char   * dl_chunk( nullptr );
@@ -342,6 +358,15 @@
         /* array mapping variables */
         double * dl_pose1( nullptr );
         double * dl_pose2( nullptr );
+
+        /* indexation variables */
+        int64_t dl_delay( 0 );
+
+        /* distance variables */
+        double dl_distance( 0.0 );
+
+        /* condition variables */
+        double dl_condition( dl_mean * dl_mean * dl_factor * dl_factor );
 
         /* check size consistency */
         if ( dl_size <= 27 ) {
@@ -352,110 +377,120 @@
         }
 
         /* allocate and check buffer memory */
-        if ( ( dl_chunk = new char[dl_size] ) != nullptr ) {
-
-            /* allocate and check buffer memory */
-            if ( ( dl_dists = new double[dl_size/27] ) != nullptr ) {
-
-                /* clear input stream */
-                dl_istream.clear();
-
-                /* reset input stream */
-                dl_istream.seekg( 0 );
-
-                /* read hashed chunk content */
-                dl_istream.read( dl_chunk, dl_size );
-
-                /* reset minimum distance array */
-                for ( int64_t dl_parse( 0 ), dl_limit( dl_size / 27 ); dl_parse < dl_limit; dl_parse ++ ) {
-
-                    /* initialise distance */
-                    dl_dists[dl_parse] = std::numeric_limits<double>::max();
-
-                }
-
-                /* search minimum distances */
-                for ( int64_t dl_parse( 0 ), dl_limit( dl_size - 27 ); dl_parse < dl_limit; dl_parse += 27 ) {
-
-                    /* compute array mapping */
-                    dl_pose1 = ( double * ) ( dl_chunk + dl_parse );
-
-                    /* search minimum distances */
-                    for ( long long int dl_index( dl_parse + 27 ); dl_index < dl_size; dl_index += 27 ) {
-
-                        /* compose array mapping */
-                        dl_pose2 = ( double * ) ( dl_chunk + dl_index );
-
-                        /* compute distance */
-                        dl_distance = ( dl_pose1[0] - dl_pose2[0] ) * ( dl_pose1[0] - dl_pose2[0] ) +
-                                      ( dl_pose1[1] - dl_pose2[1] ) * ( dl_pose1[1] - dl_pose2[1] ) +
-                                      ( dl_pose1[2] - dl_pose2[2] ) * ( dl_pose1[2] - dl_pose2[2] );
-
-                        /* check and assign distance */
-                        if ( dl_distance < dl_dists[dl_parse/27] ) dl_dists[dl_parse/27] = dl_distance;
-                        if ( dl_distance < dl_dists[dl_index/27] ) dl_dists[dl_index/27] = dl_distance;
-
-                    }
-
-                }
-
-                /* check adaptative mode */
-                if ( dl_mode == DL_RADIUS_ADAPTATIVE ) {
-
-                    /* reset condition */
-                    dl_condition = 0.0;
-
-                    /* compute local mean distance */
-                    for ( int64_t dl_parse( 0 ), dl_limit( dl_size / 27 ); dl_parse < dl_limit; dl_parse ++ ) {
-
-                        /* accumulate distances */
-                        dl_condition += dl_dists[dl_parse];
-
-                    }
-
-                    /* compute mean distance and adaptative condition */
-                    dl_condition = ( dl_condition / ( dl_size / 27 ) ) * dl_factor * dl_factor;
-
-                }
-
-                /* reset delayed indexation */
-                dl_filter = 0;
-
-                /* filtering loop */
-                for ( int64_t dl_parse( 0 ), dl_limit( dl_size / 27 ); dl_parse < dl_limit; dl_parse ++ ) {
-
-                    /* check filtering condition */
-                    if ( dl_dists[dl_parse] < dl_condition ) {
-
-                        /* check delayed indexation */
-                        if ( dl_filter < dl_parse ) {
-
-                            /* index filtered element */
-                            std::memcpy( dl_chunk + ( dl_filter * 27 ), dl_chunk + ( dl_parse * 27 ), 27 );
-
-                        }
-
-                        /* update delayed indexation */
-                        dl_filter ++;
-
-                    }
-
-                }
-
-                /* write filtered elements */
-                dl_ostream.write( dl_chunk, dl_filter * 27 );
-
-                /* release buffer memory */
-                delete [] dl_dists;
+        if ( ( dl_chunk = new char[dl_size] ) == nullptr ) {
 
             /* send message */
-            } else { return( false ); }
+            return( false );
 
-            /* release buffer memory */
-            delete [] dl_chunk;
+        } else {
 
-        /* send message */
-        } else { return( false ); }
+            /* allocate and check buffer memory */
+            if ( ( dl_dists = new double[dl_size/27] ) == nullptr ) {
+
+                /* release buffer memory */
+                delete [] dl_chunk;
+
+                /* send message */
+                return( false );
+
+            }
+
+        }
+
+        /* initialise array values */
+        for ( int64_t dl_parse( 0 ), dl_limit( dl_size / 27 ); dl_parse < dl_limit; dl_parse ++ ) {
+
+            /* assign initial value */
+            dl_dists[dl_parse] = std::numeric_limits<double>::max();
+
+        }
+
+        /* clear input stream */
+        dl_istream.clear();
+
+        /* reset input stream */
+        dl_istream.seekg( 0 );
+
+        /* read input stream */
+        dl_istream.read( dl_chunk, dl_size );
+
+        /* parsing input stream elements */
+        for ( int64_t dl_parse( 0 ), dl_limit( dl_size - 27 ); dl_parse < dl_limit; dl_parse += 27 ) {
+
+            /* compute and assign array mapping */
+            dl_pose1 = ( double * ) ( dl_chunk + dl_parse );
+
+            /* parsing input stream elements */
+            for ( int64_t dl_index( dl_parse + 27 ); dl_index < dl_size; dl_index += 27 ) {
+
+                /* compute and assign array mapping */
+                dl_pose2 = ( double * ) ( dl_chunk + dl_index );
+
+                /* compute element-element distance */
+                dl_distance = ( dl_pose1[0] - dl_pose2[0] ) * ( dl_pose1[0] - dl_pose2[0] ) +
+                              ( dl_pose1[1] - dl_pose2[1] ) * ( dl_pose1[1] - dl_pose2[1] ) +
+                              ( dl_pose1[2] - dl_pose2[2] ) * ( dl_pose1[2] - dl_pose2[2] );
+
+                /* search minimal distances */
+                if ( dl_distance < dl_dists[dl_parse/27] ) dl_dists[dl_parse/27] = dl_distance;
+                if ( dl_distance < dl_dists[dl_index/27] ) dl_dists[dl_index/27] = dl_distance;
+
+            }
+
+        }
+
+        /* analyse mode value */
+        if ( dl_mode == DL_RADIUS_ADAPTATIVE ) {
+
+            /* reset condition value */
+            dl_condition = 0.0;
+
+            /* prepare local threshold condition */
+            for ( int64_t dl_parse( 0 ), dl_limit( dl_size / 27 ); dl_parse < dl_limit; dl_parse ++ ) {
+
+                /* accumulate local condition */
+                dl_condition += sqrt( dl_dists[dl_parse] );
+
+            }
+
+            /* compute local threshold condition */
+            dl_condition = dl_condition / ( dl_size / 27 );
+
+            /* compute local threshold condition */
+            dl_condition = dl_condition * dl_condition * dl_factor * dl_factor;
+
+        }
+
+        /* reset delayed indexation */
+        dl_delay = 0;
+
+        /* apply filtering condition */
+        for ( int64_t dl_parse( 0 ), dl_limit( dl_size / 27 ); dl_parse < dl_limit; dl_parse ++ ) {
+
+            /* filtering condition */
+            if ( dl_dists[dl_parse] < dl_condition ) {
+
+                /* delayed indexation */
+                if ( dl_delay < dl_parse ) {
+
+                    /* index filtered element */
+                    std::memcpy( dl_chunk + ( dl_delay * 27 ), dl_chunk + ( dl_parse * 27 ), 27 );
+
+                }
+
+                /* update delay */
+                dl_delay ++;
+
+            }
+
+        }
+
+        /* exported filtered elements */
+        dl_ostream.write( dl_chunk, dl_delay * 27 );
+
+        /* release buffer memory */
+        delete [] dl_chunk;
+        delete [] dl_dists;
 
         /* send message */
         return( true );
@@ -468,24 +503,15 @@
 
     int main( int argc, char ** argv ) {
 
-        /* message variables */
-        int dl_message( EXIT_SUCCESS );
+        /* temporary path variables */
+        char dl_tpath[256];
 
         /* stream variables */
         std::ifstream dl_istream;
         std::ofstream dl_ostream;
 
-        /* temporary path variables */
-        char dl_tpath[256];
-
-        /* mode variables */
-        int dl_mode( DL_RADIUS_UNIFORM );
-
         /* mean distance variables */
         double dl_mean( 0.0 );
-
-        /* stream record variables */
-        int64_t dl_size( 0 );
 
         /* mean count variables */
         int64_t dl_count( lc_read_signed( argc, argv, "--count", "-c", 64 ) );
@@ -493,27 +519,17 @@
         /* filtering factor variables */
         double dl_factor( lc_read_double( argc, argv, "--factor", "-f", 2.0 ) );
 
-        /* create and check temporary file */
-        if ( dl_radius_temp_create( dl_tpath ) != true ) {
+        /* returned value variables */
+        int dl_return( EXIT_SUCCESS );
+
+        /* create and check temporary storage */
+        if ( dl_radius_temporary( dl_tpath, DL_RADIUS_CREATE ) != true ) {
 
             /* display message */
-            std::cerr << "dalai-suite : error : unable to create temporary directory" << std::endl;
+            std::cerr << "dalai-suite : error : unable to create temporary storage" << std::endl;
 
             /* send message */
             return( EXIT_FAILURE );
-
-        }
-
-        /* check filtering mode */
-        if ( lc_read_flag( argc, argv, "--uniform", "-u" ) == LC_TRUE ) {
-
-            /* assign mode */
-            dl_mode = DL_RADIUS_UNIFORM;
-
-        } else if ( lc_read_flag( argc, argv, "--adaptative", "-a" ) == LC_TRUE ) {
-
-            /* assign mode */
-            dl_mode = DL_RADIUS_ADAPTATIVE;
 
         }
 
@@ -523,14 +539,11 @@
         /* check input stream */
         if ( dl_istream.is_open() == true ) {
 
-            /* retrieve stream records count */
-            dl_size = dl_istream.tellg();
+            /* compute and check minimums mean */
+            if ( ( dl_mean = dl_radius_stat( dl_istream, dl_istream.tellg(), dl_count ) ) > 0.0 ) {
 
-            /* compute and check mean distance */
-            if ( ( dl_mean = dl_radius_mean( dl_istream, dl_size, dl_count ) ) > 0.0 ) {
-
-                /* create hashing storage */
-                if ( dl_radius_hash( dl_istream, dl_tpath, dl_size, dl_mean ) == true ) {
+                /* create hashed storage */
+                if ( dl_radius_hash( dl_istream, dl_tpath, dl_mean ) == true ) {
 
                     /* create output stream */
                     dl_ostream.open( lc_read_string( argc, argv, "--output", "-o" ), std::ios::out | std::ios::binary );
@@ -538,14 +551,41 @@
                     /* check output stream */
                     if ( dl_ostream.is_open() == true ) {
 
-                        /* filtering method */
-                        if ( dl_radius_filter( dl_ostream, dl_tpath, dl_mean, dl_factor, dl_mode ) != true ) {
+                        /* switch on filtering method */
+                        if ( lc_read_flag( argc, argv, "--uniform", "-u" ) == LC_TRUE ) {
+
+                            /* filtering method */
+                            if ( dl_radius_filter( dl_ostream, dl_tpath, dl_mean, dl_factor, DL_RADIUS_UNIFORM ) != true ) {
+
+                                /* display message */
+                                std::cerr << "dalai-suite : error : unable to apply filter" << std::endl;
+
+                                /* push message */
+                                dl_return = EXIT_FAILURE;
+
+                            }
+
+                        } else
+                        if ( lc_read_flag( argc, argv, "--adaptative", "-a" ) == LC_TRUE ) {
+
+                            /* filtering method */
+                            if ( dl_radius_filter( dl_ostream, dl_tpath, dl_mean, dl_factor, DL_RADIUS_ADAPTATIVE ) != true ) {
+
+                                /* display message */
+                                std::cerr << "dalai-suite : error : unable to apply filter" << std::endl;
+
+                                /* push message */
+                                dl_return = EXIT_FAILURE;
+
+                            }
+
+                        } else {
 
                             /* display message */
-                            std::cerr << "dalai-suite : error : unable to apply filter" << std::endl;
+                            std::cerr << "dalai-suite : error : unknown filtering mode" << std::endl;
 
                             /* push message */
-                            dl_message = EXIT_FAILURE;
+                            dl_return = EXIT_FAILURE;
 
                         }
 
@@ -558,7 +598,7 @@
                         std::cerr << "dalai-suite : error : unable to access output file" << std::endl;
 
                         /* push message */
-                        dl_message = EXIT_FAILURE;
+                        dl_return = EXIT_FAILURE;
 
                     }
 
@@ -568,7 +608,7 @@
                     std::cerr << "dalai-suite : error : unable to create hashing storage" << std::endl;
 
                     /* push message */
-                    dl_message = EXIT_FAILURE;
+                    dl_return = EXIT_FAILURE;
 
                 }
 
@@ -578,7 +618,7 @@
                 std::cerr << "dalai-suite : error : unable to compute mean distance" << std::endl;
 
                 /* push message */
-                dl_message = EXIT_FAILURE;
+                dl_return = EXIT_FAILURE;
 
             }
 
@@ -591,15 +631,15 @@
             std::cerr << "dalai-suite : error : unable to access input file" << std::endl;
 
             /* push message */
-            dl_message = EXIT_FAILURE;
+            dl_return = EXIT_FAILURE;
 
         }
 
-        /* delete temporary directory */
-        dl_radius_temp_delete( dl_tpath );
+        /* delete temporary storage */
+        dl_radius_temporary( dl_tpath, DL_RADIUS_DELETE );
 
         /* send message */
-        return( dl_message );
+        return( dl_return );
 
     }
 
