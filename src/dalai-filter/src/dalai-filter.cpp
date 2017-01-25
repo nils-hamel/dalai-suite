@@ -287,7 +287,7 @@
 
     }
 
-    bool dl_filter( std::ofstream & dl_ostream, char const * const dl_opath, double const dl_mean, double const dl_factor, int const dl_mode ) {
+    bool dl_filter( std::ofstream & dl_ostream, char const * const dl_opath, double const dl_mean, double const dl_factor, int64_t const dl_threshold, int const dl_mode ) {
 
         /* path variables */
         char dl_fpath[256];
@@ -327,8 +327,25 @@
             /* check stream */
             if ( dl_istream.is_open() == true ) {
 
-                /* apply filtering method */
-                dl_filter_threshold( dl_istream, dl_ostream, dl_istream.tellg(), dl_mean, dl_factor, dl_mode );
+                /* switch on mode */
+                if ( ( dl_mode == DL_FILTER_UNITY_UNIF ) || ( dl_mode == DL_FILTER_UNITY_ADAP ) ) {
+
+                    /* apply filtering method */
+                    dl_filter_unity( dl_istream, dl_ostream, dl_istream.tellg(), dl_mean, dl_factor, dl_mode );
+
+                } else
+                if ( dl_mode == DL_FILTER_COUNT_UNIF ) {
+
+                    /* apply filtering method */
+                    dl_filter_count_unif( dl_istream, dl_ostream, dl_istream.tellg(), dl_mean, dl_factor, dl_threshold );
+
+                } else
+                if ( dl_mode == DL_FILTER_COUNT_ADAP ) {
+
+                    /* apply filtering method */
+                    dl_filter_count_adap( dl_istream, dl_ostream, dl_istream.tellg(), dl_mean, dl_factor, dl_threshold );
+
+                }
 
                 /* delete stream */
                 dl_istream.close();
@@ -349,7 +366,7 @@
 
     }
 
-    bool dl_filter_threshold( std::ifstream & dl_istream, std::ofstream & dl_ostream, int64_t const dl_size, double const dl_mean, double const dl_factor, int const dl_mode ) {
+    bool dl_filter_unity( std::ifstream & dl_istream, std::ofstream & dl_ostream, int64_t const dl_size, double const dl_mean, double const dl_factor, int const dl_mode ) {
 
         /* buffer variables */
         char   * dl_chunk( nullptr );
@@ -440,7 +457,7 @@
         }
 
         /* analyse mode value */
-        if ( dl_mode == DL_FILTER_ADAPTATIVE ) {
+        if ( dl_mode == DL_FILTER_UNITY_ADAP ) {
 
             /* reset condition value */
             dl_condition = 0.0;
@@ -497,6 +514,317 @@
 
     }
 
+    bool dl_filter_count_unif( std::ifstream & dl_istream, std::ofstream & dl_ostream, int64_t const dl_size, double const dl_mean, double const dl_factor, int64_t const dl_threshold ) {
+
+        /* buffer variables */
+        char    * dl_chunk( nullptr );
+        int64_t * dl_count( nullptr );
+
+        /* array mapping variables */
+        double * dl_pose1( nullptr );
+        double * dl_pose2( nullptr );
+
+        /* indexation variables */
+        int64_t dl_delay( 0 );
+
+        /* distance variables */
+        double dl_distance( 0.0 );
+
+        /* condition variables */
+        double dl_condition( dl_mean * dl_mean * dl_factor * dl_factor );
+
+        /* allocate and check buffer memory */
+        if ( ( dl_chunk = new char[dl_size] ) == nullptr ) {
+
+            /* send message */
+            return( false );
+
+        } else {
+
+            /* allocate and check buffer memory */
+            if ( ( dl_count = new int64_t[dl_size / 27] ) == nullptr ) {
+
+                /* release buffer memory */
+                delete [] dl_chunk;
+
+                /* send message */
+                return( false );
+
+            }
+
+        }
+
+        /* initialise array values */
+        for ( int64_t dl_parse( 0 ), dl_limit( dl_size / 27 ); dl_parse < dl_limit; dl_parse ++ ) {
+
+            /* assign initial value */
+            dl_count[dl_parse] = 0;
+
+        }
+
+        /* clear input stream */
+        dl_istream.clear();
+
+        /* reset input stream */
+        dl_istream.seekg( 0 );
+
+        /* read input stream */
+        dl_istream.read( dl_chunk, dl_size );
+
+        /* parsing input stream elements */
+        for ( int64_t dl_parse( 0 ), dl_limit( dl_size - 27 ); dl_parse < dl_limit; dl_parse += 27 ) {
+
+            /* compute and assign array mapping */
+            dl_pose1 = ( double * ) ( dl_chunk + dl_parse );
+
+            /* parsing input stream elements */
+            for ( int64_t dl_index( dl_parse + 27 ); dl_index < dl_size; dl_index += 27 ) {
+
+                /* compute and assign array mapping */
+                dl_pose2 = ( double * ) ( dl_chunk + dl_index );
+
+                /* compute element-element distance */
+                dl_distance = ( dl_pose1[0] - dl_pose2[0] ) * ( dl_pose1[0] - dl_pose2[0] ) +
+                              ( dl_pose1[1] - dl_pose2[1] ) * ( dl_pose1[1] - dl_pose2[1] ) +
+                              ( dl_pose1[2] - dl_pose2[2] ) * ( dl_pose1[2] - dl_pose2[2] );
+
+                /* check condition */
+                if ( dl_distance < dl_condition ) {
+
+                    /* update element count */
+                    dl_count[dl_parse/27] ++;
+
+                    /* update element count */
+                    dl_count[dl_index/27] ++;
+
+                }
+
+            }
+
+        }
+
+        /* reset delayed indexation */
+        dl_delay = 0;
+
+        /* parsing count array */
+        for ( int64_t dl_parse( 0 ), dl_limit( dl_size / 27 ); dl_parse < dl_limit; dl_parse ++ ) {
+
+            /* filtering condition */
+            if ( dl_count[dl_parse] >= dl_threshold ) {
+
+                /* delayed indexation */
+                if ( dl_delay < dl_parse ) {
+
+                    /* index filtered element */
+                    std::memcpy( dl_chunk + ( dl_delay * 27 ), dl_chunk + ( dl_parse * 27 ), 27 );
+
+                }
+
+                /* update delay */
+                dl_delay ++;
+
+            }
+
+        }
+
+        /* exported filtered elements */
+        dl_ostream.write( dl_chunk, dl_delay * 27 );
+
+        /* release buffer memory */
+        delete [] dl_chunk;
+        delete [] dl_count;
+
+        /* send message */
+        return( true );
+
+    }
+
+    bool dl_filter_count_adap( std::ifstream & dl_istream, std::ofstream & dl_ostream, int64_t const dl_size, double const dl_mean, double const dl_factor, int64_t const dl_threshold ) {
+
+        /* buffer variables */
+        char    * dl_chunk( nullptr );
+        double  * dl_dists( nullptr );
+        int64_t * dl_count( nullptr );
+
+        /* array mapping variables */
+        double * dl_pose1( nullptr );
+        double * dl_pose2( nullptr );
+
+        /* indexation variables */
+        int64_t dl_delay( 0 );
+
+        /* distance variables */
+        double dl_distance( 0.0 );
+
+        /* condition variables */
+        double dl_condition( dl_mean * dl_mean * dl_factor * dl_factor );
+
+        /* allocate and check buffer memory */
+        if ( ( dl_chunk = new char[dl_size] ) == nullptr ) {
+
+            /* send message */
+            return( false );
+
+        } else {
+
+            /* allocate and check buffer memory */
+            if ( ( dl_count = new int64_t[dl_size / 27] ) == nullptr ) {
+
+                /* release buffer memory */
+                delete [] dl_chunk;
+
+                /* send message */
+                return( false );
+
+            } else {
+
+                /* allocate and check buffer memory */
+                if ( ( dl_dists = new double[dl_size / 27] ) == nullptr ) {
+
+                    /* release buffer memory */
+                    delete [] dl_chunk;
+                    delete [] dl_count;
+
+                    /* send message */
+                    return( false );
+
+                }
+
+            }
+
+        }
+
+        /* initialise array values */
+        for ( int64_t dl_parse( 0 ), dl_limit( dl_size / 27 ); dl_parse < dl_limit; dl_parse ++ ) {
+
+            /* assign initial value */
+            dl_count[dl_parse] = 0;
+
+            /* assign initial value */
+            dl_dists[dl_parse] = std::numeric_limits<double>::max();
+
+        }
+
+        /* clear input stream */
+        dl_istream.clear();
+
+        /* reset input stream */
+        dl_istream.seekg( 0 );
+
+        /* read input stream */
+        dl_istream.read( dl_chunk, dl_size );
+
+        /* parsing input stream elements */
+        for ( int64_t dl_parse( 0 ), dl_limit( dl_size - 27 ); dl_parse < dl_limit; dl_parse += 27 ) {
+
+            /* compute and assign array mapping */
+            dl_pose1 = ( double * ) ( dl_chunk + dl_parse );
+
+            /* parsing input stream elements */
+            for ( int64_t dl_index( dl_parse + 27 ); dl_index < dl_size; dl_index += 27 ) {
+
+                /* compute and assign array mapping */
+                dl_pose2 = ( double * ) ( dl_chunk + dl_index );
+
+                /* compute element-element distance */
+                dl_distance = ( dl_pose1[0] - dl_pose2[0] ) * ( dl_pose1[0] - dl_pose2[0] ) +
+                              ( dl_pose1[1] - dl_pose2[1] ) * ( dl_pose1[1] - dl_pose2[1] ) +
+                              ( dl_pose1[2] - dl_pose2[2] ) * ( dl_pose1[2] - dl_pose2[2] );
+
+                /* search minimal distances */
+                if ( dl_distance < dl_dists[dl_parse/27] ) dl_dists[dl_parse/27] = dl_distance;
+                if ( dl_distance < dl_dists[dl_index/27] ) dl_dists[dl_index/27] = dl_distance;
+
+            }
+
+        }
+
+        /* reset condition value */
+        dl_condition = 0.0;
+
+        /* prepare local threshold condition */
+        for ( int64_t dl_parse( 0 ), dl_limit( dl_size / 27 ); dl_parse < dl_limit; dl_parse ++ ) {
+
+            /* accumulate local condition */
+            dl_condition += sqrt( dl_dists[dl_parse] );
+
+        }
+
+        /* compute local threshold condition */
+        dl_condition = dl_condition / ( dl_size / 27 );
+
+        /* compute local threshold condition */
+        dl_condition = dl_condition * dl_condition * dl_factor * dl_factor;
+
+        /* parsing input stream elements */
+        for ( int64_t dl_parse( 0 ), dl_limit( dl_size - 27 ); dl_parse < dl_limit; dl_parse += 27 ) {
+
+            /* compute and assign array mapping */
+            dl_pose1 = ( double * ) ( dl_chunk + dl_parse );
+
+            /* parsing input stream elements */
+            for ( int64_t dl_index( dl_parse + 27 ); dl_index < dl_size; dl_index += 27 ) {
+
+                /* compute and assign array mapping */
+                dl_pose2 = ( double * ) ( dl_chunk + dl_index );
+
+                /* compute element-element distance */
+                dl_distance = ( dl_pose1[0] - dl_pose2[0] ) * ( dl_pose1[0] - dl_pose2[0] ) +
+                              ( dl_pose1[1] - dl_pose2[1] ) * ( dl_pose1[1] - dl_pose2[1] ) +
+                              ( dl_pose1[2] - dl_pose2[2] ) * ( dl_pose1[2] - dl_pose2[2] );
+
+                /* check condition */
+                if ( dl_distance < dl_condition ) {
+
+                    /* update element count */
+                    dl_count[dl_parse/27] ++;
+
+                    /* update element count */
+                    dl_count[dl_index/27] ++;
+
+                }
+
+            }
+
+        }
+
+        /* reset delayed indexation */
+        dl_delay = 0;
+
+        /* parsing count array */
+        for ( int64_t dl_parse( 0 ), dl_limit( dl_size / 27 ); dl_parse < dl_limit; dl_parse ++ ) {
+
+            /* filtering condition */
+            if ( dl_count[dl_parse] >= dl_threshold ) {
+
+                /* delayed indexation */
+                if ( dl_delay < dl_parse ) {
+
+                    /* index filtered element */
+                    std::memcpy( dl_chunk + ( dl_delay * 27 ), dl_chunk + ( dl_parse * 27 ), 27 );
+
+                }
+
+                /* update delay */
+                dl_delay ++;
+
+            }
+
+        }
+
+        /* exported filtered elements */
+        dl_ostream.write( dl_chunk, dl_delay * 27 );
+
+        /* release buffer memory */
+        delete [] dl_chunk;
+        delete [] dl_dists;
+        delete [] dl_count;
+
+        /* send message */
+        return( true );
+
+    }
+
 /*
     source - main methods
  */
@@ -510,14 +838,17 @@
         std::ifstream dl_istream;
         std::ofstream dl_ostream;
 
-        /* mean distance variables */
+        /* minimums mean variables */
         double dl_mean( 0.0 );
-
-        /* mean count variables */
-        int64_t dl_count( lc_read_signed( argc, argv, "--count", "-c", 64 ) );
 
         /* filtering factor variables */
         double dl_factor( lc_read_double( argc, argv, "--factor", "-f", 2.0 ) );
+
+        /* minimums mean count variables */
+        int64_t dl_count( lc_read_signed( argc, argv, "--count", "-c", 64 ) );
+
+        /* filtering threshold variables */
+        int64_t dl_thres( lc_read_signed( argc, argv, "--threshold", "-t", 4 ) );
 
         /* returned value variables */
         int dl_return( EXIT_SUCCESS );
@@ -552,13 +883,10 @@
                     if ( dl_ostream.is_open() == true ) {
 
                         /* switch on filtering method */
-                        if ( lc_read_flag( argc, argv, "--uniform", "-u" ) == LC_TRUE ) {
+                        if ( lc_read_flag( argc, argv, "--unity-unif", "-u" ) == LC_TRUE ) {
 
                             /* filtering method */
-                            if ( dl_filter( dl_ostream, dl_tpath, dl_mean, dl_factor, DL_FILTER_UNIFORM ) != true ) {
-
-                                /* display message */
-                                std::cerr << "dalai-suite : error : unable to apply filter" << std::endl;
+                            if ( dl_filter( dl_ostream, dl_tpath, dl_mean, dl_factor, dl_thres, DL_FILTER_UNITY_UNIF ) != true ) {
 
                                 /* push message */
                                 dl_return = EXIT_FAILURE;
@@ -566,13 +894,32 @@
                             }
 
                         } else
-                        if ( lc_read_flag( argc, argv, "--adaptative", "-a" ) == LC_TRUE ) {
+                        if ( lc_read_flag( argc, argv, "--unity-adap", "-a" ) == LC_TRUE ) {
 
                             /* filtering method */
-                            if ( dl_filter( dl_ostream, dl_tpath, dl_mean, dl_factor, DL_FILTER_ADAPTATIVE ) != true ) {
+                            if ( dl_filter( dl_ostream, dl_tpath, dl_mean, dl_factor, dl_thres, DL_FILTER_UNITY_ADAP ) != true ) {
 
-                                /* display message */
-                                std::cerr << "dalai-suite : error : unable to apply filter" << std::endl;
+                                /* push message */
+                                dl_return = EXIT_FAILURE;
+
+                            }
+
+                        } else
+                        if ( lc_read_flag( argc, argv, "--count-unif", "-n" ) == LC_TRUE ) {
+
+                            /* filtering method */
+                            if ( dl_filter( dl_ostream, dl_tpath, dl_mean, dl_factor, dl_thres, DL_FILTER_COUNT_UNIF ) != true ) {
+
+                                /* push message */
+                                dl_return = EXIT_FAILURE;
+
+                            }
+
+                        } else
+                        if ( lc_read_flag( argc, argv, "--count-adap", "-d" ) == LC_TRUE ) {
+
+                            /* filtering method */
+                            if ( dl_filter( dl_ostream, dl_tpath, dl_mean, dl_factor, dl_thres, DL_FILTER_COUNT_ADAP ) != true ) {
 
                                 /* push message */
                                 dl_return = EXIT_FAILURE;
@@ -586,6 +933,14 @@
 
                             /* push message */
                             dl_return = EXIT_FAILURE;
+
+                        }
+
+                        /* check filtering results */
+                        if ( dl_return == EXIT_FAILURE ) {
+
+                            /* display message */
+                            std::cerr << "dalai-suite : error : unable to apply filter" << std::endl;
 
                         }
 
@@ -605,7 +960,7 @@
                 } else {
 
                     /* display message */
-                    std::cerr << "dalai-suite : error : unable to create hashing storage" << std::endl;
+                    std::cerr << "dalai-suite : error : unable to create storage" << std::endl;
 
                     /* push message */
                     dl_return = EXIT_FAILURE;
@@ -615,7 +970,7 @@
             } else {
 
                 /* display message */
-                std::cerr << "dalai-suite : error : unable to compute mean distance" << std::endl;
+                std::cerr << "dalai-suite : error : unable to compute statistics" << std::endl;
 
                 /* push message */
                 dl_return = EXIT_FAILURE;

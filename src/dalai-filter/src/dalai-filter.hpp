@@ -77,13 +77,15 @@
     /* define chunk size */
     # define DL_FILTER_CHUNK      ( 2097152ll )
 
-    /* define filtering mode */
-    # define DL_FILTER_UNIFORM    ( 0 )
-    # define DL_FILTER_ADAPTATIVE ( 1 )
-
-    /* define temporary storage mode */
+    /* define storage modes */
     # define DL_FILTER_CREATE     ( 0 )
     # define DL_FILTER_DELETE     ( 1 )
+
+    /* define filtering modes */
+    # define DL_FILTER_UNITY_UNIF ( 0x00 )
+    # define DL_FILTER_UNITY_ADAP ( 0x01 )
+    # define DL_FILTER_COUNT_UNIF ( 0x02 )
+    # define DL_FILTER_COUNT_ADAP ( 0x03 )
 
 /*
     header - preprocessor macros
@@ -127,14 +129,28 @@
      *
      */
 
-    bool dl_filter( std::ofstream & dl_ostream, char const * const dl_opath, double const dl_mean, double const dl_factor, int const dl_mode );
+    bool dl_filter( std::ofstream & dl_ostream, char const * const dl_opath, double const dl_mean, double const dl_factor, int64_t const dl_threshold, int const dl_mode );
 
     /*! \brief filtering methods
      *
      *
      */
 
-    bool dl_filter_threshold( std::ifstream & dl_istream, std::ofstream & dl_ostream, int64_t const dl_size, double const dl_mean, double const dl_factor, int const dl_mode );
+    bool dl_filter_unity( std::ifstream & dl_istream, std::ofstream & dl_ostream, int64_t const dl_size, double const dl_mean, double const dl_factor, int const dl_mode );
+
+    /*! \brief filtering methods
+     *
+     *
+     */
+
+    bool dl_filter_count_unif( std::ifstream & dl_istream, std::ofstream & dl_ostream, int64_t const dl_size, double const dl_mean, double const dl_factor, int64_t const dl_threshold );
+
+    /*! \brief filtering methods
+     *
+     *
+     */
+
+    bool dl_filter_count_adap( std::ifstream & dl_istream, std::ofstream & dl_ostream, int64_t const dl_size, double const dl_mean, double const dl_factor, int64_t const dl_threshold );
 
     /*! \brief main function
      *
