@@ -145,7 +145,7 @@
     }
 
 /*
-    source - filtering methods
+    source - statistical methods
  */
 
     double dl_filter_stat( std::ifstream & dl_istream, int64_t const dl_size, int64_t const dl_count ) {
@@ -286,6 +286,10 @@
         return( dl_distance / dl_count );
 
     }
+
+/*
+    source - filtering methods
+ */
 
     bool dl_filter( std::ofstream & dl_ostream, char const * const dl_opath, double const dl_mean, double const dl_factor, int64_t const dl_threshold, int const dl_mode ) {
 

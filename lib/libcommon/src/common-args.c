@@ -21,7 +21,7 @@
     # include "common-args.h"
 
 /*
-    source - switches parsers
+    source - switches methods
  */
 
     int lc_read_flag( int const argc, char ** argv, char const * const er_long, char const * const er_short ) {
@@ -45,7 +45,7 @@
     }
 
 /*
-    source - arguments and parameters parsers
+    source - arguments and parameters methods
  */
 
     char * lc_read_string( int const argc, char ** argv, char const * const er_long, char const * const er_short ) {

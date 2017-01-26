@@ -90,8 +90,8 @@
      *  The main function reads the provided ply file content and converts it
      *  into a universal format file :
      *
-     *      ./dalai-ply-uf3 --ply/-i [ply_file]
-     *                      --uf3/-o [uf3_file]
+     *      ./dalai-ply-uf3 --ply/-i [ply input file]
+     *                      --uf3/-o [uf3 output file]
      *
      *  The function starts by allocating i/o buffer memory and opens streams
      *  toward input and output file. It the reads the content of the input
@@ -100,10 +100,10 @@
      *  and releasing the allocated memory.
      *
      *  Due to the complexity of the ply format, the main function only accept
-     *  little endian binary format. In addition, the function, thats operates
-     *  through the common library ply module, only considers vertex elements
-     *  x, y, z, red, green and blue. All other element and properties are not
-     *  handled by the function (i.e. the common library module).
+     *  little endian binary format. In addition this function, that operates
+     *  files through the common library ply module, only considers vertex
+     *  elements x, y, z, red, green and blue. All other element and properties
+     *  are not handled.
      *
      *  \param argc Standard parameter
      *  \param argv Standard parameter

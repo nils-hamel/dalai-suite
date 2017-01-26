@@ -92,9 +92,9 @@
      *  The main function converts the provided las (asprs) file and converts
      *  it into a universal format 3 file :
      *
-     *      ./dalai-las-uf3 --las/-i [las_file]
-     *                      --uf3/-o [uf3_file]
-     *                      --classification/-c
+     *      ./dalai-las-uf3 --las/-i [las input file]
+     *                      --uf3/-o [uf3 output file]
+     *                      --classification/-c [forced classification switch]
      *
      *  The function starts by reading the input file header in order to detect
      *  if colours are provided. If colours are not provided by the input file,
@@ -107,7 +107,7 @@
      *  \param argc Main function parameters
      *  \param argv Main function parameters
      *
-     *  \return Standard exit code
+     *  \return Returns standard exit code
      */
 
     int main( int argc, char ** argv );

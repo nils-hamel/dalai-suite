@@ -63,12 +63,6 @@
     header - preprocessor macros
  */
 
-    /* String to unsigned int */
-    # define LC_ATOUI( p ) strtoul( p, NULL, 10 )
-
-    /* String to double precision */
-    # define LC_ATODP( p ) atof( p )
-
 /*
     header - type definition
  */
@@ -81,7 +75,7 @@
     header - function prototypes
  */
 
-    /*! \brief switches parsers
+    /*! \brief switches methods
      *
      *  This function searches in the provided arguments list if the specified
      *  flag is present, in short or long form.
@@ -96,7 +90,7 @@
 
     int lc_read_flag( int const argc, char ** argv, char const * const er_long, char const * const er_short );
 
-    /*! \brief arguments and parameters parsers
+    /*! \brief arguments and parameters methods
      *
      *  This function searches in the provided arguments list if the specified
      *  argument is present. As it is, the function returns the pointer to the
@@ -113,7 +107,7 @@
 
     char * lc_read_string( int const argc, char ** argv, char const * const er_long, char const * const er_short );
 
-    /*! \brief arguments and parameters parsers
+    /*! \brief arguments and parameters methods
      *
      *  This function searches in the provided argument list if the specified
      *  argument is present. As it is, the function converts the parameter into
@@ -133,7 +127,7 @@
 
     intmax_t lc_read_signed( int const argc, char ** argv, char const * const er_long, char const * const er_short, intmax_t const er_default );
 
-    /*! \brief arguments and parameters parsers
+    /*! \brief arguments and parameters methods
      *
      *  This function searches in the provided argument list if the specified
      *  argument is present. As it is, the function converts the parameter into
@@ -153,7 +147,7 @@
 
     uintmax_t lc_read_unsigned( int const argc, char ** argv, char const * const er_long, char const * const er_short, uintmax_t const er_default );
 
-    /*! \brief arguments and parameters parsers
+    /*! \brief arguments and parameters methods
      *
      *  This function searches in the provided argument list if the specified
      *  argument is present. As it is, the function converts the parameter into

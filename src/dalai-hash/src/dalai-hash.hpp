@@ -90,7 +90,7 @@
     header - function prototypes
  */
 
-    /*! \brief statistical methodss
+    /*! \brief statistical methods
      *
      *  This function computes and returns the mean value of the point cloud
      *  elements distance to their closest element. To achieve this computation
@@ -109,7 +109,7 @@
      *  \param  dl_size    Size, in bytes, of the input stream
      *  \param  dl_count   Number of sampled elements
      *
-     *  \return Returns mean minimum distance
+     *  \return Returns mean minimum distance on success, 0.0 otherwise
      */
 
     double dl_hash_stat( std::ifstream & dl_istream, int64_t const dl_size, int64_t const dl_count );
@@ -146,10 +146,10 @@
      *  The main function hashes the provided point cloud into a set of smaller
      *  sub point clouds stored in the output directory :
      *
-     *      ./dalai-hash --uf3/-i    [input uf3 file]
+     *      ./dalai-hash --uf3/-i [input uf3 file]
      *                   --output/-o [output path directory]
-     *                   --count/-c  [sampled element count]
-     *                   --param/-p  [hashing parameter]
+     *                   --count/-c [sampled element count]
+     *                   --param/-p [hashing parameter]
      *
      *  The functions starts by gathering the parameters and opens the provided
      *  input file. It computes the point cloud minimum distances mean value

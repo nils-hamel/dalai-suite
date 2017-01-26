@@ -90,14 +90,14 @@
      *  The main function reads the provided universal format file and converts
      *  it into a ply file :
      *
-     *      ./dalai-uf3-ply --uf3/-i [uf3_file]
-     *                      --ply/-o [ply_file]
+     *      ./dalai-uf3-ply --uf3/-i [uf3 input file]
+     *                      --ply/-o [ply output file]
      *
      *  The function starts by allocating the required i/o buffers memory and
      *  creating the i/o stream. it the create and export the output ply file
      *  header. It then reads the input file by chunk. Each chunk is converted
      *  and written in the output stream. As all the input file chunks have been
-     *  read, the function closes the stream and release the allocted memory.
+     *  read, the function closes the stream and release the allocated memory.
      *
      *  The ply format, being a very complicated format, is considered only for
      *  its little endian binary format. The function does not allow to choose

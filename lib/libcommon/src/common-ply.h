@@ -100,16 +100,48 @@
     header - structures
  */
 
+    /*! \struct lc_ply_header_struct
+     *  \brief ply header structure
+     *
+     *  This structure holds the PLY format header information required to read
+     *  data from a PLY file. It also holds the file descriptor and the chunk
+     *  buffer used for i/o operation.
+     *
+     *  Currently, only to coordinates and colour components of the PLY vertex
+     *  elements are supported for binary reading by this PLY module.
+     *
+     *  The structures holds, in addition to header properties and i/o related
+     *  fields, two small arrays that indicates where to locate the desired
+     *  vertex record properties (\b ph_vdata) and their type (\b ph_vtype). The
+     *  arrays are created as the PLY header is read, usually as the structure
+     *  is created.
+     *
+     *  \var lc_ply_header_struct::ph_handle
+     *  PLY file descriptor
+     *  \var lc_ply_header_struct::ph_format
+     *  PLY file format (only supports binary_little_endian)
+     *  \var lc_ply_header_struct::ph_vertex
+     *  PLY vertex elements count
+     *  \var lc_ply_header_struct::ph_vsize
+     *  Length, in bytes, of vertex records
+     *  \var lc_ply_header_struct::ph_vtype
+     *  Type of PLY vertex record properties (x,y,z,r,g,b)
+     *  \var lc_ply_header_struct::ph_vdata
+     *  Offset, in bytes, of the PLY vertex record properties (x,y,z,r,g,b)
+     *  \var lc_ply_header_struct::ph_position
+     *  I/O position, in bytes, in the PLY file
+     *  \var lc_ply_header_struct::ph_chunk
+     *  PLY vertex records chunk buffer
+     */
+
     typedef struct lc_ply_header_struct {
 
         FILE *        ph_handle;
 
         int           ph_format;
-
         long long int ph_vertex;
 
         int           ph_vsize;
-        //int           ph_vpush[6];
         int           ph_vtype[6];
         int           ph_vdata[6];
 
@@ -123,23 +155,171 @@
     header - function prototypes
  */
 
+    /*! \brief constructor/destructor methods
+     *
+     *  This function creates and returns the PLY header structure related to
+     *  the provided input PLY file path.
+     *
+     *  It creates the PLY file descriptor and initialise the chunk memory
+     *  buffer. It also reads the PLY header, using the \b lc_ply_io_i_header()
+     *  function, and initialise the structure fields according to the header
+     *  content.
+     *
+     *  This function returning the created structure, the status is stored in
+     *  the structure itself using the reserved \b _status field (\b LC_TRUE
+     *  on success, \b LC_FALSE otherwise).
+     *
+     *  \param  lc_path Path of the input PLY file
+     *
+     *  \return Returns created PLY structure
+     */
+
     lc_ply_t lc_ply_create( unsigned char const * const lc_path );
+
+    /*! \brief constructor/destructor methods
+     *
+     *  This function deletes the provided PLY structure and resets its fields.
+     *  It closes the PLY file descriptor and releases the memory associated to
+     *  the chunk buffer.
+     *
+     *  \param lc_ply PLY structure
+     */
 
     void lc_ply_delete( lc_ply_t * const lc_ply );
 
+    /*! \brief accessor methods
+     *
+     *  This function returns the x coordinates of the vertex stored at index
+     *  \b lc_index in the PLY structure chunk buffer.
+     *
+     *  This function does not check the state of the chunk buffer or the amount
+     *  of vertex record it contains before to access the data.
+     *
+     *  \param  lc_ply   PLY structure
+     *  \param  lc_index Index of the vertex record in the chunk buffer
+     *
+     *  \return Returns vertex x coordinates
+     */
+
     double lc_ply_get_x( lc_ply_t const * const lc_ply, long long int lc_index );
+
+    /*! \brief accessor methods
+     *
+     *  This function returns the y coordinates of the vertex stored at index
+     *  \b lc_index in the PLY structure chunk buffer.
+     *
+     *  This function does not check the state of the chunk buffer or the amount
+     *  of vertex record it contains before to access the data.
+     *
+     *  \param  lc_ply   PLY structure
+     *  \param  lc_index Index of the vertex record in the chunk buffer
+     *
+     *  \return Returns vertex y coordinates
+     */
 
     double lc_ply_get_y( lc_ply_t const * const lc_ply, long long int lc_index );
 
+    /*! \brief accessor methods
+     *
+     *  This function returns the z coordinates of the vertex stored at index
+     *  \b lc_index in the PLY structure chunk buffer.
+     *
+     *  This function does not check the state of the chunk buffer or the amount
+     *  of vertex record it contains before to access the data.
+     *
+     *  \param  lc_ply   PLY structure
+     *  \param  lc_index Index of the vertex record in the chunk buffer
+     *
+     *  \return Returns vertex z coordinates
+     */
+
     double lc_ply_get_z( lc_ply_t const * const lc_ply, long long int lc_index );
+
+    /*! \brief accessor methods
+     *
+     *  This function returns the colour red component of the vertex stored at
+     *  index \b lc_index in the PLY structure chunk buffer.
+     *
+     *  This function does not check the state of the chunk buffer or the amount
+     *  of vertex record it contains before to access the data.
+     *
+     *  \param  lc_ply   PLY structure
+     *  \param  lc_index Index of the vertex record in the chunk buffer
+     *
+     *  \return Returns vertex color red component
+     */
 
     char lc_ply_get_red( lc_ply_t const * const lc_ply, long long int lc_index );
 
+    /*! \brief accessor methods
+     *
+     *  This function returns the colour green component of the vertex stored at
+     *  index \b lc_index in the PLY structure chunk buffer.
+     *
+     *  This function does not check the state of the chunk buffer or the amount
+     *  of vertex record it contains before to access the data.
+     *
+     *  \param  lc_ply   PLY structure
+     *  \param  lc_index Index of the vertex record in the chunk buffer
+     *
+     *  \return Returns vertex color green component
+     */
+
     char lc_ply_get_green( lc_ply_t const * const lc_ply, long long int lc_index );
+
+    /*! \brief accessor methods
+     *
+     *  This function returns the colour blue component of the vertex stored at
+     *  index \b lc_index in the PLY structure chunk buffer.
+     *
+     *  This function does not check the state of the chunk buffer or the amount
+     *  of vertex record it contains before to access the data.
+     *
+     *  \param  lc_ply   PLY structure
+     *  \param  lc_index Index of the vertex record in the chunk buffer
+     *
+     *  \return Returns vertex color blue component
+     */
 
     char lc_ply_get_blue( lc_ply_t const * const lc_ply, long long int lc_index );
 
+    /*! \brief i/o methods
+     *
+     *  This function reads the PLY file header and initialise the PLY structure
+     *  fields according to the header content.
+     *
+     *  This function expects a PLY structure containing a valid file descriptor
+     *  with position in the beginning of the file.
+     *
+     *  In addition to header parameters analysis, this function builds the
+     *  structure arrays used to access vertex record properties. It can handle
+     *  any valid PLY types, according to the documentation, but only fills the
+     *  arrays for the coordinates and colour components properties.
+     *
+     *  \param  lc_ply PLY structure
+     *
+     *  \return Returns \b LC_TRUE on success, \b LC_FALSE otherwise
+     */
+
     int lc_ply_io_i_header( lc_ply_t * const lc_ply );
+
+    /*! \brief i/o methods
+     *
+     *  This function reads \b lc_size vertex records from the PLY file pointed
+     *  by the provided PLY structure and stores them in the structure chunk
+     *  buffer. Data accessor method can then be used to access data stored in
+     *  the filled chunk buffer.
+     *
+     *  This function expects an already created PLY structure containing a
+     *  valid file descriptor with an i/o position just after the last byte of
+     *  the PLY header, as left by the \b lc_ply_io_i_header() function, or a
+     *  i/o position pointing the first byte of a vertex record.
+     *
+     *  \param lc_ply  PLY structure
+     *  \param lc_size Number of vertex record to read
+     *
+     *  \return Returns the number of read vertex records
+     */
 
     long long int lc_ply_io_i_chunk( lc_ply_t * const lc_ply, long long int const lc_size );
 

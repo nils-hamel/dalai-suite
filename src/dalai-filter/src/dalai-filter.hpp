@@ -105,55 +105,216 @@
 
     /*! \brief storage methods
      *
+     *  As \b DL_FILTER_CREATE is provided as mode, the function asks the system
+     *  for an unused temporary directory in the system temporary volume. On
+     *  success, the function creates the temporary directory and updates the
+     *  content of the provided path with the created directory path.
      *
+     *  If the provided mode is \b DL_FILTER_DELETE, the function simply removes
+     *  the temporary directory provided by the \b dl_path parameter. It uses
+     *  the \b rmdir function assuming the temporary directory is already empty.
+     *  An error is reported otherwise.
+     *
+     *  \param  dl_path Temporary storage directory path
+     *  \param  dl_mode Temporary storage mode
+     *
+     *  \return Returns true in success, false otherwise
      */
 
     bool dl_filter_temporary( char * const dl_path, int dl_mode );
 
     /*! \brief hashing methods
      *
+     *  This function imports the point cloud provided by the input stream and
+     *  hashes it in the output directory. The hashing consists in cutting the
+     *  provided point cloud into many smaller point clouds.
      *
+     *  The function reads the input stream elements one by one and uses the
+     *  provided minimums mean value to determine in which sub point cloud each
+     *  element has to be written. The hash function is driven by the following
+     *  values computation :
+     *
+     *      h_i = ( int ) floor( p_i / ( 100 * dl_mean ) )
+     *
+     *  with i = x,y,z. The three computed h_i values are then used to composed
+     *  the sub point clouds file name. All elements sharing the same h_i values
+     *  are then written in the same sub-point-cloud.
+     *
+     *  \param  dl_istream Input stream descriptor
+     *  \param  dl_opath   Output path
+     *  \param  dl_mean    Minimums mean value
+     *
+     *  \return Returns \b true on success, \b false otherwise
      */
 
     bool dl_filter_hash( std::ifstream & dl_istream, char const * const dl_opath, double const dl_mean );
 
-    /*! \brief filtering methods
+    /*! \brief statistical methods
      *
+     *  This function computes and returns the mean value of the point cloud
+     *  elements distance to their closest element. To achieve this computation
+     *  in a reasonable amount of time, the following strategy is considered.
      *
+     *  The function starts by sampling \b dl_count elements in the point cloud
+     *  provided through the stream descriptor. For each sampled element, it
+     *  searches the distance to its closest element. It finally computes the
+     *  mean value of the found minimal distances on the sampled set.
+     *
+     *  The approximation of the minimums mean value gets better as \b dl_count
+     *  increases. Nevertheless, a value of 32 already allows to compute a very
+     *  good approximation of the minimums mean value.
+     *
+     *  \param  dl_istream Input stream descriptor
+     *  \param  dl_size    Size, in bytes, of the input stream
+     *  \param  dl_count   Number of sampled elements
+     *
+     *  \return Returns mean minimum distance on success, 0.0 otherwise
      */
 
     double dl_filter_stat( std::ifstream & dl_istream, int64_t const dl_size, int64_t const dl_count );
 
     /*! \brief filtering methods
      *
+     *  This function applies the filtering process pointed by the mode value
+     *  on each file contained in the provided \b dl_opath directory. It simply
+     *  enumerates the files of the directory and applies the filtering process
+     *  on each one. The resulting filtered point clouds are all exported in the
+     *  output stream.
      *
+     *  Usually, this function is used on the directory in which hashed files
+     *  produced by the \b dl_filter_hash() are stored. Indeed, the filtering
+     *  process expects all the input files to be part of the same initial point
+     *  cloud, so sharing the same minimums mean value.
+     *
+     *  Depending on the provided mode value, a specific filtering process is
+     *  applied on all the files contained in the \b dl_opath directory. The
+     *  filtering parameters are then provided to the different filtering
+     *  processes according to their necessities :
+     *
+     *  \b dl_filter_unity()
+     *  \b dl_filter_count_unif()
+     *  \b dl_filter_count_adap()
+     *
+     *  All the filtering processes share a similar strategy, each implementing
+     *  a variation of it.
+     *
+     *  \param  dl_ostream   Output stream descriptor
+     *  \param  dl_opath     Input streams directory path
+     *  \param  dl_mean      Minimums mean value
+     *  \param  dl_factor    Minimums mean multiplier
+     *  \param  dl_threshold Neighbour count threshold
+     *  \param  dl_mode      Filtering method mode
+     *
+     *  \return Returns true on success, false otherwise
      */
 
     bool dl_filter( std::ofstream & dl_ostream, char const * const dl_opath, double const dl_mean, double const dl_factor, int64_t const dl_threshold, int const dl_mode );
 
     /*! \brief filtering methods
      *
+     *  This filtering function reads the point cloud provided through the input
+     *  stream and exports its filtered version in the output stream.
      *
+     *  The filtering process consists in computing for each element of the
+     *  point cloud the distance to its closest neighbour. Elements that have
+     *  a minimal distance verifying :
+     *
+     *      element_minimal_distance < ( dl_mean * dl_factor )
+     *
+     *  are kept and written in the output stream. The other elements are simply
+     *  discarded. The minimums mean \b dl_mean is expected to be computed
+     *  considering the initial point cloud, the input stream being expected to
+     *  be a piece of the hashed initial point cloud. The function provides the
+     *  previous filtering as the mode parameter is \b DL_FILTER_UNITY_UNIF.
+     *
+     *  If the \b DL_FILTER_UNITY_ADAP is provided, the filtering method is
+     *  similar except that the minimums mean value is recomputed considering
+     *  only the elements contained in the input stream point cloud. This allows
+     *  to adapt the criterion to the local specificities of the initial point
+     *  cloud.
+     *
+     *  \param  dl_istream Input stream descriptor
+     *  \param  dl_ostream Output stream descriptor
+     *  \param  dl_size    Size, in bytes, of the input stream
+     *  \param  dl_mean    Minimums mean value
+     *  \param  dl_factor  Minimums mean multiplier
+     *  \param  dl_mode    Filtering method mode
+     *
+     *  \return Returns true on success, false otherwise
      */
 
     bool dl_filter_unity( std::ifstream & dl_istream, std::ofstream & dl_ostream, int64_t const dl_size, double const dl_mean, double const dl_factor, int const dl_mode );
 
     /*! \brief filtering methods
      *
+     *  This filtering function reads the point cloud provided through the input
+     *  stream and exports its filtered version in the output stream.
      *
+     *  This function implements a variation of filtering methods implemented
+     *  in \b dl_filter_unity() using the \b DL_FILTER_UNITY_UNIF mode value. In
+     *  addition to the distance criterion, this function only keeps elements
+     *  for which the criterion is true for at least \b dl_threshold of their
+     *  neighbour elements.
+     *
+     *  \param  dl_istream   Input stream descriptor
+     *  \param  dl_ostream   Output stream descriptor
+     *  \param  dl_size      Size, in bytes, of the input stream
+     *  \param  dl_mean      Minimums mean value
+     *  \param  dl_factor    Minimums mean multiplier
+     *  \param  dl_threshold Neighbour count threshold
+     *
+     *  \return Returns true on success, false otherwise
      */
 
     bool dl_filter_count_unif( std::ifstream & dl_istream, std::ofstream & dl_ostream, int64_t const dl_size, double const dl_mean, double const dl_factor, int64_t const dl_threshold );
 
     /*! \brief filtering methods
      *
+     *  This filtering function reads the point cloud provided through the input
+     *  stream and exports its filtered version in the output stream.
      *
+     *  This function implements a variation of filtering methods implemented
+     *  in \b dl_filter_unity() using the \b DL_FILTER_UNITY_ADAP mode value. In
+     *  addition to the distance criterion, this function only keeps elements
+     *  for which the criterion is true for at least \b dl_threshold of their
+     *  neighbour elements.
+     *
+     *  \param  dl_istream   Input stream descriptor
+     *  \param  dl_ostream   Output stream descriptor
+     *  \param  dl_size      Size, in bytes, of the input stream
+     *  \param  dl_mean      Minimums mean value
+     *  \param  dl_factor    Minimums mean multiplier
+     *  \param  dl_threshold Neighbour count threshold
+     *
+     *  \return Returns true on success, false otherwise
      */
 
     bool dl_filter_count_adap( std::ifstream & dl_istream, std::ofstream & dl_ostream, int64_t const dl_size, double const dl_mean, double const dl_factor, int64_t const dl_threshold );
 
     /*! \brief main function
      *
+     *  The main function reads the point cloud provided through the input file
+     *  and exports its filtered version in the provided output stream :
+     *
+     *      ./dalai-filter --input/-i [input file path]
+     *                     --output/-o [output file path]
+     *                     --unity-unif/--unity-adap
+     *                     --count-unif/--count-adap [filtering mode switches]
+     *                     --factor/-f [minimums mean multiplier]
+     *                     --count/-c [sampled elements for mean computation]
+     *                     --threshold/-t [neighbour elements count threshold]
+     *
+     *  The main function starts by reading the parameters and opens the input
+     *  file. It computes the point cloud elements minimum distances mean value
+     *  using the count parameter.
+     *
+     *  In order to performs the filtering process, the input point cloud is
+     *  cut in smallest pieces using the hashing function. The hashing function
+     *  uses the minimums mean to adapt the hash to the input file point cloud.
+     *
+     *  The filtering process is then applied on each piece of the hashed point
+     *  cloud and the results of the filtering of all the pieces is exported in
+     *  the output file.
      *
      *  \param argc Standard parameter
      *  \param argv Standard parameter
