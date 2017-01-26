@@ -1,6 +1,8 @@
 ## dalai-suite
 
-The _dalai-suite_ is designed to be a gathering and standardising interface to the geodetic system developed at the DHLAB of EPFL. It consists in a set of softwares having to convert any kind of geodetic data, mainly point clouds, into the defined universal format considered in the geodetic system. In other words, it is well described by its tibetan name.
+The _dalai-suite_ is dedicated to the gathering and processing of geographical 3-dimensional information. It allows to considers the most common file formats and to convert them in a standardised and simple format.
+
+This standardised format allows to use the suite tools for colour edition, model cleaning and model hashing. In addition, the standard format is also expected by the _eratosthene-suite_ implementing the EPFL CDH DHLAB indexation server and its geographical 3-dimensional data injection tools.
 
 ## Dependencies
 
