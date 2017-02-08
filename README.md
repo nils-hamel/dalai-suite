@@ -11,6 +11,9 @@ The _dalai-suite_ comes with the following package dependencies (Ubuntu 16.04 LT
 * build-essential
 * liblas-c-dev
 
+* mesa-common-dev
+* libsdl2-dev
+
 The code documentation is built using Doxygen.
 
 ## Copyright and License
