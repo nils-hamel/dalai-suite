@@ -78,8 +78,8 @@
 
     /* define mouse motion factors */
     # define DL_INERTIA_ANGLE  ( 0.002 )
-    # define DL_INERTIA_TRANS  ( 0.00001 )
-    # define DL_INERTIA_WZOOM  ( 0.02 )
+    # define DL_INERTIA_TRANS  ( 0.000002 )
+    # define DL_INERTIA_WZOOM  ( 0.004 )
 
 /*
     header - preprocessor macros
@@ -93,10 +93,9 @@
     header - structures
  */
 
-    class dl_vision_c {
+    class dl_vision_t {
 
     private:
-
         SDL_Window *  vs_window;
         SDL_GLContext vs_context;
         SDL_Event     vs_event;
@@ -124,21 +123,20 @@
 
     public:
 
-        dl_vision_c();
-        ~dl_vision_c();
+        dl_vision_t();
+        ~dl_vision_t();
 
-        void vs_set_screen( int dl_width, int dl_height );
-        void vs_set_clip( float dl_near, float dl_far );
-        void vs_set_projection( void );
+    public:
+        void vs_set_projection( dl_model_t & dl_model );
 
-        void vs_execution( dl_model_c & dl_model );
+    public:
+        void vs_execution( dl_model_t & dl_model );
 
     private:
-
-        void vs_keydown( SDL_KeyboardEvent vs_event );
-        void vs_button( SDL_MouseButtonEvent vs_event, dl_model_c & dl_model );
-        void vs_motion( SDL_MouseMotionEvent vs_event, dl_model_c & dl_model );
-        void vs_wheel( SDL_MouseWheelEvent vs_event, dl_model_c & dl_model );
+        void vs_keydown( SDL_KeyboardEvent vs_event, dl_model_t & dl_model );
+        void vs_button( SDL_MouseButtonEvent vs_event, dl_model_t & dl_model );
+        void vs_motion( SDL_MouseMotionEvent vs_event, dl_model_t & dl_model );
+        void vs_wheel( SDL_MouseWheelEvent vs_event, dl_model_t & dl_model );
 
     };
 

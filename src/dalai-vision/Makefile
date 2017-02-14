@@ -26,7 +26,7 @@
     MAKE_STABLD:=ar
     MAKE_DOCBLD:=doxygen
 
-    BUILD_FLAGS:=-Wall -funsigned-char -O3
+    BUILD_FLAGS:=-Wall -funsigned-char -O3 -I/usr/include/eigen3
     BUILD_LINKD:=-lm -lSDL2 -lGL -lGLU
     BUILD_SUBMD:=$(MAKE_LIBRAR)/libcommon
 

@@ -24,7 +24,7 @@
     source - constructor/destructor methods
  */
 
-    dl_vision_c::dl_vision_c()
+    dl_vision_t::dl_vision_t()
 
         : vs_window( NULL )
         , vs_context( 0 )
@@ -47,106 +47,76 @@
         /* diplay mode variables */
         SDL_DisplayMode dl_display;
 
-        try {
-
-            /* initialise sdl */
-            if ( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
-
-                /* throw exception */
-                throw( 1 );
-
-            }
-
-            /* retrieve current display mode */
-            if ( SDL_GetCurrentDisplayMode( 0, & dl_display ) < 0 ) {
-
-                /* throw exception */
-                throw( 2 );
-
-            }
-
-            /* enable double-buffering */
-            SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-
-            /* define frame buffer components size */
-            SDL_GL_SetAttribute( SDL_GL_RED_SIZE  , 8 );
-            SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8 );
-            SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE , 8 );
-            SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 8 );
-
-            /* define depth buffer size */
-            SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24 );
-
-            /* create sdl window */
-            if ( ( vs_window = SDL_CreateWindow( "", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, dl_display.w, dl_display.h, SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL ) ) == NULL ) {
-
-                /* throw exception */
-                throw( 3 );
-
-            }
-
-            /* create opengl context */
-            if ( ( vs_context = SDL_GL_CreateContext( vs_window ) ) == NULL ) {
-
-                /* throw exception */
-                throw( 4 );
-
-            }
-
-            /* opengl clear color */
-            glClearColor( 0.05, 0.0, 0.05, 0.0 );
-
-            /* opengl clear depth */
-            glClearDepth( 1.0 );
-
-            /* opengl states */
-            glEnable( GL_DEPTH_TEST );
-
-            /* opengl client array */
-            glEnableClientState( GL_VERTEX_ARRAY );
-            glEnableClientState( GL_COLOR_ARRAY  );
-
-            /* assign screen dimension */
-            vs_width  = dl_display.w;
-            vs_height = dl_display.h;
-
-            /* compute projection matrix */
-            vs_set_projection();
-
-        } catch( int dl_status ) {
-
-            /* analyse exception */
-            if ( dl_status > 4 ) {
-
-                /* delete opengl context */
-                SDL_GL_DeleteContext( vs_context );
-
-            }
-
-            /* analyse exception */
-            if ( dl_status > 3 ) {
-
-                /* delete window */
-                SDL_DestroyWindow( vs_window );
-
-            }
-
-            /* analyse exception */
-            if ( dl_status > 1 ) {
-
-                /* terminate sdl */
-                SDL_Quit();
-
-            }
+        /* initialise sdl */
+        if ( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
 
             /* throw exception */
-            throw;
+            throw( DL_ERROR_RENDER );
 
         }
 
+        /* retrieve current display mode */
+        if ( SDL_GetCurrentDisplayMode( 0, & dl_display ) < 0 ) {
+
+            /* throw exception */
+            throw( DL_ERROR_RENDER );
+
+        }
+
+        /* enable double-buffering */
+        SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+
+        /* define frame buffer components size */
+        SDL_GL_SetAttribute( SDL_GL_RED_SIZE  , 8 );
+        SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8 );
+        SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE , 8 );
+        SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 8 );
+
+        /* define depth buffer size */
+        SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24 );
+
+        /* create sdl window */
+        if ( ( vs_window = SDL_CreateWindow( "", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, dl_display.w, dl_display.h, SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL ) ) == NULL ) {
+
+            /* throw exception */
+            throw( DL_ERROR_WINDOW );
+
+        }
+
+        /* create opengl context */
+        if ( ( vs_context = SDL_GL_CreateContext( vs_window ) ) == NULL ) {
+
+            /* throw exception */
+            throw( DL_ERROR_OPENGL );
+
+        }
+
+        /* opengl clear color */
+        glClearColor( 0.00, 0.02, 0.05, 0.0 );
+
+        /* opengl clear depth */
+        glClearDepth( 1.0 );
+
+        /* opengl states */
+        glEnable( GL_DEPTH_TEST );
+
+        /* opengl blending function */
+        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
+        /* opengl client array */
+        glEnableClientState( GL_VERTEX_ARRAY );
+        glEnableClientState( GL_COLOR_ARRAY  );
+
+        /* assign screen dimension */
+        vs_width  = dl_display.w;
+        vs_height = dl_display.h;
+
+        /* compute projection matrix */
+        //vs_set_projection();
+
     }
 
-    dl_vision_c::~dl_vision_c() {
+    dl_vision_t::~dl_vision_t() {
 
         /* unknown necessity */
         SDL_Delay( 500 );
@@ -166,28 +136,18 @@
    source - mutator methods
  */
 
-    void dl_vision_c::vs_set_screen( int dl_width, int dl_height ) {
+    void dl_vision_t::vs_set_projection( dl_model_t & dl_model ) {
 
-        /* assign screen dimension */
-        vs_width  = dl_width;
-        vs_height = dl_height;
+        /* model minimum mean variables */
+        double dl_mean( dl_model.ml_get_mean() );
 
-    }
-
-    void dl_vision_c::vs_set_clip( float dl_near, float dl_far ) {
-
-        /* assign clipping planes */
-        vs_near = dl_near;
-        vs_far  = dl_far;
-
-    }
-
-    void dl_vision_c::vs_set_projection( void ) {
+        /* model wideness variables */
+        double dl_wideness( dl_model.ml_get_wideness() );
 
         /* opengl viewport */
         glViewport( 0.0, 0.0, vs_width, vs_height );
 
-        /* push viewport */
+        /* push viewport vector */
         glGetIntegerv( GL_VIEWPORT, vs_viewport );
 
         /* opengl matrix mode */
@@ -197,7 +157,7 @@
         glLoadIdentity();
 
         /* compute matrix coefficients */
-        gluPerspective( 45.0, ( float ) vs_width / ( float ) vs_height, vs_near, vs_far );
+        gluPerspective( 45.0, double( vs_width ) / double( vs_height ), dl_mean, dl_wideness );
 
         /* push projection matrix */
         glGetDoublev( GL_PROJECTION_MATRIX, vs_projection );
@@ -208,7 +168,7 @@
     source - execution methods
  */
 
-    void dl_vision_c::vs_execution( dl_model_c & dl_model ) {
+    void dl_vision_t::vs_execution( dl_model_t & dl_model ) {
 
         /* principale execution loop */
         while ( vs_state == true ) {
@@ -216,14 +176,14 @@
             /* events management */
             while ( SDL_PollEvent( & vs_event ) > 0 ) {
 
-                /* analyse event */
+                /* switch on event type */
                 switch ( vs_event.type ) {
 
                     /* event : keydown */
                     case ( SDL_KEYDOWN ) : {
 
                         /* specialised method */
-                        vs_keydown( vs_event.key );
+                        vs_keydown( vs_event.key, dl_model );
 
                     } break;
 
@@ -255,20 +215,20 @@
 
             }
 
+            /* opengl buffer clear */
+            glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
             /* opengl matrix mode */
             glMatrixMode( GL_MODELVIEW );
 
             /* reset matrix coefficients */
             glLoadIdentity();
 
-            /* opengl buffer clear */
-            glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-
             /* push matrix */
             glPushMatrix();
 
                 /* view translations */
-                glTranslatef( vs_trans_x, vs_trans_y, vs_trans_z - 5.0 );
+                glTranslatef( vs_trans_x, vs_trans_y, vs_trans_z );
 
                 /* view rotations */
                 glRotatef( vs_angle_x, 1.0, 0.0, 0.0 );
@@ -278,11 +238,8 @@
                 /* push matrix */
                 glPushMatrix();
 
-                    /* diplay model */
-                    dl_model.ml_display_model();
-
-                    /* retrieve modelview matrix */
-                    glGetDoublev( GL_MODELVIEW_MATRIX, vs_modelview );
+                    /* display frame */
+                    dl_model.ml_ren_frame();
 
                 /* pop matrix */
                 glPopMatrix();
@@ -290,8 +247,26 @@
                 /* push matrix */
                 glPushMatrix();
 
-                    /* display frame */
-                    dl_model.ml_display_frame();
+                    /* push matrix */
+                    glPushMatrix();
+
+                        /* diplay model */
+                        dl_model.ml_ren_model();
+
+                        /* retrieve modelview matrix */
+                        glGetDoublev( GL_MODELVIEW_MATRIX, vs_modelview );
+
+                    /* pop matrix */
+                    glPopMatrix();
+
+                    /* push matrix */
+                    glPushMatrix();
+
+                        /* display surface */
+                        dl_model.ml_ren_surface();
+
+                    /* pop matrix */
+                    glPopMatrix();
 
                 /* pop matrix */
                 glPopMatrix();
@@ -310,7 +285,7 @@
     source - event methods
  */
 
-    void dl_vision_c::vs_keydown( SDL_KeyboardEvent vs_event ) {
+    void dl_vision_t::vs_keydown( SDL_KeyboardEvent vs_event, dl_model_t & dl_model ) {
 
         /* switch on keycode */
         switch ( vs_event.keysym.sym ) {
@@ -323,31 +298,69 @@
 
             } break;
 
-            case ( SDLK_1 ) : {
-
-                /* update model point size */
-                glPointSize( 1 );
-
-            } break;
-
-            case ( SDLK_2 ) : {
-
-                /* update model point size */
-                glPointSize( 2 );
-
-            } break;
-
-            case ( SDLK_3 ) : {
-
-                /* update model point size */
-                glPointSize( 3 );
-
-            } break;
-
+            case ( SDLK_1 ) :
+            case ( SDLK_2 ) :
+            case ( SDLK_3 ) :
             case ( SDLK_4 ) : {
 
                 /* update model point size */
-                glPointSize( 4 );
+                dl_model.ml_set_wide( vs_event.keysym.sym - SDLK_1 + 1 );
+
+            } break;
+
+            case ( SDLK_TAB ) : {
+
+                /* switch display flag */
+                dl_model.ml_set_switch();
+
+            } break;
+
+            case ( SDLK_RETURN ) : {
+
+                /* compute and display intersection */
+                dl_model.ml_get_intersect();
+
+            } break;
+
+            case ( SDLK_SPACE ) : {
+
+                /* push active element */
+                dl_model.ml_set_push();
+
+            } break;
+
+            case ( SDLK_BACKSPACE ) : {
+
+                /* clear points */
+                dl_model.ml_set_clear();
+
+            } break;
+
+            case ( SDLK_a ) : {
+
+                // **
+                dl_model.ml_set_autopoint();
+
+            } break;
+
+            case ( SDLK_q ) : {
+
+                // compute plane
+                dl_model.ml_set_active( 0 );
+
+            } break;
+
+            case ( SDLK_w ) : {
+
+                // compute plane
+                dl_model.ml_set_active( 1 );
+
+            } break;
+
+            case ( SDLK_e ) : {
+
+                // compute plane
+                dl_model.ml_set_active( 2 );
 
             } break;
 
@@ -355,7 +368,7 @@
 
     }
 
-    void dl_vision_c::vs_button( SDL_MouseButtonEvent vs_event, dl_model_c & dl_model ) {
+    void dl_vision_t::vs_button( SDL_MouseButtonEvent vs_event, dl_model_t & dl_model ) {
 
         /* interaction coordinates variables */
         GLdouble dl_ipx( 0.0 ), dl_ipy( 0.0 ), dl_ipz( 0.0 );
@@ -382,16 +395,13 @@
                 /* assign model new pseudo-center */
                 dl_model.ml_set_center( dl_ipx, dl_ipy, dl_ipz );
 
-                /* assign model new pseudo-center */
-                dl_model.ml_set_actp( dl_ipx, dl_ipy, dl_ipz );
-
             }
 
         }
 
     }
 
-    void dl_vision_c::vs_motion( SDL_MouseMotionEvent vs_event, dl_model_c & dl_model ) {
+    void dl_vision_t::vs_motion( SDL_MouseMotionEvent vs_event, dl_model_t & dl_model ) {
 
         /* motion modifier variables */
         float dl_factor( 1.0 );
@@ -424,14 +434,14 @@
         } else if ( ( vs_event.state & SDL_BUTTON_RMASK ) != 0 ) {
 
             /* update view translation */
-            vs_trans_x += dl_model.ml_get_diag() * ( float ) ( ( int ) vs_event.x - vs_mouse_x ) * DL_INERTIA_TRANS * dl_factor;
-            vs_trans_y -= dl_model.ml_get_diag() * ( float ) ( ( int ) vs_event.y - vs_mouse_y ) * DL_INERTIA_TRANS * dl_factor;
+            vs_trans_x += dl_model.ml_get_wideness() * ( float ) ( ( int ) vs_event.x - vs_mouse_x ) * DL_INERTIA_TRANS * dl_factor;
+            vs_trans_y -= dl_model.ml_get_wideness() * ( float ) ( ( int ) vs_event.y - vs_mouse_y ) * DL_INERTIA_TRANS * dl_factor;
 
         }
 
     }
 
-    void dl_vision_c::vs_wheel( SDL_MouseWheelEvent vs_event, dl_model_c & dl_model ) {
+    void dl_vision_t::vs_wheel( SDL_MouseWheelEvent vs_event, dl_model_t & dl_model ) {
 
         /* motion modifier variables */
         float dl_factor( 1.0 );
@@ -447,12 +457,12 @@
         if ( vs_event.y > 0 ) {
 
             /* update view translation */
-            vs_trans_z += dl_model.ml_get_diag() * DL_INERTIA_WZOOM * dl_factor;
+            vs_trans_z += dl_model.ml_get_wideness() * DL_INERTIA_WZOOM * dl_factor;
 
         } else if ( vs_event.y < 0 ) {
 
             /* update view translation */
-            vs_trans_z -= dl_model.ml_get_diag() * DL_INERTIA_WZOOM * dl_factor;
+            vs_trans_z -= dl_model.ml_get_wideness() * DL_INERTIA_WZOOM * dl_factor;
 
         }
 
@@ -467,26 +477,88 @@
         try {
 
             /* vision class variables */
-            dl_vision_c dl_vision;
+            dl_vision_t dl_vision;
 
             /* model class variables */
-            dl_model_c dl_model( argv[1] );
+            dl_model_t dl_model( argv[1] );
+
+            /* set projection matrix */
+            dl_vision.vs_set_projection( dl_model );
 
             /* principale execution loop */
             dl_vision.vs_execution( dl_model );
 
-        } catch ( ... ) {
+        } catch ( int dl_code ) {
 
-            /* display message */
-            std::cerr << "dalai-suite : error : unable to create render context" << std::endl;
+            /* display format */
+            std::cerr << "dalai-suite : error : ";
+
+            /* switch on error code */
+            switch ( dl_code ) {
+
+                case ( DL_ERROR_MEMORY    ) : {
+
+                    /* display message */
+                    std::cerr << "memory allocation";
+
+                } break;
+
+                case ( DL_ERROR_IO_ACCESS ) : {
+
+                    /* display message */
+                    std::cerr << "unable to access stream";
+
+                } break;
+
+                case ( DL_ERROR_IO_READ   ) : {
+
+                    /* display message */
+                    std::cerr << "stream reading";
+
+                } break;
+
+                case ( DL_ERROR_PARAMS    ) : {
+
+                    /* display message */
+                    std::cerr << "parameter out of range";
+
+                } break;
+
+                case ( DL_ERROR_RENDER ) : {
+
+                    /* display message */
+                    std::cerr << "unable to create rendering context";
+
+                } break;
+
+                case ( DL_ERROR_WINDOW ) : {
+
+                    /* display message */
+                    std::cerr << "unable to create rendering window";
+
+                } break;
+
+                case ( DL_ERROR_OPENGL ) : {
+
+                    /* display message */
+                    std::cerr << "unable to create opengl context";
+
+                } break;
+
+            };
+
+            /* display format */
+            std::cerr << std::endl;
 
             /* send message */
             return( EXIT_FAILURE );
 
-        }
+        } /* otherwise */ {
 
-        /* send message */
-        return( EXIT_SUCCESS );
+            /* send message */
+            return( EXIT_SUCCESS );
+
+        }
 
     }
 

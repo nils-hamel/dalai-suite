@@ -35,6 +35,9 @@
     header - internal includes
  */
 
+    # include "dalai-vision-common.hpp"
+    # include "dalai-vision-surface.hpp"
+
 /*
     header - external includes
  */
@@ -45,15 +48,15 @@
     # include <cmath>
     # include <GL/gl.h>
     # include <GL/glu.h>
+    # include <Eigen/Dense>
     # include <common-include.h>
 
 /*
     header - preprocessor definitions
  */
 
-    /* define opengl arrays types */
-    # define DL_GLARRAY_VERTEX ( GL_DOUBLE )
-    # define DL_GLARRAY_COLORS ( GL_UNSIGNED_BYTE )
+    /* define array mean estimation count */
+    # define DL_MEAN_COUNT     ( 32 )
 
     /* define opengl arrays base pointer */
     # define DL_GLARRAY_BASE_V ( 0 )
@@ -74,12 +77,16 @@
     header - structures
  */
 
-    class dl_model_c {
+    class dl_model_t {
 
     private:
 
         long long int ml_size;
         char *        ml_data;
+        long long int ml_wide;
+        long long int ml_dsfc;
+
+        double        ml_mean;
 
         double        ml_minx;
         double        ml_maxx;
@@ -92,28 +99,36 @@
         double        ml_ceny;
         double        ml_cenz;
 
-        double        ml_actp[3];
+        long long int ml_push;
+        dl_surface_t  ml_s[3];
 
     public:
+        dl_model_t( char * ml_model );
+        ~dl_model_t();
 
-        dl_model_c();
-        dl_model_c( char * ml_model );
-        ~dl_model_c();
+    public:
+        double ml_get_mean( void );
+        double ml_get_wideness( void );
+        void ml_get_intersect( void );
 
-        double ml_get_diag( void );
-
-        void ml_set_center( double dl_x, double dl_y, double dl_z );
+    public:
+        void ml_set_center( double const dl_x, double const dl_y, double const dl_z );
+        void ml_set_active( long long int const dl_active );
+        void ml_set_switch( void );
+        void ml_set_push( void );
+        void ml_set_clear( void );
+        void ml_set_wide( long long int const dl_wide );
+        void ml_set_autopoint( void );
 
     private:
 
-        void ml_set_edges( void );
+        void ml_set_analysis( void );
 
     public:
 
-        void ml_set_actp( double ml_x, double ml_y, double ml_z );
-
-        void ml_display_model( void );
-        void ml_display_frame( void );
+        void ml_ren_model( void );
+        void ml_ren_surface( void );
+        void ml_ren_frame( void );
 
     };
 
