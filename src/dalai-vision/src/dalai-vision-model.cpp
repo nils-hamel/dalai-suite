@@ -28,19 +28,25 @@
 
         : ml_size( 0 )
         , ml_data( nullptr )
-        , ml_wide( 1 )
-        , ml_dsfc( 1 )
-        , ml_mean( 0.0 )
-        , ml_minx( 0.0 )
-        , ml_maxx( 0.0 )
-        , ml_miny( 0.0 )
-        , ml_maxy( 0.0 )
-        , ml_minz( 0.0 )
-        , ml_maxz( 0.0 )
-        , ml_cenx( 0.0 )
-        , ml_ceny( 0.0 )
-        , ml_cenz( 0.0 )
-        , ml_push( 0 )
+
+        , ml_psize( 1 )
+        , ml_sflag( 1 )
+        , ml_pflag( 1 )
+
+        , ml_xmin( 0.0 )
+        , ml_xmax( 0.0 )
+        , ml_ymin( 0.0 )
+        , ml_ymax( 0.0 )
+        , ml_zmin( 0.0 )
+        , ml_zmax( 0.0 )
+
+        , ml_mdmv( 0.0 )
+
+        , ml_xcen( 0.0 )
+        , ml_ycen( 0.0 )
+        , ml_zcen( 0.0 )
+
+        , ml_sact( 0 )
 
     {
 
@@ -83,13 +89,13 @@
         /* model analysis */
         ml_set_analysis();
 
-        /* assign surface color */
-        ml_s[0].sf_set_color( 1.0, 0.0, 0.0 );
-        ml_s[1].sf_set_color( 0.0, 1.0, 0.0 );
-        ml_s[2].sf_set_color( 0.0, 0.0, 1.0 );
-
         /* delete input stream */
         dl_istream.close();
+
+        /* create surface colors */
+        ml_s[0].sf_set_color( 1.0, 0.2, 0.2 );
+        ml_s[1].sf_set_color( 0.2, 1.0, 0.2 );
+        ml_s[2].sf_set_color( 0.2, 0.2, 1.0 );
 
     }
 
@@ -101,7 +107,7 @@
             /* release buffer memory */
             delete [] ml_data;
 
-            /* invalidate pointer */
+            /* invalidate buffer pointer */
             ml_data = nullptr;
 
         }
@@ -112,69 +118,67 @@
     source - accessor methods
  */
 
-    double dl_model_t::ml_get_mean( void ) {
+    double dl_model_t::ml_get_mdmv( void ) {
 
-        /* return mimimal distance mean */
-        return( ml_mean );
+        /* minimal distance mean value */
+        return( ml_mdmv );
 
     }
 
-    double dl_model_t::ml_get_wideness( void ) {
+    double dl_model_t::ml_get_span( void ) {
 
-        /* intervalle variables */
-        double dl_dx( ml_maxx - ml_minx );
-        double dl_dy( ml_maxy - ml_miny );
-        double dl_dz( ml_maxz - ml_minz );
+        /* model range variables */
+        double dl_xspan( ml_xmax - ml_xmin );
+        double dl_yspan( ml_ymax - ml_ymin );
+        double dl_zspan( ml_zmax - ml_zmin );
 
-        /* compute and return wideness */
-        return( sqrt( dl_dx * dl_dx + dl_dy * dl_dy + dl_dz * dl_dz ) );
+        /* compute and return model span */
+        return( sqrt( dl_xspan * dl_xspan + dl_yspan * dl_yspan + dl_zspan * dl_zspan ) );
 
     }
 
     void dl_model_t::ml_get_intersect( void ) {
 
-        /* equation variables */
-        double dl_eqa[4];
-        double dl_eqb[4];
-        double dl_eqc[4];
+        /* surface equation variables */
+        double dl_seqa[4] = { 0.0 };
+        double dl_seqb[4] = { 0.0 };
+        double dl_seqc[4] = { 0.0 };
 
-        /* intersection values */
-        double dl_x( 0.0 );
-        double dl_y( 0.0 );
-        double dl_z( 0.0 );
+        /* intersection coordinates variables */
+        double dl_xint( 0.0 );
+        double dl_yint( 0.0 );
+        double dl_zint( 0.0 );
 
-        /* computation variables */
-        double dl_dd( 0.0 );
-        double dl_dx( 0.0 );
-        double dl_dy( 0.0 );
-        double dl_dz( 0.0 );
+        /* surfaces determinant variables */
+        double dl_sdet( 0.0 );
 
-        /* retrieve surface equation */
-        ml_s[0].sf_get_equation( dl_eqa );
-        ml_s[1].sf_get_equation( dl_eqb );
-        ml_s[2].sf_get_equation( dl_eqc );
+        /* retreive surface equation */
+        ml_s[0].sf_get_equation( dl_seqa );
+        ml_s[1].sf_get_equation( dl_seqb );
+        ml_s[2].sf_get_equation( dl_seqc );
 
-        /* compute determinants */
-        dl_dd = + dl_eqa[0] * ( dl_eqb[1] * dl_eqc[2] - dl_eqb[2] * dl_eqc[1] )
-                - dl_eqa[1] * ( dl_eqb[0] * dl_eqc[2] - dl_eqb[2] * dl_eqc[0] )
-                + dl_eqa[2] * ( dl_eqb[0] * dl_eqc[1] - dl_eqb[1] * dl_eqc[0] );
-        dl_dx = - dl_eqa[3] * ( dl_eqb[1] * dl_eqc[2] - dl_eqb[2] * dl_eqc[1] )
-                + dl_eqa[1] * ( dl_eqb[3] * dl_eqc[2] - dl_eqb[2] * dl_eqc[3] )
-                - dl_eqa[2] * ( dl_eqb[3] * dl_eqc[1] - dl_eqb[1] * dl_eqc[3] );
-        dl_dy = - dl_eqa[0] * ( dl_eqb[3] * dl_eqc[2] - dl_eqb[2] * dl_eqc[3] )
-                + dl_eqa[3] * ( dl_eqb[0] * dl_eqc[2] - dl_eqb[2] * dl_eqc[0] )
-                - dl_eqa[2] * ( dl_eqb[0] * dl_eqc[3] - dl_eqb[3] * dl_eqc[0] );
-        dl_dz = - dl_eqa[0] * ( dl_eqb[1] * dl_eqc[3] - dl_eqb[3] * dl_eqc[1] )
-                + dl_eqa[1] * ( dl_eqb[0] * dl_eqc[3] - dl_eqb[3] * dl_eqc[0] )
-                - dl_eqa[3] * ( dl_eqb[0] * dl_eqc[1] - dl_eqb[1] * dl_eqc[0] );
+        /* compute surfaces determinant */
+        dl_sdet += dl_seqa[0] * ( dl_seqb[1] * dl_seqc[2] - dl_seqb[2] * dl_seqc[1] );
+        dl_sdet -= dl_seqa[1] * ( dl_seqb[0] * dl_seqc[2] - dl_seqb[2] * dl_seqc[0] );
+        dl_sdet += dl_seqa[2] * ( dl_seqb[0] * dl_seqc[1] - dl_seqb[1] * dl_seqc[0] );
 
-        /* compute intersection */
-        dl_x = dl_dx / dl_dd;
-        dl_y = dl_dy / dl_dd;
-        dl_z = dl_dz / dl_dd;
+        /* compute intersection coordinates */
+        dl_xint -= dl_seqa[3] * ( dl_seqb[1] * dl_seqc[2] - dl_seqb[2] * dl_seqc[1] );
+        dl_xint += dl_seqa[1] * ( dl_seqb[3] * dl_seqc[2] - dl_seqb[2] * dl_seqc[3] );
+        dl_xint -= dl_seqa[2] * ( dl_seqb[3] * dl_seqc[1] - dl_seqb[1] * dl_seqc[3] );
 
-        /* display intersection */
-        std::cerr << dl_x << " " << dl_y << " " << dl_z << std::endl;
+        /* compute intersection coordinates */
+        dl_yint -= dl_seqa[0] * ( dl_seqb[3] * dl_seqc[2] - dl_seqb[2] * dl_seqc[3] );
+        dl_yint += dl_seqa[3] * ( dl_seqb[0] * dl_seqc[2] - dl_seqb[2] * dl_seqc[0] );
+        dl_yint -= dl_seqa[2] * ( dl_seqb[0] * dl_seqc[3] - dl_seqb[3] * dl_seqc[0] );
+
+        /* compute intersection coordinates */
+        dl_zint -= dl_seqa[0] * ( dl_seqb[1] * dl_seqc[3] - dl_seqb[3] * dl_seqc[1] );
+        dl_zint += dl_seqa[1] * ( dl_seqb[0] * dl_seqc[3] - dl_seqb[3] * dl_seqc[0] );
+        dl_zint -= dl_seqa[3] * ( dl_seqb[0] * dl_seqc[1] - dl_seqb[1] * dl_seqc[0] );
+
+        /* export intersection coordinates */
+        std::cerr << dl_xint / dl_sdet << " " << dl_yint / dl_sdet << " " << dl_zint / dl_sdet << std::endl;
 
     }
 
@@ -184,17 +188,17 @@
 
     void dl_model_t::ml_set_center( double const dl_x, double const dl_y, double const dl_z ) {
 
-        /* assign model pseudo-center */
-        ml_cenx = dl_x;
-        ml_ceny = dl_y;
-        ml_cenz = dl_z;
+        /* model center */
+        ml_xcen = dl_x;
+        ml_ycen = dl_y;
+        ml_zcen = dl_z;
 
     }
 
-    void dl_model_t::ml_set_active( long long int const dl_active ) {
+    void dl_model_t::ml_set_surface( long long const dl_surface ) {
 
         /* check consistency */
-        if ( ( dl_active < 0 ) || ( dl_active > 2 ) ) {
+        if ( ( dl_surface < 0 ) || ( dl_surface > 2 ) ) {
 
             /* send message */
             throw( DL_ERROR_PARAMS );
@@ -202,42 +206,42 @@
         }
 
         /* assign active surface */
-        ml_push = dl_active;
+        ml_sact = dl_surface;
 
     }
 
-    void dl_model_t::ml_set_switch( void ) {
+    void dl_model_t::ml_set_surface_switch( void ) {
 
-        /* assign display flag */
-        ml_dsfc = 1 - ml_dsfc;
+        /* update display flag */
+        ml_sflag = 1 - ml_sflag;
 
     }
 
-    void dl_model_t::ml_set_push( void ) {
+    void dl_model_t::ml_set_pointsize( long long const dl_pointsize ) {
+
+        /* update display point size */
+        ml_psize = dl_pointsize;
+
+    }
+
+    void dl_model_t::ml_set_point_push( void ) {
 
         /* push current center */
-        ml_s[ml_push].sf_set_point_push( ml_cenx, ml_ceny, ml_cenz, ml_mean );
+        ml_s[ml_sact].sf_set_point_push( ml_xcen, ml_ycen, ml_zcen, ml_mdmv );
 
     }
 
-    void dl_model_t::ml_set_clear( void ) {
-
-        /* clear surface */
-        ml_s[ml_push].sf_set_point_clear();
-
-    }
-
-    void dl_model_t::ml_set_wide( long long int const dl_wide ) {
-
-        /* assign model point size */
-        ml_wide = dl_wide;
-
-    }
-
-    void dl_model_t::ml_set_autopoint( void ) {
+    void dl_model_t::ml_set_point_auto( void ) {
 
         /* automatic resampling */
-        ml_s[ml_push].sf_set_point_auto( ml_data, ml_size, 2 * ml_mean );
+        ml_s[ml_sact].sf_set_point_auto( ml_data, ml_size, 2 * ml_mdmv );
+
+    }
+
+    void dl_model_t::ml_set_point_clear( void ) {
+
+        /* clear surface */
+        ml_s[ml_sact].sf_set_point_clear();
 
     }
 
@@ -254,7 +258,7 @@
         double * dl_poseb( nullptr );
 
         /* allocate and check array memory */
-        if ( ( dl_array = new double[DL_MEAN_COUNT] ) == nullptr ) {
+        if ( ( dl_array = new double[DL_MODEL_MDMVC] ) == nullptr ) {
 
             /* send message */
             throw( DL_ERROR_MEMORY );
@@ -262,15 +266,15 @@
         }
 
         /* initialise model edges */
-        ml_minx = + std::numeric_limits<double>::max();
-        ml_maxx = - std::numeric_limits<double>::max();
-        ml_miny = + std::numeric_limits<double>::max();
-        ml_maxy = - std::numeric_limits<double>::max();
-        ml_minz = + std::numeric_limits<double>::max();
-        ml_maxz = - std::numeric_limits<double>::max();
+        ml_xmin = + std::numeric_limits<double>::max();
+        ml_xmax = - std::numeric_limits<double>::max();
+        ml_ymin = + std::numeric_limits<double>::max();
+        ml_ymax = - std::numeric_limits<double>::max();
+        ml_zmin = + std::numeric_limits<double>::max();
+        ml_zmax = - std::numeric_limits<double>::max();
 
         /* initilaise distances array */
-        for ( long long int dl_parse( 0 ); dl_parse < DL_MEAN_COUNT; dl_parse ++ ) {
+        for ( long long int dl_parse( 0 ); dl_parse < DL_MODEL_MDMVC; dl_parse ++ ) {
 
             /* initialise distance */
             dl_array[dl_parse] = std::numeric_limits<double>::max();
@@ -284,18 +288,18 @@
             dl_posea = ( double * ) ( ml_data + dl_parse );
 
             /* search extremums */
-            if ( ml_minx > dl_posea[0] ) ml_minx = dl_posea[0];
-            if ( ml_maxx < dl_posea[0] ) ml_maxx = dl_posea[0];
-            if ( ml_miny > dl_posea[1] ) ml_miny = dl_posea[1];
-            if ( ml_maxy < dl_posea[1] ) ml_maxy = dl_posea[1];
-            if ( ml_minz > dl_posea[2] ) ml_minz = dl_posea[2];
-            if ( ml_maxz < dl_posea[2] ) ml_maxz = dl_posea[2];
+            if ( ml_xmin > dl_posea[0] ) ml_xmin = dl_posea[0];
+            if ( ml_xmax < dl_posea[0] ) ml_xmax = dl_posea[0];
+            if ( ml_ymin > dl_posea[1] ) ml_ymin = dl_posea[1];
+            if ( ml_ymax < dl_posea[1] ) ml_ymax = dl_posea[1];
+            if ( ml_zmin > dl_posea[2] ) ml_zmin = dl_posea[2];
+            if ( ml_zmax < dl_posea[2] ) ml_zmax = dl_posea[2];
 
             /* parsing model elements */
-            for ( long long int dl_index( 0 ); dl_index < DL_MEAN_COUNT; dl_index ++ ) {
+            for ( long long int dl_index( 0 ); dl_index < DL_MODEL_MDMVC; dl_index ++ ) {
 
                 /* compute array mapping */
-                dl_poseb = ( double * ) ( ml_data + dl_index * ( ( ml_size / 27 ) / DL_MEAN_COUNT ) * 27 );
+                dl_poseb = ( double * ) ( ml_data + dl_index * ( ( ml_size / 27 ) / DL_MODEL_MDMVC ) * 27 );
 
                 /* compute distance */
                 dl_distance = ( dl_posea[0] - dl_poseb[0] ) * ( dl_posea[0] - dl_poseb[0] ) +
@@ -310,28 +314,23 @@
         }
 
         /* reset model minimum mean */
-        ml_mean = 0.0;
+        ml_mdmv = 0.0;
 
         /* compute minimum mean */
-        for ( long long int dl_parse( 0 ); dl_parse < DL_MEAN_COUNT; dl_parse ++ ) {
+        for ( long long int dl_parse( 0 ); dl_parse < DL_MODEL_MDMVC; dl_parse ++ ) {
 
             /* accumulate minimum distances */
-            ml_mean += sqrt( dl_array[dl_parse] );
+            ml_mdmv += sqrt( dl_array[dl_parse] );
 
         }
 
         /* terminate and assign minimum mean computation */
-        ml_mean /= double( DL_MEAN_COUNT );
-
-        /* assign mean as surface tolerence */
-        //ml_s[0].sf_set_tolerence( ml_mean );
-        //ml_s[1].sf_set_tolerence( ml_mean );
-        //ml_s[2].sf_set_tolerence( ml_mean );
+        ml_mdmv /= double( DL_MODEL_MDMVC );
 
         /* compute model pseudo-center */
-        ml_cenx = 0.5 * ( ml_maxx + ml_minx );
-        ml_ceny = 0.5 * ( ml_maxy + ml_miny );
-        ml_cenz = 0.5 * ( ml_maxz + ml_minz );
+        ml_xcen = 0.5 * ( ml_xmax + ml_xmin );
+        ml_ycen = 0.5 * ( ml_ymax + ml_ymin );
+        ml_zcen = 0.5 * ( ml_zmax + ml_zmin );
 
         /* release array memory */
         delete [] dl_array;
@@ -344,22 +343,22 @@
 
     void dl_model_t::ml_ren_model( void ) {
 
-        /* model center */
-        glTranslatef( -ml_cenx, -ml_ceny, -ml_cenz );
+        /* model translation */
+        glTranslatef( -ml_xcen, -ml_ycen, -ml_zcen );
 
         /* disable blending */
         glDisable( GL_BLEND );
 
         /* set point size */
-        glPointSize( ml_wide );
+        glPointSize( ml_psize );
 
         /* update opengl array state */
         glEnableClientState( GL_VERTEX_ARRAY );
         glEnableClientState( GL_COLOR_ARRAY  );
 
         /* configure opengl arrays */
-        glVertexPointer( 3, DL_GLARRAY_VERTEX, DL_GLARRAY_STRIPE, ml_data + DL_GLARRAY_BASE_V );
-        glColorPointer ( 3, DL_GLARRAY_COLORS, DL_GLARRAY_STRIPE, ml_data + DL_GLARRAY_BASE_C );
+        glVertexPointer( 3, DL_MODEL_V_TYPE, DL_MODEL_STRIPE, ml_data + DL_MODEL_V_BASE );
+        glColorPointer ( 3, DL_MODEL_C_TYPE, DL_MODEL_STRIPE, ml_data + DL_MODEL_C_BASE );
 
         /* display opengl arrays content - points */
         glDrawArrays( GL_POINTS, 0, ml_size / 27 );
@@ -368,27 +367,35 @@
 
     void dl_model_t::ml_ren_surface( void ) {
 
-        /* model center */
-        glTranslatef( -ml_cenx, -ml_ceny, -ml_cenz );
-
-        /* disable blending */
-        glDisable( GL_BLEND );
-
-        /* display surface points */
-        ml_s[0].sf_ren_point( ml_wide << 1 );
-        ml_s[1].sf_ren_point( ml_wide << 1 );
-        ml_s[2].sf_ren_point( ml_wide << 1 );
+        /* model translation */
+        glTranslatef( -ml_xcen, -ml_ycen, -ml_zcen );
 
         /* check display flag */
-        if ( ml_dsfc == 1 ) {
+        if ( ml_pflag != 0 ) {
+
+            /* disable blending */
+            glDisable( GL_BLEND );
+
+            /* opengl primitive properties */
+            glPointSize( ml_psize * 2 );
+
+            /* display surface points */
+            ml_s[0].sf_ren_point();
+            ml_s[1].sf_ren_point();
+            ml_s[2].sf_ren_point();
+
+        }
+
+        /* check display flag */
+        if ( ml_sflag == 1 ) {
 
             /* enable blending */
             glEnable( GL_BLEND );
 
             /* display surfaces */
-            ml_s[0].sf_ren_surface( ml_get_wideness() / 2.0 );
-            ml_s[1].sf_ren_surface( ml_get_wideness() / 2.0 );
-            ml_s[2].sf_ren_surface( ml_get_wideness() / 2.0 );
+            ml_s[0].sf_ren_surface( ml_get_span() / 2.0 );
+            ml_s[1].sf_ren_surface( ml_get_span() / 2.0 );
+            ml_s[2].sf_ren_surface( ml_get_span() / 2.0 );
 
         }
 
@@ -397,70 +404,71 @@
     void dl_model_t::ml_ren_frame( void ) {
 
         /* scale variables */
-        double dl_lscale( ml_get_mean() );
-        double dl_uscale( ml_get_wideness() );
+        double dl_mdmv( ml_get_mdmv() );
+        double dl_span( ml_get_span() );
 
         /* frame position variables */
-        double dl_fpos1( dl_lscale );
-        double dl_fpos2( dl_lscale * 2 );
-        double dl_fpos3( dl_lscale * 100 );
-        double dl_fpos4( dl_lscale * 110 );
-        double dl_fpos5( dl_uscale / 2.0 );
+        double dl_frame1( dl_mdmv );
+        double dl_frame2( dl_mdmv * 2 );
+        double dl_frame3( dl_mdmv * 100 );
+        double dl_frame4( dl_mdmv * 110 );
+        double dl_frame5( dl_span / 2.0 );
 
         /* disable blending */
         glDisable( GL_BLEND );
 
-        /* set line width */
-        glLineWidth( ml_wide );
+        /* opengl primitive properties */
+        glLineWidth( ml_psize );
 
-        /* primitive - frame */
+        /* opengl primitives */
         glBegin( GL_LINES );
 
             /* frame color */
             glColor3f( 1.0, 0.0, 0.0 );
 
-            /* frame element */
-            glVertex3f( -dl_fpos5, 0.0, 0.0 );
-            glVertex3f( -dl_fpos4, 0.0, 0.0 );
-            glVertex3f( -dl_fpos3, 0.0, 0.0 );
-            glVertex3f( -dl_fpos2, 0.0, 0.0 );
-            glVertex3f( -dl_fpos1, 0.0, 0.0 );
-            glVertex3f( +dl_fpos1, 0.0, 0.0 );
-            glVertex3f( +dl_fpos2, 0.0, 0.0 );
-            glVertex3f( +dl_fpos3, 0.0, 0.0 );
-            glVertex3f( +dl_fpos4, 0.0, 0.0 );
-            glVertex3f( +dl_fpos5, 0.0, 0.0 );
+            /* frame elements */
+            glVertex3f( - dl_frame5, 0.0, 0.0 );
+            glVertex3f( - dl_frame4, 0.0, 0.0 );
+            glVertex3f( - dl_frame3, 0.0, 0.0 );
+            glVertex3f( - dl_frame2, 0.0, 0.0 );
+            glVertex3f( - dl_frame1, 0.0, 0.0 );
+            glVertex3f( + dl_frame1, 0.0, 0.0 );
+            glVertex3f( + dl_frame2, 0.0, 0.0 );
+            glVertex3f( + dl_frame3, 0.0, 0.0 );
+            glVertex3f( + dl_frame4, 0.0, 0.0 );
+            glVertex3f( + dl_frame5, 0.0, 0.0 );
 
             /* frame color */
             glColor3f( 0.0, 1.0, 0.0 );
 
-            /* frame element */
-            glVertex3f( 0.0, -dl_fpos5, 0.0 );
-            glVertex3f( 0.0, -dl_fpos4, 0.0 );
-            glVertex3f( 0.0, -dl_fpos3, 0.0 );
-            glVertex3f( 0.0, -dl_fpos2, 0.0 );
-            glVertex3f( 0.0, -dl_fpos1, 0.0 );
-            glVertex3f( 0.0, +dl_fpos1, 0.0 );
-            glVertex3f( 0.0, +dl_fpos2, 0.0 );
-            glVertex3f( 0.0, +dl_fpos3, 0.0 );
-            glVertex3f( 0.0, +dl_fpos4, 0.0 );
-            glVertex3f( 0.0, +dl_fpos5, 0.0 );
+            /* frame elements */
+            glVertex3f( 0.0, - dl_frame5, 0.0 );
+            glVertex3f( 0.0, - dl_frame4, 0.0 );
+            glVertex3f( 0.0, - dl_frame3, 0.0 );
+            glVertex3f( 0.0, - dl_frame2, 0.0 );
+            glVertex3f( 0.0, - dl_frame1, 0.0 );
+            glVertex3f( 0.0, + dl_frame1, 0.0 );
+            glVertex3f( 0.0, + dl_frame2, 0.0 );
+            glVertex3f( 0.0, + dl_frame3, 0.0 );
+            glVertex3f( 0.0, + dl_frame4, 0.0 );
+            glVertex3f( 0.0, + dl_frame5, 0.0 );
 
             /* frame color */
             glColor3f( 0.0, 0.0, 1.0 );
 
-            /* frame element */
-            glVertex3f( 0.0, 0.0, -dl_fpos5 );
-            glVertex3f( 0.0, 0.0, -dl_fpos4 );
-            glVertex3f( 0.0, 0.0, -dl_fpos3 );
-            glVertex3f( 0.0, 0.0, -dl_fpos2 );
-            glVertex3f( 0.0, 0.0, -dl_fpos1 );
-            glVertex3f( 0.0, 0.0, +dl_fpos1 );
-            glVertex3f( 0.0, 0.0, +dl_fpos2 );
-            glVertex3f( 0.0, 0.0, +dl_fpos3 );
-            glVertex3f( 0.0, 0.0, +dl_fpos4 );
-            glVertex3f( 0.0, 0.0, +dl_fpos5 );
+            /* frame elements */
+            glVertex3f( 0.0, 0.0, - dl_frame5 );
+            glVertex3f( 0.0, 0.0, - dl_frame4 );
+            glVertex3f( 0.0, 0.0, - dl_frame3 );
+            glVertex3f( 0.0, 0.0, - dl_frame2 );
+            glVertex3f( 0.0, 0.0, - dl_frame1 );
+            glVertex3f( 0.0, 0.0, + dl_frame1 );
+            glVertex3f( 0.0, 0.0, + dl_frame2 );
+            glVertex3f( 0.0, 0.0, + dl_frame3 );
+            glVertex3f( 0.0, 0.0, + dl_frame4 );
+            glVertex3f( 0.0, 0.0, + dl_frame5 );
 
+        /* opengl primitives */
         glEnd();
 
     }

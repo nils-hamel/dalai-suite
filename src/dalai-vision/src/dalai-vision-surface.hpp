@@ -73,7 +73,6 @@
     class dl_surface_t {
 
     private:
-
         double    sf_cx;
         double    sf_cy;
         double    sf_cz;
@@ -107,7 +106,7 @@
 
     public:
         void sf_set_point_push( double const dl_x, double const dl_y, double const dl_z, double const dl_limit );
-        void sf_set_point_auto( char const * const dl_data, long long int const dl_size, double const dl_limit );
+        void sf_set_point_auto( char const * const dl_data, long long const dl_size, double const dl_limit );
         void sf_set_point_clear( void );
 
     private:
@@ -124,7 +123,7 @@
 
     public:
         void sf_ren_surface( double const dl_w );
-        void sf_ren_point( long long int const dl_size );
+        void sf_ren_point( void );
 
     };
 

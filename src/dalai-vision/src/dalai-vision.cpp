@@ -28,17 +28,21 @@
 
         : vs_window( NULL )
         , vs_context( 0 )
+
         , vs_width( 0 )
         , vs_height( 0 )
         , vs_near( 0.001 )
         , vs_far( 100.0 )
+
         , vs_state( true )
+
         , vs_angle_x( 0.0 )
         , vs_angle_y( 0.0 )
         , vs_angle_z( 0.0 )
         , vs_trans_x( 0.0 )
         , vs_trans_y( 0.0 )
         , vs_trans_z( 0.0 )
+
         , vs_mouse_x( 0 )
         , vs_mouse_y( 0 )
 
@@ -63,6 +67,10 @@
 
         }
 
+        /* retreive display resolution */
+        vs_width  = dl_display.w;
+        vs_height = dl_display.h;
+
         /* enable double-buffering */
         SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 
@@ -76,7 +84,7 @@
         SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24 );
 
         /* create sdl window */
-        if ( ( vs_window = SDL_CreateWindow( "", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, dl_display.w, dl_display.h, SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL ) ) == NULL ) {
+        if ( ( vs_window = SDL_CreateWindow( "", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, vs_width, vs_height, SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL ) ) == NULL ) {
 
             /* throw exception */
             throw( DL_ERROR_WINDOW );
@@ -103,17 +111,6 @@
         /* opengl blending function */
         glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
-        /* opengl client array */
-        glEnableClientState( GL_VERTEX_ARRAY );
-        glEnableClientState( GL_COLOR_ARRAY  );
-
-        /* assign screen dimension */
-        vs_width  = dl_display.w;
-        vs_height = dl_display.h;
-
-        /* compute projection matrix */
-        //vs_set_projection();
-
     }
 
     dl_vision_t::~dl_vision_t() {
@@ -133,16 +130,36 @@
     }
 
 /*
-   source - mutator methods
+    source - accessor methods
+ */
+
+    bool dl_vision_t::vs_get_click( int const dl_mx, int const dl_my, double * const dl_px, double * const dl_py, double * const dl_pz ) {
+
+        /* click depth variables */
+        float dl_depth( 0.0 );
+
+        /* retrieve click depth */
+        glReadPixels( dl_mx, vs_height - dl_my, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, & dl_depth );
+
+        /* check depth value */
+        if ( dl_depth < 1.0 ) {
+
+            /* retrieve model click positon */
+            gluUnProject( dl_mx, vs_height - dl_my, dl_depth, vs_modelview, vs_projection, vs_viewport, dl_px, dl_py, dl_pz );
+
+            /* return status */
+            return( true );
+
+        /* return status */
+        } else { return( false ); }
+
+    }
+
+/*
+    source - mutator methods
  */
 
     void dl_vision_t::vs_set_projection( dl_model_t & dl_model ) {
-
-        /* model minimum mean variables */
-        double dl_mean( dl_model.ml_get_mean() );
-
-        /* model wideness variables */
-        double dl_wideness( dl_model.ml_get_wideness() );
 
         /* opengl viewport */
         glViewport( 0.0, 0.0, vs_width, vs_height );
@@ -157,7 +174,7 @@
         glLoadIdentity();
 
         /* compute matrix coefficients */
-        gluPerspective( 45.0, double( vs_width ) / double( vs_height ), dl_mean, dl_wideness );
+        gluPerspective( 45.0, double( vs_width ) / double( vs_height ), dl_model.ml_get_mdmv(), dl_model.ml_get_span() );
 
         /* push projection matrix */
         glGetDoublev( GL_PROJECTION_MATRIX, vs_projection );
@@ -304,14 +321,14 @@
             case ( SDLK_4 ) : {
 
                 /* update model point size */
-                dl_model.ml_set_wide( vs_event.keysym.sym - SDLK_1 + 1 );
+                dl_model.ml_set_pointsize( vs_event.keysym.sym - SDLK_1 + 1 );
 
             } break;
 
             case ( SDLK_TAB ) : {
 
                 /* switch display flag */
-                dl_model.ml_set_switch();
+                dl_model.ml_set_surface_switch();
 
             } break;
 
@@ -322,45 +339,31 @@
 
             } break;
 
-            case ( SDLK_SPACE ) : {
-
-                /* push active element */
-                dl_model.ml_set_push();
-
-            } break;
-
             case ( SDLK_BACKSPACE ) : {
 
                 /* clear points */
-                dl_model.ml_set_clear();
-
-            } break;
-
-            case ( SDLK_a ) : {
-
-                // **
-                dl_model.ml_set_autopoint();
+                dl_model.ml_set_point_clear();
 
             } break;
 
             case ( SDLK_q ) : {
 
-                // compute plane
-                dl_model.ml_set_active( 0 );
+                /* select active surface */
+                dl_model.ml_set_surface( 0 );
 
             } break;
 
             case ( SDLK_w ) : {
 
-                // compute plane
-                dl_model.ml_set_active( 1 );
+                /* select active surface */
+                dl_model.ml_set_surface( 1 );
 
             } break;
 
             case ( SDLK_e ) : {
 
-                // compute plane
-                dl_model.ml_set_active( 2 );
+                /* select active surface */
+                dl_model.ml_set_surface( 2 );
 
             } break;
 
@@ -370,30 +373,43 @@
 
     void dl_vision_t::vs_button( SDL_MouseButtonEvent vs_event, dl_model_t & dl_model ) {
 
-        /* interaction coordinates variables */
-        GLdouble dl_ipx( 0.0 ), dl_ipy( 0.0 ), dl_ipz( 0.0 );
+        /* click components variables */
+        double dl_mx( 0.0 );
+        double dl_my( 0.0 );
+        double dl_mz( 0.0 );
 
-        /* depth component variables */
-        GLfloat dl_depth( 0.0 );
-
-        /* assign mouse click position */
+        /* push mouse position at click */
         vs_mouse_x = vs_event.x;
         vs_mouse_y = vs_event.y;
 
-        /* check event type */
-        if ( vs_event.clicks == 2 ) {
+        /* switch on button */
+        if ( vs_event.button == SDL_BUTTON_LEFT ) {
 
-            /* retrieve click depth component */
-            glReadPixels( vs_event.x, vs_height - vs_event.y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, & dl_depth );
+            /* switch on click type */
+            if ( vs_event.clicks == 2 ) {
 
-            /* check depth clear value */
-            if ( dl_depth < 1.0 ) {
+                /* compute and check click components */
+                if ( vs_get_click( vs_event.x, vs_event.y, & dl_mx, & dl_my, & dl_mz ) == true ) {
 
-                /* retrieve model click positon */
-                gluUnProject( vs_event.x, vs_height - vs_event.y, dl_depth, vs_modelview, vs_projection, vs_viewport, & dl_ipx, & dl_ipy, & dl_ipz );
+                    /* update model center */
+                    dl_model.ml_set_center( dl_mx, dl_my, dl_mz );
 
-                /* assign model new pseudo-center */
-                dl_model.ml_set_center( dl_ipx, dl_ipy, dl_ipz );
+                }
+
+            }
+
+        } else if ( vs_event.button == SDL_BUTTON_RIGHT ) {
+
+            /* switch on click type */
+            if ( vs_event.clicks == 1 ) {
+
+                /* push model center to surface */
+                dl_model.ml_set_point_push();
+
+            } else if ( vs_event.clicks == 2 ) {
+
+                /* surface point auto-push */
+                dl_model.ml_set_point_auto();
 
             }
 
@@ -403,39 +419,31 @@
 
     void dl_vision_t::vs_motion( SDL_MouseMotionEvent vs_event, dl_model_t & dl_model ) {
 
-        /* motion modifier variables */
-        float dl_factor( 1.0 );
-
-        /* keyboard modifiers variables */
-        SDL_Keymod dl_modifs( SDL_GetModState() );
+        /* inertia variables */
+        float dl_inertia( 1.0 );
 
         /* analyse keyboard modifiers */
-        if ( ( dl_modifs & KMOD_CTRL  ) != 0 ) dl_factor = 5.0;
-        if ( ( dl_modifs & KMOD_SHIFT ) != 0 ) dl_factor = 0.2;
+        if ( ( SDL_GetModState() & KMOD_CTRL  ) != 0 ) dl_inertia *= 5;
+        if ( ( SDL_GetModState() & KMOD_SHIFT ) != 0 ) dl_inertia /= 5;
 
-        /* check state - active buttion */
+        /* switch on button */
         if ( ( vs_event.state & SDL_BUTTON_LMASK ) != 0 ) {
 
-            /* update view angles */
-            vs_angle_x += ( float ) ( ( int ) vs_event.y - vs_mouse_y ) * DL_INERTIA_ANGLE * dl_factor;
+            /* update inertia value */
+            dl_inertia *= DL_INERTIA_ANGLE;
 
-            if ( vs_modelview[10] < 0.0 ) {
-
-                /* update view angles */
-                vs_angle_z -= ( float ) ( ( int ) vs_event.x - vs_mouse_x ) * DL_INERTIA_ANGLE * dl_factor;
-
-            } else {
-
-                /* update view angles */
-                vs_angle_z += ( float ) ( ( int ) vs_event.x - vs_mouse_x ) * DL_INERTIA_ANGLE * dl_factor;
-
-            }
+            /* update view angle */
+            vs_angle_x += dl_inertia * float( int( vs_event.y ) - vs_mouse_y );
+            vs_angle_z += dl_inertia * float( int( vs_event.x ) - vs_mouse_x ) * ( vs_modelview[10] < 0 ? -1.0 : +1.0 );
 
         } else if ( ( vs_event.state & SDL_BUTTON_RMASK ) != 0 ) {
 
-            /* update view translation */
-            vs_trans_x += dl_model.ml_get_wideness() * ( float ) ( ( int ) vs_event.x - vs_mouse_x ) * DL_INERTIA_TRANS * dl_factor;
-            vs_trans_y -= dl_model.ml_get_wideness() * ( float ) ( ( int ) vs_event.y - vs_mouse_y ) * DL_INERTIA_TRANS * dl_factor;
+            /* update inertia value */
+            dl_inertia *= DL_INERTIA_TRANS * dl_model.ml_get_mdmv();
+
+            /* update model translation */
+            vs_trans_x += dl_inertia * DL_INERTIA_TRANS * float( int( vs_event.x ) - vs_mouse_x );
+            vs_trans_y -= dl_inertia * DL_INERTIA_TRANS * float( int( vs_event.y ) - vs_mouse_y );
 
         }
 
@@ -443,26 +451,23 @@
 
     void dl_vision_t::vs_wheel( SDL_MouseWheelEvent vs_event, dl_model_t & dl_model ) {
 
-        /* motion modifier variables */
-        float dl_factor( 1.0 );
-
-        /* keyboard modifiers variables */
-        SDL_Keymod dl_modifs( SDL_GetModState() );
+        /* inertia variables */
+        float dl_inertia( dl_model.ml_get_mdmv() * DL_INERTIA_WZOOM );
 
         /* analyse keyboard modifiers */
-        if ( ( dl_modifs & KMOD_CTRL  ) != 0 ) dl_factor = 5.0;
-        if ( ( dl_modifs & KMOD_SHIFT ) != 0 ) dl_factor = 0.2;
+        if ( ( SDL_GetModState() & KMOD_CTRL  ) != 0 ) dl_inertia *= 5;
+        if ( ( SDL_GetModState() & KMOD_SHIFT ) != 0 ) dl_inertia /= 5;
 
-        /* switch on direction */
+        /* switch on wheel direction */
         if ( vs_event.y > 0 ) {
 
-            /* update view translation */
-            vs_trans_z += dl_model.ml_get_wideness() * DL_INERTIA_WZOOM * dl_factor;
+            /* update model translation */
+            vs_trans_z += dl_inertia;
 
         } else if ( vs_event.y < 0 ) {
 
-            /* update view translation */
-            vs_trans_z -= dl_model.ml_get_wideness() * DL_INERTIA_WZOOM * dl_factor;
+            /* update model translation */
+            vs_trans_z -= dl_inertia;
 
         }
 
@@ -474,13 +479,14 @@
 
     int main( int argc, char ** argv ) {
 
+        /* error management */
         try {
 
             /* vision class variables */
             dl_vision_t dl_vision;
 
             /* model class variables */
-            dl_model_t dl_model( argv[1] );
+            dl_model_t dl_model( lc_read_string( argc, argv, "--model", "-m" ) );
 
             /* set projection matrix */
             dl_vision.vs_set_projection( dl_model );
@@ -490,65 +496,59 @@
 
         } catch ( int dl_code ) {
 
-            /* display format */
-            std::cerr << "dalai-suite : error : ";
-
             /* switch on error code */
             switch ( dl_code ) {
 
                 case ( DL_ERROR_MEMORY    ) : {
 
                     /* display message */
-                    std::cerr << "memory allocation";
+                    std::cerr << "dalai-suite : error : memory allocation" << std::endl;
 
                 } break;
 
                 case ( DL_ERROR_IO_ACCESS ) : {
 
                     /* display message */
-                    std::cerr << "unable to access stream";
+                    std::cerr << "dalai-suite : error : unable to access stream" << std::endl;
 
                 } break;
 
                 case ( DL_ERROR_IO_READ   ) : {
 
                     /* display message */
-                    std::cerr << "stream reading";
+                    std::cerr << "dalai-suite : error : stream reading" << std::endl;
 
                 } break;
 
                 case ( DL_ERROR_PARAMS    ) : {
 
                     /* display message */
-                    std::cerr << "parameter out of range";
+                    std::cerr << "dalai-suite : error : parameter out of range" << std::endl;
 
                 } break;
 
                 case ( DL_ERROR_RENDER ) : {
 
                     /* display message */
-                    std::cerr << "unable to create rendering context";
+                    std::cerr << "dalai-suite : error : unable to create rendering context" << std::endl;
 
                 } break;
 
                 case ( DL_ERROR_WINDOW ) : {
 
                     /* display message */
-                    std::cerr << "unable to create rendering window";
+                    std::cerr << "dalai-suite : error : unable to create rendering window" << std::endl;
 
                 } break;
 
                 case ( DL_ERROR_OPENGL ) : {
 
                     /* display message */
-                    std::cerr << "unable to create opengl context";
+                    std::cerr << "dalai-suite : error : unable to create opengl context" << std::endl;
 
                 } break;
 
             };
-
-            /* display format */
-            std::cerr << std::endl;
 
             /* send message */
             return( EXIT_FAILURE );

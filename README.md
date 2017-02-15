@@ -13,6 +13,7 @@ The _dalai-suite_ comes with the following package dependencies (Ubuntu 16.04 LT
 
 * mesa-common-dev
 * libsdl2-dev
+* libeigen3-dev
 
 The code documentation is built using Doxygen.
 

@@ -53,10 +53,6 @@
     # define DL_ERROR_WINDOW    int( 6 )
     # define DL_ERROR_OPENGL    int( 7 )
 
-    /* define opengl arrays types */
-    # define DL_GLARRAY_VERTEX ( GL_DOUBLE )
-    # define DL_GLARRAY_COLORS ( GL_UNSIGNED_BYTE )
-
 /*
     header - preprocessor macros
  */

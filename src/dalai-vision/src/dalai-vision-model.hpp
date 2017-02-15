@@ -46,6 +46,7 @@
     # include <fstream>
     # include <limits>
     # include <cmath>
+    # include <cstdio>
     # include <GL/gl.h>
     # include <GL/glu.h>
     # include <Eigen/Dense>
@@ -56,14 +57,18 @@
  */
 
     /* define array mean estimation count */
-    # define DL_MEAN_COUNT     ( 32 )
+    # define DL_MODEL_MDMVC  ( 32 )
+
+    /* define opengl arrays types */
+    # define DL_MODEL_V_TYPE ( GL_DOUBLE )
+    # define DL_MODEL_C_TYPE ( GL_UNSIGNED_BYTE )
 
     /* define opengl arrays base pointer */
-    # define DL_GLARRAY_BASE_V ( 0 )
-    # define DL_GLARRAY_BASE_C ( sizeof( double ) * 3 )
+    # define DL_MODEL_V_BASE ( 0 )
+    # define DL_MODEL_C_BASE ( sizeof( double ) * 3 )
 
     /* define opengl arrays stripe */
-    # define DL_GLARRAY_STRIPE ( ( sizeof( double ) + sizeof( char ) ) * 3 )
+    # define DL_MODEL_STRIPE ( ( sizeof( double ) + sizeof( char ) ) * 3 )
 
 /*
     header - preprocessor macros
@@ -80,45 +85,46 @@
     class dl_model_t {
 
     private:
+        long long    ml_size;
+        char *       ml_data;
 
-        long long int ml_size;
-        char *        ml_data;
-        long long int ml_wide;
-        long long int ml_dsfc;
+        long long    ml_psize;
+        long long    ml_sflag;
+        long long    ml_pflag;
 
-        double        ml_mean;
+        double       ml_xmin;
+        double       ml_xmax;
+        double       ml_ymin;
+        double       ml_ymax;
+        double       ml_zmin;
+        double       ml_zmax;
 
-        double        ml_minx;
-        double        ml_maxx;
-        double        ml_miny;
-        double        ml_maxy;
-        double        ml_minz;
-        double        ml_maxz;
+        double       ml_mdmv;
 
-        double        ml_cenx;
-        double        ml_ceny;
-        double        ml_cenz;
+        double       ml_xcen;
+        double       ml_ycen;
+        double       ml_zcen;
 
-        long long int ml_push;
-        dl_surface_t  ml_s[3];
+        long long    ml_sact;
+        dl_surface_t ml_s[3];
 
     public:
         dl_model_t( char * ml_model );
         ~dl_model_t();
 
     public:
-        double ml_get_mean( void );
-        double ml_get_wideness( void );
+        double ml_get_mdmv( void );
+        double ml_get_span( void );
         void ml_get_intersect( void );
 
     public:
         void ml_set_center( double const dl_x, double const dl_y, double const dl_z );
-        void ml_set_active( long long int const dl_active );
-        void ml_set_switch( void );
-        void ml_set_push( void );
-        void ml_set_clear( void );
-        void ml_set_wide( long long int const dl_wide );
-        void ml_set_autopoint( void );
+        void ml_set_surface( long long const dl_active );
+        void ml_set_surface_switch( void );
+        void ml_set_pointsize( long long const dl_pointsize );
+        void ml_set_point_push( void );
+        void ml_set_point_auto( void );
+        void ml_set_point_clear( void );
 
     private:
 

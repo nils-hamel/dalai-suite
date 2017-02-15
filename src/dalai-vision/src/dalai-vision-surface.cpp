@@ -100,7 +100,7 @@
 
     }
 
-    void dl_surface_t::sf_set_point_auto( char const * const dl_data, long long int const dl_size, double const dl_limit ) {
+    void dl_surface_t::sf_set_point_auto( char const * const dl_data, long long const dl_size, double const dl_limit ) {
 
         /* planimetric range variables */
         double dl_range( 0.0 );
@@ -315,7 +315,7 @@
         /* release buffer memory */
         free( sf_data );
 
-        /* invalidate pointer */
+        /* invalidate buffer pointer */
         sf_data = nullptr;
 
     }
@@ -345,13 +345,10 @@
 
     }
 
-    void dl_surface_t::sf_ren_point( long long int const dl_size ) {
+    void dl_surface_t::sf_ren_point( void ) {
 
         /* assign surface color */
         glColor3f( sf_cr, sf_cg, sf_cb );
-
-        /* assign point size */
-        glPointSize( dl_size );
 
         /* update opengl array state */
         glEnableClientState ( GL_VERTEX_ARRAY );
