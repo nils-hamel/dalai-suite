@@ -56,7 +56,7 @@
  */
 
     /* define memory allocation steps */
-    # define DL_MEMORY_STEP ( 8192 )
+    # define DL_SURFACE_STEP ( 8192 )
 
 /*
     header - preprocessor macros

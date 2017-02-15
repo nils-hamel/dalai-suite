@@ -291,7 +291,7 @@
         double * dl_swap( nullptr );
 
         /* re-allocate and check buffer memory */
-        if ( ( dl_swap = ( double * ) realloc( sf_data, ( sf_virt + DL_MEMORY_STEP ) * sizeof( double ) ) ) == nullptr ) {
+        if ( ( dl_swap = ( double * ) realloc( sf_data, ( sf_virt + DL_SURFACE_STEP ) * sizeof( double ) ) ) == nullptr ) {
 
             /* send message */
             throw( DL_ERROR_MEMORY );
@@ -299,7 +299,7 @@
         }
 
         /* update virtual size */
-        sf_virt += DL_MEMORY_STEP;
+        sf_virt += DL_SURFACE_STEP;
 
         /* assign memory pointer */
         sf_data = dl_swap;

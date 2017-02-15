@@ -127,7 +127,6 @@
         void ml_set_point_clear( void );
 
     private:
-
         void ml_set_analysis( void );
 
     public:

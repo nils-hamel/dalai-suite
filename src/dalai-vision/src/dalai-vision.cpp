@@ -374,6 +374,13 @@
 
             } break;
 
+            case ( SDLK_a ) : {
+
+                /* surface point auto-push */
+                dl_model.ml_set_point_auto();
+
+            } break;
+
         };
 
     }
@@ -412,11 +419,6 @@
 
                 /* push model center to surface */
                 dl_model.ml_set_point_push();
-
-            } else if ( vs_event.clicks == 2 ) {
-
-                /* surface point auto-push */
-                dl_model.ml_set_point_auto();
 
             }
 

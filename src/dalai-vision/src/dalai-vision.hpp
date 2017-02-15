@@ -122,7 +122,6 @@
         GLint         vs_viewport[4];
 
     public:
-
         dl_vision_t();
         ~dl_vision_t();
 
