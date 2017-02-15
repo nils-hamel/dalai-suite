@@ -174,10 +174,17 @@
         glLoadIdentity();
 
         /* compute matrix coefficients */
-        gluPerspective( 45.0, double( vs_width ) / double( vs_height ), dl_model.ml_get_mdmv(), dl_model.ml_get_span() );
+        gluPerspective( 45.0, double( vs_width ) / double( vs_height ), dl_model.ml_get_mdmv() * 10.0, dl_model.ml_get_span() * 2.0 );
 
         /* push projection matrix */
         glGetDoublev( GL_PROJECTION_MATRIX, vs_projection );
+
+    }
+
+    void dl_vision_t::vs_set_viewpoint( dl_model_t & dl_model ) {
+
+        /* assign initial translation */
+        vs_trans_z = -dl_model.ml_get_span();
 
     }
 
@@ -398,7 +405,7 @@
 
             }
 
-        } else if ( vs_event.button == SDL_BUTTON_RIGHT ) {
+        } else if ( vs_event.button == SDL_BUTTON_MIDDLE ) {
 
             /* switch on click type */
             if ( vs_event.clicks == 1 ) {
@@ -490,6 +497,9 @@
 
             /* set projection matrix */
             dl_vision.vs_set_projection( dl_model );
+
+            /* set initial viewpoint */
+            dl_vision.vs_set_viewpoint( dl_model );
 
             /* principale execution loop */
             dl_vision.vs_execution( dl_model );

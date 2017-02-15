@@ -78,8 +78,8 @@
 
     /* define mouse motion factors */
     # define DL_INERTIA_ANGLE  ( 0.002 )
-    # define DL_INERTIA_TRANS  ( 0.001 )
-    # define DL_INERTIA_WZOOM  ( 10.0 )
+    # define DL_INERTIA_TRANS  ( 0.15 )
+    # define DL_INERTIA_WZOOM  ( 20.0 )
 
 /*
     header - preprocessor macros
@@ -131,6 +131,7 @@
 
     public:
         void vs_set_projection( dl_model_t & dl_model );
+        void vs_set_viewpoint( dl_model_t & dl_model );
 
     public:
         void vs_execution( dl_model_t & dl_model );
