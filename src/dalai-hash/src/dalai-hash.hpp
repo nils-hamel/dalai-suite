@@ -76,7 +76,7 @@
  */
 
     /* define chunk size */
-    # define DL_HASH_CHUNK ( 2097152ll )
+    # define DL_HASH_CHUNK    ( 2097152llu )
 
 /*
     header - preprocessor macros
@@ -139,11 +139,9 @@
      *  \param  dl_opath   Output path
      *  \param  dl_param   Hashing parameter
      *  \param  dl_mean    Minimums mean value
-     *
-     *  \return Returns \b true on success, \b false otherwise
      */
 
-    bool dl_hash( std::ifstream & dl_istream, char const * const dl_opath, double const dl_param, double const dl_mean );
+    void dl_hash( std::ifstream & dl_istream, char const * const dl_opath, double const dl_param, double const dl_mean );
 
     /*! \brief main function
      *
