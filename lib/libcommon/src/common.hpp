@@ -68,6 +68,13 @@
     header - preprocessor definitions
  */
 
+    /* define errors code */
+    # define LC_ERROR_NONE      ( 0 )
+    # define LC_ERROR_MEMORY    ( 1 )
+    # define LC_ERROR_IO_ACCESS ( 2 )
+    # define LC_ERROR_IO_READ   ( 3 )
+    # define LE_ERROR_IO_WRITE  ( 4 )
+
     /* define boolean values */
     # define LC_FALSE ( 0 )
     # define LC_TRUE  ( 1 )
