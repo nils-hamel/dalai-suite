@@ -64,7 +64,7 @@
 
     # include <iostream>
     # include <fstream>
-    # include <common-include.h>
+    # include <common-include.hpp>
 
 /*
     header - preprocessor definitions

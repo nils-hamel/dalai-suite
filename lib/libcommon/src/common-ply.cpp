@@ -18,7 +18,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    # include "common-ply.h"
+    # include "common-ply.hpp"
 
 /*
     source - constructor/destructor methods
@@ -485,7 +485,7 @@
         }
 
         /* chunk memory allocation management */
-        if ( ( lc_swap = realloc( lc_ply->ph_chunk, lc_size * lc_ply->ph_vsize ) ) == NULL ) {
+        if ( ( lc_swap = ( char * ) realloc( lc_ply->ph_chunk, lc_size * lc_ply->ph_vsize ) ) == NULL ) {
 
             /* send message */
             return( 0 );

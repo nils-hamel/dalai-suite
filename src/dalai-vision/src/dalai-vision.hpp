@@ -70,7 +70,7 @@
     # include <GL/gl.h>
     # include <GL/glu.h>
     # include <SDL2/SDL.h>
-    # include <common-include.h>
+    # include <common-include.hpp>
 
 /*
     header - preprocessor definitions

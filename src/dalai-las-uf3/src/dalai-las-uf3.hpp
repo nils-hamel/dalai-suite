@@ -65,8 +65,8 @@
     # include <iostream>
     # include <fstream>
     # include <cstdint>
-    # include <common-args.h>
     # include <liblas/liblas.hpp>
+    # include <common-include.hpp>
 
 /*
     header - preprocessor definitions

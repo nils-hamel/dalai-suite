@@ -69,7 +69,7 @@
     # include <cstring>
     # include <cstdlib>
     # include <cstdint>
-    # include <common-include.h>
+    # include <common-include.hpp>
 
 /*
     header - preprocessor definitions

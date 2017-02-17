@@ -50,7 +50,7 @@
     # include <GL/gl.h>
     # include <GL/glu.h>
     # include <Eigen/Dense>
-    # include <common-include.h>
+    # include <common-include.hpp>
 
 /*
     header - preprocessor definitions

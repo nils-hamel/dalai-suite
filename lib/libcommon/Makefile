@@ -6,7 +6,7 @@
 #
 
     CONFIG_NAME:=libcommon
-    CONFIG_CODE:=c
+    CONFIG_CODE:=cpp
     CONFIG_TYPE:=libcommon
 
     MAKE_BINARY:=bin

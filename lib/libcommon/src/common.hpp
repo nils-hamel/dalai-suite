@@ -55,14 +55,6 @@
     # define __LC__
 
 /*
-    header - C/C++ compatibility
- */
-
-    # ifdef __cplusplus
-    extern "C" {
-    # endif
-
-/*
     header - internal includes
  */
 
@@ -70,13 +62,13 @@
     header - external includes
  */
 
-    # include <stdint.h>
+    # include <cstdint>
 
 /*
     header - preprocessor definitions
  */
 
-    /* Define boolean values */
+    /* define boolean values */
     # define LC_FALSE ( 0 )
     # define LC_TRUE  ( 1 )
 
@@ -88,10 +80,10 @@
     header - type definition
  */
 
-    /* Universal format floating point */
+    /* universal format floating point */
     typedef double lc_real_t;
 
-    /* Universal format colorimetry */
+    /* universal format colorimetry */
     typedef uint8_t lc_data_t;
 
 /*
@@ -101,14 +93,6 @@
 /*
     header - function prototypes
  */
-
-/*
-    header - C/C++ compatibility
- */
-
-    # ifdef __cplusplus
-    }
-    # endif
 
 /*
     header - inclusion guard

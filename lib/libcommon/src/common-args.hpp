@@ -32,28 +32,19 @@
     # define __LC_ARGS__
 
 /*
-    header - C/C++ compatibility
- */
-
-    # ifdef __cplusplus
-    extern "C" {
-    # endif
-
-/*
     header - internal includes
  */
 
-    # include "common.h"
+    # include "common.hpp"
 
 /*
     header - external includes
  */
 
-    # include <stdio.h>
-    # include <stdlib.h>
-    # include <string.h>
-    # include <stdint.h>
-    # include <inttypes.h>
+    # include <cstring>
+    # include <cstdlib>
+    # include <cstdint>
+    # include <cinttypes>
 
 /*
     header - preprocessor definitions
@@ -88,7 +79,7 @@
      *  \return Returns LC_TRUE if switch is found, LC_FALSE otherwise
      */
 
-    int lc_read_flag( int const argc, char ** argv, char const * const er_long, char const * const er_short );
+    bool lc_read_flag( int const argc, char ** argv, char const * const er_long, char const * const er_short );
 
     /*! \brief arguments and parameters methods
      *
@@ -166,14 +157,6 @@
      */
 
     double lc_read_double( int const argc, char ** argv, char const * const er_long, char const * const er_short, double er_default );
-
-/*
-    header - C/C++ compatibility
- */
-
-    # ifdef __cplusplus
-    }
-    # endif
 
 /*
     header - inclusion guard

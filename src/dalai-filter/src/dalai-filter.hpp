@@ -72,7 +72,7 @@
     # include <cstdint>
     # include <unistd.h>
     # include <dirent.h>
-    # include <common-include.h>
+    # include <common-include.hpp>
 
 /*
     header - preprocessor definitions

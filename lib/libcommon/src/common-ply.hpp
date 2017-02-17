@@ -32,26 +32,18 @@
     # define __LC_PLY__
 
 /*
-    header - C/C++ compatibility
- */
-
-    # ifdef __cplusplus
-    extern "C" {
-    # endif
-
-/*
     header - internal includes
  */
 
-    # include "common.h"
+    # include "common.hpp"
 
 /*
     header - external includes
  */
 
-    # include <stdio.h>
-    # include <stdlib.h>
-    # include <string.h>
+    # include <cstdio>
+    # include <cstdlib>
+    # include <cstring>
 
 /*
     header - preprocessor definitions
@@ -322,14 +314,6 @@
      */
 
     long long int lc_ply_io_i_chunk( lc_ply_t * const lc_ply, long long int const lc_size );
-
-/*
-    header - C/C++ compatibility
- */
-
-    # ifdef __cplusplus
-    }
-    # endif
 
 /*
     header - inclusion guard

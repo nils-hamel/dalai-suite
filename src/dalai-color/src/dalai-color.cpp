@@ -26,19 +26,19 @@
 
     void dl_color( double dl_height, uint8_t * const dl_data, double const dl_ledge, double const dl_hedge ) {
 
-        /* Height pre-normalisation */
+        /* height pre-normalisation */
         dl_height = ( dl_height - dl_ledge ) / ( dl_hedge - dl_ledge );
 
-        /* Height periodic range clamping */
+        /* height periodic range clamping */
         dl_height = dl_height - floor( dl_height );
 
-        /* Height range mirroring */
+        /* height range mirroring */
         dl_height = dl_height > 0.5 ? 1.0 - dl_height : dl_height;
 
-        /* Height normalisation */
+        /* height normalisation */
         dl_height = ( 0.3 + 0.7 * dl_height * 2 ) * 3.14;
 
-        /* Compute element color */
+        /* compute element color */
         dl_data[0] = 127.0 + 128.0 * sin( dl_height );
         dl_data[1] = 127.0 + 128.0 * cos( dl_height );
         dl_data[2] = 127.0 - 128.0 * sin( dl_height );
@@ -51,108 +51,97 @@
 
     int main( int argc, char ** argv ) {
 
-        /* Status variables */
-        int dl_status = EXIT_SUCCESS;
-
-        /* Stream size variables */
-        size_t dl_size( 0 );
-
-        /* Stream buffer variables */
-        char * dl_buffer( NULL );
-        char * dl_bound ( NULL );
-
-        /* Stream variables */
-        std::ifstream dl_istream;
-        std::ofstream dl_ostream;
-
-        /* Thread count variables */
+        /* thread count variables */
         int dl_thread( lc_read_signed( argc, argv, "--thread", "-t", 1 ) );
 
-        /* Color mapping variables */
+        /* color mapping variables */
         double dl_ledge( lc_read_double( argc, argv, "--minimum", "-m",  0.0 ) );
         double dl_hedge( lc_read_double( argc, argv, "--maximum", "-x", 50.0 ) );
 
-        /* Create input stream */
+        /* stream variables */
+        std::ifstream dl_istream;
+        std::ofstream dl_ostream;
+
+        /* stream size variables */
+        size_t dl_size( 0 );
+
+        /* stream buffer variables */
+        char * dl_buffer( NULL );
+
+        /* create input stream */
         dl_istream.open( lc_read_string( argc, argv, "--input", "-i" ), std::ios::ate | std::ios::in | std::ios::binary );
 
-        /* Check input stream */
-        if ( dl_istream.is_open() ) {
+        /* check input stream */
+        if ( dl_istream.is_open() == false ) {
 
-            /* Retrieve file size */
-            dl_size = dl_istream.tellg();
+            /* display message */
+            std::cerr << "dalai-suite : error : unable to access input stream" << std::endl;
 
-            /* Allocate and check memory */
-            if ( ( dl_buffer = new ( std::nothrow ) char [dl_size] ) != NULL ) {
-
-                /* Stream offset to begining */
-                dl_istream.seekg( 0, std::ios::beg );
-
-                /* Read input stream */
-                dl_istream.read( dl_buffer, dl_size );
-
-                /* Delete input stream */
-                dl_istream.close();
-
-                /* Compute stream buffer edge */
-                dl_bound = dl_buffer + dl_size;
-
-            # ifdef __OPENMP__
-            # pragma omp parallel firstprivate(dl_buffer, dl_bound) num_threads( dl_thread )
-            {
-            # pragma omp for
-            # endif
-
-                /* Parsing stream buffer elements */
-                for ( char * dl_parse = dl_buffer; dl_parse < dl_bound; dl_parse += 27 ) {
-
-                    /* Compute element color */
-                    dl_color( ( ( double * ) dl_parse )[2], ( uint8_t * ) ( dl_parse + 24 ), dl_ledge, dl_hedge );
-
-                }
-
-            # ifdef __OPENMP__
-            }
-            #endif
-
-                /* Create output stream */
-                dl_ostream.open( lc_read_string( argc, argv, "--output", "-o" ), std::ios::out | std::ios::binary );
-
-                /* Check output stream */
-                if ( dl_ostream.is_open() ) {
-
-                    /* Write output stream */
-                    dl_ostream.write( dl_buffer, dl_size );
-
-                    /* Delete output stream */
-                    dl_ostream.close();
-
-                } else {
-
-                    /* Display message */
-                    std::cerr << "dalai-suite : error : unable to write output file" << std::endl;
-
-                    /* Push message */
-                    dl_status = EXIT_FAILURE;
-
-                }
-
-                /* Unallocate memory */
-                delete[] dl_buffer;
-
-            }
-
-        } else {
-
-            /* Display message */
-            std::cerr << "dalai-suite : error : unable to access input file" << std::endl;
-
-            /* Push message */
-            dl_status = EXIT_FAILURE;
+            /* send message */
+            return( EXIT_FAILURE );
 
         }
 
-        /* Send message */
-        return( dl_status );
+        /* create output stream */
+        dl_ostream.open( lc_read_string( argc, argv, "--output", "-o" ), std::ios::out | std::ios::binary );
+
+        /* check output stream */
+        if ( dl_ostream.is_open() == false ) {
+
+            /* display message */
+            std::cerr << "dalai-suite : error : unable to access output stream" << std::endl;
+
+        }
+
+        /* retrieve file size */
+        dl_size = dl_istream.tellg();
+
+        /* allocate and check memory */
+        if ( ( dl_buffer = new ( std::nothrow ) char [dl_size] ) == nullptr ) {
+
+            /* display message */
+            std::cerr << "dalai-suite : error : unable to allocate memory" << std::endl;
+
+            /* send message */
+            return( EXIT_FAILURE );
+
+        }
+
+        /* stream offset to begining */
+        dl_istream.seekg( 0, std::ios::beg );
+
+        /* read input stream */
+        dl_istream.read( dl_buffer, dl_size );
+
+        /* delete input stream */
+        dl_istream.close();
+
+        # ifdef __OPENMP__
+        # pragma omp parallel for firstprivate(dl_buffer,dl_size,dl_ledge,dl_hedge) num_threads( dl_thread )
+        # endif
+
+        /* parsing stream buffer elements */
+        for ( char * dl_parse = dl_buffer; dl_parse < ( dl_buffer + dl_size ); dl_parse += LC_UF3_RECLEN ) {
+
+            /* compute element color */
+            dl_color( ( ( lc_uf3p_t * ) dl_parse )[2], ( lc_uf3d_t * ) ( dl_parse + LC_UF3_DATA ), dl_ledge, dl_hedge );
+
+        }
+
+        /* write output stream */
+        dl_ostream.write( dl_buffer, dl_size );
+
+        /* release buffer memory */
+        delete[] dl_buffer;
+
+        /* delete output stream */
+        dl_ostream.close();
+
+        /* delete input stream */
+        dl_istream.close();
+
+        /* send message */
+        return( EXIT_SUCCESS );
 
     }
 
