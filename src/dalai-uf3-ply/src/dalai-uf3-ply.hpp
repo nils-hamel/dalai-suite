@@ -64,6 +64,7 @@
 
     # include <iostream>
     # include <fstream>
+    # include <cstdint>
     # include <common-include.hpp>
 
 /*
@@ -71,7 +72,10 @@
  */
 
     /* define universal format chunk size */
-    # define DL_UF3_PLY_CHUNK ( 131072ll )
+    # define DL_UF3_PLY_CHUNK  ( 131072ll )
+
+    /* define ply records length */
+    # define DL_UF3_PLY_RECLEN ( ( sizeof( float ) + sizeof( uint8_t ) ) * 3u )
 
 /*
     header - preprocessor macros
@@ -80,6 +84,10 @@
 /*
     header - type definition
  */
+
+    /* define ply types */
+    typedef float   dl_plyp_t;
+    typedef uint8_t dl_plyd_t;
 
 /*
     header - structures

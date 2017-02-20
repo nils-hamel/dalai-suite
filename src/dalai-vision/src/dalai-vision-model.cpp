@@ -344,7 +344,7 @@
     void dl_model_t::ml_ren_model( void ) {
 
         /* model translation */
-        glTranslatef( -ml_xcen, -ml_ycen, -ml_zcen );
+        glTranslated( -ml_xcen, -ml_ycen, -ml_zcen );
 
         /* disable blending */
         glDisable( GL_BLEND );
@@ -368,7 +368,7 @@
     void dl_model_t::ml_ren_surface( void ) {
 
         /* model translation */
-        glTranslatef( -ml_xcen, -ml_ycen, -ml_zcen );
+        glTranslated( -ml_xcen, -ml_ycen, -ml_zcen );
 
         /* check display flag */
         if ( ml_pflag != 0 ) {
