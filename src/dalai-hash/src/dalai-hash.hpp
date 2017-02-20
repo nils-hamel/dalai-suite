@@ -76,7 +76,7 @@
  */
 
     /* define chunk size */
-    # define DL_HASH_CHUNK    ( 2097152llu )
+    # define DL_HASH_CHUNK ( 2097152llu )
 
 /*
     header - preprocessor macros
