@@ -79,12 +79,6 @@
 
         }
 
-        /* retrieve input stream size */
-        dl_size = dl_istream.tellg() / LC_UF3_RECLEN;
-
-        /* reset input stream position */
-        dl_istream.seekg( 0, std::ios::beg );
-
         /* create output stream */
         dl_ostream.open( lc_read_string( argc, argv, "--ply", "-o" ), std::ios::out | std::ios::binary );
 
@@ -98,6 +92,12 @@
             return( EXIT_FAILURE );
 
         }
+
+        /* retrieve input stream size */
+        dl_size = dl_istream.tellg() / LC_UF3_RECLEN;
+
+        /* reset input stream position */
+        dl_istream.seekg( 0, std::ios::beg );
 
         /* export ply header */
         dl_ostream << "ply"                             << std::endl;
