@@ -54,6 +54,9 @@
     # define LC_UF3_POSE   ( 0 )
     # define LC_UF3_DATA   ( sizeof( double ) * 3u )
 
+    /* define uf3 standard chunk */
+    # define LC_UF3_CHUNK  ( 2097152llu )
+
 /*
     header - preprocessor macros
  */

@@ -64,19 +64,11 @@
 
     # include <iostream>
     # include <fstream>
-    # include <cmath>
-    # include <limits>
-    # include <cstring>
-    # include <cstdlib>
-    # include <cstdint>
     # include <common-include.hpp>
 
 /*
     header - preprocessor definitions
  */
-
-    /* define chunk size */
-    # define DL_HASH_CHUNK ( 2097152llu )
 
 /*
     header - preprocessor macros

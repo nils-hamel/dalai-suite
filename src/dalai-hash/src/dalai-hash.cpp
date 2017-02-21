@@ -35,71 +35,68 @@
         /* model mean value variables */
         double dl_mean( 0.0 );
 
-        /* stream variables */
+    /* error management */
+    try {
+
+        /* input stream variables */
         std::ifstream dl_istream;
 
-        /* error management */
-        try {
+        /* create input stream */
+        dl_istream.open( lc_read_string( argc, argv, "--uf3", "-i" ), std::ios::in | std::ios::ate | std::ios::binary );
 
-            /* create input stream */
-            dl_istream.open( lc_read_string( argc, argv, "--uf3", "-i" ), std::ios::in | std::ios::ate | std::ios::binary );
-
-            /* check input stream */
-            if ( dl_istream.is_open() == false ) {
-
-                /* send message */
-                throw( LC_ERROR_IO_ACCESS );
-
-            }
-
-            /* compute model mean value */
-            //dl_mean = dl_hash_stat( dl_istream, dl_istream.tellg(), dl_count );
-            dl_mean = lc_statistic_mdmv( dl_istream, dl_count, DL_HASH_CHUNK );
-
-            /* hash model */
-            //dl_hash( dl_istream, lc_read_string( argc, argv, "--output", "-o" ), dl_param, dl_mean );
-            lc_hash( dl_istream, lc_read_string( argc, argv, "--output", "-o" ), dl_param, dl_mean, DL_HASH_CHUNK );
-
-            /* delete input stream */
-            dl_istream.close();
-
-        } catch ( int dl_code ) {
-
-            /* switch on error code */
-            switch ( dl_code ) {
-
-                case ( LC_ERROR_MEMORY ) : {
-
-                    /* display message */
-                    std::cerr << "dalai-suite : error : memory allocation" << std::endl;
-
-                } break;
-
-                case ( LC_ERROR_IO_ACCESS ) : {
-
-                    /* display message */
-                    std::cerr << "dalai-suite : error : stream access" << std::endl;
-
-                } break;
-
-                case ( LC_ERROR_IO_READ ) : {
-
-                    /* display message */
-                    std::cerr << "dalai-suite : error : stream reading" << std::endl;
-
-                } break;
-
-            };
+        /* check input stream */
+        if ( dl_istream.is_open() == false ) {
 
             /* send message */
-            return( EXIT_FAILURE );
-
-        } /* otherwise */ {
-
-            /* send message */
-            return( EXIT_SUCCESS );
+            throw( LC_ERROR_IO_ACCESS );
 
         }
+
+        /* compute model mean value */
+        dl_mean = lc_statistic_mdmv( dl_istream, dl_count, LC_UF3_CHUNK );
+
+        /* hash model */
+        lc_hash( dl_istream, lc_read_string( argc, argv, "--output", "-o" ), dl_param, dl_mean, LC_UF3_CHUNK );
+
+        /* delete input stream */
+        dl_istream.close();
+
+    /* error management */
+    } catch ( int dl_code ) {
+
+        /* switch on error code */
+        switch ( dl_code ) {
+
+            case ( LC_ERROR_MEMORY ) : {
+
+                /* display message */
+                std::cerr << "dalai-suite : error : memory allocation" << std::endl;
+
+            } break;
+
+            case ( LC_ERROR_IO_ACCESS ) : {
+
+                /* display message */
+                std::cerr << "dalai-suite : error : stream access" << std::endl;
+
+            } break;
+
+            case ( LC_ERROR_IO_READ ) : {
+
+                /* display message */
+                std::cerr << "dalai-suite : error : stream reading" << std::endl;
+
+            } break;
+
+        };
+
+        /* send message */
+        return( EXIT_FAILURE );
+
+    }
+
+        /* send message */
+        return( EXIT_SUCCESS );
 
     }
 
