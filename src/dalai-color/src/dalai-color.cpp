@@ -62,14 +62,12 @@
         std::ifstream dl_istream;
         std::ofstream dl_ostream;
 
-        /* stream size variables */
-        size_t dl_size( 0 );
-
         /* stream buffer variables */
-        char * dl_buffer( NULL );
+        char * dl_buffer( nullptr );
+        char * dl_cbound( nullptr );
 
         /* create input stream */
-        dl_istream.open( lc_read_string( argc, argv, "--input", "-i" ), std::ios::ate | std::ios::in | std::ios::binary );
+        dl_istream.open( lc_read_string( argc, argv, "--input", "-i" ), std::ios::in | std::ios::binary );
 
         /* check input stream */
         if ( dl_istream.is_open() == false ) {
@@ -91,13 +89,13 @@
             /* display message */
             std::cerr << "dalai-suite : error : unable to access output stream" << std::endl;
 
+            /* send message */
+            return( EXIT_FAILURE );
+
         }
 
-        /* retrieve file size */
-        dl_size = dl_istream.tellg();
-
         /* allocate and check memory */
-        if ( ( dl_buffer = new ( std::nothrow ) char [dl_size] ) == nullptr ) {
+        if ( ( dl_buffer = new ( std::nothrow ) char [DL_COLOR_CHUNK * LC_UF3_RECLEN] ) == nullptr ) {
 
             /* display message */
             std::cerr << "dalai-suite : error : unable to allocate memory" << std::endl;
@@ -107,29 +105,31 @@
 
         }
 
-        /* stream offset to begining */
-        dl_istream.seekg( 0, std::ios::beg );
+        do {
 
-        /* read input stream */
-        dl_istream.read( dl_buffer, dl_size );
+            /* read input stream */
+            dl_istream.read( dl_buffer, DL_COLOR_CHUNK * LC_UF3_RECLEN );
 
-        /* delete input stream */
-        dl_istream.close();
+            /* compute buffer boundary */
+            dl_cbound = dl_buffer + dl_istream.gcount();
 
-        # ifdef __OPENMP__
-        # pragma omp parallel for firstprivate(dl_buffer,dl_size,dl_ledge,dl_hedge) num_threads( dl_thread )
-        # endif
+            # ifdef __OPENMP__
+            # pragma omp parallel for firstprivate(dl_buffer,dl_cbound,dl_ledge,dl_hedge) num_threads( dl_thread )
+            # endif
 
-        /* parsing stream buffer elements */
-        for ( char * dl_parse = dl_buffer; dl_parse < ( dl_buffer + dl_size ); dl_parse += LC_UF3_RECLEN ) {
+            /* parsing stream buffer elements */
+            for ( char * dl_parse = dl_buffer; dl_parse < dl_cbound; dl_parse += LC_UF3_RECLEN ) {
 
-            /* compute element color */
-            dl_color( ( ( lc_uf3p_t * ) dl_parse )[2], ( lc_uf3d_t * ) ( dl_parse + LC_UF3_DATA ), dl_ledge, dl_hedge );
+                /* compute element color */
+                dl_color( ( ( lc_uf3p_t * ) dl_parse )[2], ( lc_uf3d_t * ) ( dl_parse + LC_UF3_DATA ), dl_ledge, dl_hedge );
 
-        }
+            }
 
-        /* write output stream */
-        dl_ostream.write( dl_buffer, dl_size );
+            /* export processed chunk */
+            dl_ostream.write( dl_buffer, dl_istream.gcount() );
+
+        /* reading stream chunks */
+        } while ( dl_istream.gcount() > 0 );
 
         /* release buffer memory */
         delete[] dl_buffer;

@@ -71,6 +71,9 @@
     header - preprocessor definitions
  */
 
+    /* define chunk size */
+    # define DL_COLOR_CHUNK ( 2097152ll )
+
 /*
     header - preprocessor macros
  */
