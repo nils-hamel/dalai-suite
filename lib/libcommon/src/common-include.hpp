@@ -39,6 +39,8 @@
     # include "common-args.hpp"
     # include "common-ply.hpp"
     # include "common-uf3.hpp"
+    # include "common-statistic.hpp"
+    # include "common-hash.hpp"
 
 /*
     header - external includes
