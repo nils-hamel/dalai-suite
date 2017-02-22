@@ -35,11 +35,11 @@
         /* model mean value variables */
         double dl_mean( 0.0 );
 
-    /* error management */
-    try {
-
         /* input stream variables */
         std::ifstream dl_istream;
+
+    /* error management */
+    try {
 
         /* create input stream */
         dl_istream.open( lc_read_string( argc, argv, "--uf3", "-i" ), std::ios::in | std::ios::ate | std::ios::binary );

@@ -18,39 +18,42 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   common-include.h
+    /*! \file   common-args.h
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  dalai-suite - common library - inclusion module
+     *  dalai-suite - common library - arguments and parameters module
      */
 
 /*
     header - inclusion guard
  */
 
-    # ifndef __LC_INCLUDE__
-    # define __LC_INCLUDE__
+    # ifndef __LC_ERROR__
+    # define __LC_ERROR__
 
 /*
     header - internal includes
  */
 
     # include "common.hpp"
-    # include "common-args.hpp"
-    # include "common-ply.hpp"
-    # include "common-uf3.hpp"
-    # include "common-statistic.hpp"
-    # include "common-hash.hpp"
-    # include "common-error.hpp"
-    # include "common-filter.hpp"
 
 /*
     header - external includes
  */
 
+    # include <iostream>
+
 /*
     header - preprocessor definitions
  */
+
+    /* define errors code */
+    # define LC_ERROR_NONE      ( 0 )
+    # define LC_ERROR_MEMORY    ( 1 )
+    # define LC_ERROR_IO_ACCESS ( 2 )
+    # define LC_ERROR_IO_READ   ( 3 )
+    # define LC_ERROR_IO_WRITE  ( 4 )
+    # define LC_ERROR_IO_REMOVE ( 5 )
 
 /*
     header - preprocessor macros
@@ -67,6 +70,8 @@
 /*
     header - function prototypes
  */
+
+    void lc_error( int lc_code );
 
 /*
     header - inclusion guard

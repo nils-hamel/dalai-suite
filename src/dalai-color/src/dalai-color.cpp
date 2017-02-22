@@ -95,7 +95,7 @@
         }
 
         /* allocate and check memory */
-        if ( ( dl_buffer = new ( std::nothrow ) char [DL_COLOR_CHUNK * LC_UF3_RECLEN] ) == nullptr ) {
+        if ( ( dl_buffer = new ( std::nothrow ) char [LC_UF3_CHUNK * LC_UF3_RECLEN] ) == nullptr ) {
 
             /* display message */
             std::cerr << "dalai-suite : error : unable to allocate memory" << std::endl;
@@ -108,7 +108,7 @@
         do {
 
             /* read input stream */
-            dl_istream.read( dl_buffer, DL_COLOR_CHUNK * LC_UF3_RECLEN );
+            dl_istream.read( dl_buffer, LC_UF3_CHUNK * LC_UF3_RECLEN );
 
             /* compute buffer boundary */
             dl_cbound = dl_buffer + dl_istream.gcount();

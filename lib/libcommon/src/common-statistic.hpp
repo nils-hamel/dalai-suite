@@ -37,6 +37,7 @@
 
     # include "common.hpp"
     # include "common-uf3.hpp"
+    # include "common-error.hpp"
 
 /*
     header - external includes
