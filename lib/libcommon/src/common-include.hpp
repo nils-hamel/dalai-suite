@@ -36,11 +36,11 @@
  */
 
     # include "common-args.hpp"
-    # include "common-uf3.hpp"
-    # include "common-statistic.hpp"
-    # include "common-hash.hpp"
     # include "common-error.hpp"
     # include "common-filter.hpp"
+    # include "common-hash.hpp"
+    # include "common-statistic.hpp"
+    # include "common-uf3.hpp"
 
 /*
     header - external includes

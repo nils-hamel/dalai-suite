@@ -76,7 +76,7 @@
             case ( LC_ERROR_FORMAT ) : {
 
                 /* display message */
-                std::cerr << "unable to handle format" << std::endl;
+                std::cerr << "unable to handle format";
 
             } break;
 

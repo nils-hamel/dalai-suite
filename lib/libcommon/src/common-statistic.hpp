@@ -43,9 +43,10 @@
  */
 
     # include <fstream>
-    # include <cstdint>
     # include <limits>
     # include <cmath>
+    # include <cstdint>
+    # include <inttypes.h>
 
 /*
     header - preprocessor definitions

@@ -48,6 +48,7 @@
     # include <cmath>
     # include <cstring>
     # include <cstdint>
+    # include <inttypes.h>
 
 /*
     header - preprocessor definitions
