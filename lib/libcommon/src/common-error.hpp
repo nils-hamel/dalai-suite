@@ -35,8 +35,6 @@
     header - internal includes
  */
 
-    # include "common.hpp"
-
 /*
     header - external includes
  */
@@ -54,6 +52,7 @@
     # define LC_ERROR_IO_READ   ( 3 )
     # define LC_ERROR_IO_WRITE  ( 4 )
     # define LC_ERROR_IO_REMOVE ( 5 )
+    # define LC_ERROR_FORMAT    ( 6 )
 
 /*
     header - preprocessor macros

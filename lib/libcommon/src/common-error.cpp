@@ -72,6 +72,14 @@
 
             } break;
 
+            /* error message */
+            case ( LC_ERROR_FORMAT ) : {
+
+                /* display message */
+                std::cerr << "unable to handle format" << std::endl;
+
+            } break;
+
         };
 
         /* display format */

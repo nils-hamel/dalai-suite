@@ -35,8 +35,6 @@
     header - internal includes
  */
 
-    # include "common.hpp"
-
 /*
     header - external includes
  */

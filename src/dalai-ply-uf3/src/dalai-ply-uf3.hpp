@@ -64,14 +64,35 @@
 
     # include <iostream>
     # include <fstream>
+    # include <cstring>
     # include <common-include.hpp>
 
 /*
     header - preprocessor definitions
  */
 
-    /* define ply format chunk size */
-    # define DL_PLY_UF3_CHUNK ( 131072ll )
+    /* define header reading modes */
+    # define LC_PLY_VALIDATE ( 0 )
+    # define LC_PLY_DETECT   ( 1 )
+    # define LC_PLY_STANDARD ( 2 )
+    # define LC_PLY_FORMAT   ( 3 )
+    # define LC_PLY_ELEMENT  ( 4 )
+    # define LC_PLY_VERTEX   ( 5 )
+    # define LC_PLY_PROPERTY ( 6 )
+    # define LC_PLY_DATA     ( 7 )
+
+    /* define data types */
+    # define LC_PLY_NONE     ( 0  )
+    # define LC_PLY_DOUBLE   ( 1  )
+    # define LC_PLY_FLOAT    ( 2  )
+    # define LC_PLY_UCHAR    ( 3  )
+    # define LC_PLY_CHAR     ( 4  )
+    # define LC_PLY_USHORT   ( 5  )
+    # define LC_PLY_SHORT    ( 6  )
+    # define LC_PLY_UINT     ( 7  )
+    # define LC_PLY_INT      ( 8  )
+    # define LC_PLY_ULONG    ( 9  )
+    # define LC_PLY_LONG     ( 10 )
 
 /*
     header - preprocessor macros
@@ -84,6 +105,41 @@
 /*
     header - structures
  */
+
+    class dl_header_t {
+
+    private:
+        std::ifstream hd_stream;
+        long long int hd_vertex;
+        long long int hd_position;
+
+        long long int hd_size;
+        long long int hd_data[6];
+
+        char *        hd_chunk;
+
+    public:
+        dl_header_t( char const * const dl_path );
+        ~dl_header_t();
+
+    private:
+        int hd_det_type( char const * const dl_token );
+        int hd_det_size( int dl_type );
+
+    public:
+        double hd_get_x( long long int lc_index );
+        double hd_get_y( long long int lc_index );
+        double hd_get_z( long long int lc_index );
+        char hd_get_red( long long int lc_index );
+        char hd_get_green( long long int lc_index );
+        char hd_get_blue( long long int lc_index );
+
+    private:
+        void hd_set_data( char const * const dl_token, long long int const dl_offset );
+    public:
+        long long int hd_set_chunk( long long int const dl_size );
+
+    };
 
 /*
     header - function prototypes
