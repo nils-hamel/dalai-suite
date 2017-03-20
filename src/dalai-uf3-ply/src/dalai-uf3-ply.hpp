@@ -104,7 +104,7 @@
      *                      --ply/-o [ply output file]
      *
      *  The function starts by allocating the required i/o buffers memory and
-     *  creating the i/o stream. it the create and export the output ply file
+     *  creating the i/o stream. It then creates and exports the output ply file
      *  header. It then reads the input file by chunk. Each chunk is converted
      *  and written in the output stream. As all the input file chunks have been
      *  read, the function closes the stream and release the allocated memory.
@@ -113,8 +113,8 @@
      *  its little endian binary format. The function does not allow to choose
      *  another format to avoid too large code for a simple conversion tool.
      *
-     *  \param argc Standard parameter
-     *  \param argv Standard parameter
+     *  \param  argc Standard parameter
+     *  \param  argv Standard parameter
      *
      *  \return Returns standard exit code
      */
