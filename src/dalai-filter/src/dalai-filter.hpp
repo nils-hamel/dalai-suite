@@ -111,47 +111,35 @@
      *  the \b rmdir function assuming the temporary directory is already empty.
      *  An error is reported otherwise.
      *
-     *  \param  dl_path Temporary storage directory path
-     *  \param  dl_mode Temporary storage mode
-     *
-     *  \return Returns true in success, false otherwise
+     *  \param dl_path Temporary storage directory path
+     *  \param dl_mode Temporary storage mode
      */
 
     void dl_filter_temporary( char * const dl_path, int dl_mode );
 
     /*! \brief filtering methods
      *
-     *  This function applies the filtering process pointed by the mode value
-     *  on each file contained in the provided \b dl_opath directory. It simply
-     *  enumerates the files of the directory and applies the filtering process
-     *  on each one. The resulting filtered point clouds are all exported in the
-     *  output stream.
+     *  This function applies the filtering process on each file contained in
+     *  the provided \b dl_opath directory. It simply enumerates the files of
+     *  the directory and applies the filtering process on each one. The
+     *  resulting filtered point clouds are all exported in the same output
+     *  stream.
      *
-     *  Usually, this function is used on the directory in which hashed files
-     *  produced by the \b dl_filter_hash() are stored. Indeed, the filtering
-     *  process expects all the input files to be part of the same initial point
-     *  cloud, so sharing the same minimums mean value.
+     *  Usually, this function is applied on the directory in which the input
+     *  point cloud has been hashed. In other words, this filtering function
+     *  assumes that all the point cloud files found in the provided input
+     *  directory are parts of the same input point cloud.
      *
-     *  Depending on the provided mode value, a specific filtering process is
-     *  applied on all the files contained in the \b dl_opath directory. The
-     *  filtering parameters are then provided to the different filtering
-     *  processes according to their necessities :
+     *  Two variations of the same filtering methods are available through this
+     *  function, the homogeneous filtering and the adaptive one. See the
+     *  documentation of \b libcommon for more information.
      *
-     *  \b dl_filter_unity()
-     *  \b dl_filter_count_unif()
-     *  \b dl_filter_count_adap()
-     *
-     *  All the filtering processes share a similar strategy, each implementing
-     *  a variation of it.
-     *
-     *  \param  dl_ostream   Output stream descriptor
-     *  \param  dl_opath     Input streams directory path
-     *  \param  dl_mean      Minimums mean value
-     *  \param  dl_factor    Minimums mean multiplier
-     *  \param  dl_threshold Neighbour count threshold
-     *  \param  dl_mode      Filtering method mode
-     *
-     *  \return Returns true on success, false otherwise
+     *  \param  dl_ostream    Output stream descriptor
+     *  \param  dl_ipath      Input directory path
+     *  \param  dl_mean       Minimum distance mean value
+     *  \param  dl_factor     Minimum distance mean multiplier
+     *  \param  dl_threshold  Neighbour count threshold
+     *  \param  dl_adaptative Adaptative filtering switch
      */
 
     void dl_filter( std::ofstream & dl_ostream, char const * const dl_ipath, double const dl_mean, double const dl_factor, int64_t const dl_threshold, bool const dl_adaptative );
@@ -163,9 +151,8 @@
      *
      *      ./dalai-filter --input/-i [input file path]
      *                     --output/-o [output file path]
-     *                     --unity-unif/--unity-adap
-     *                     --count-unif/--count-adap [filtering mode switches]
-     *                     --factor/-f [minimums mean multiplier]
+     *                     --adaptative/-a [filtering mode switch]
+     *                     --factor/-f [minimum distance mean multiplier]
      *                     --count/-c [sampled elements for mean computation]
      *                     --threshold/-t [neighbour elements count threshold]
      *
@@ -181,8 +168,8 @@
      *  cloud and the results of the filtering of all the pieces is exported in
      *  the output file.
      *
-     *  \param argc Standard parameter
-     *  \param argv Standard parameter
+     *  \param  argc Standard parameter
+     *  \param  argv Standard parameter
      *
      *  \return Returns standard exit code
      */
