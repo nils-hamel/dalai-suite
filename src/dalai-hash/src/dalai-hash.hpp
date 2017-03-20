@@ -107,8 +107,8 @@
      *  value to determine the size of the hashed point clouds. See \b libcommon
      *  documentation for more information.
      *
-     *  \param argc Standard parameter
-     *  \param argv Standard parameter
+     *  \param  argc Standard parameter
+     *  \param  argv Standard parameter
      *
      *  \return Returns standard exit code
      */

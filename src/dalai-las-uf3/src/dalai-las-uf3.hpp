@@ -94,22 +94,22 @@
     /*! \brief main function
      *
      *  The main function converts the provided las (asprs) file and converts
-     *  it into a universal format 3 file :
+     *  it into a universal format 3 (uf3) file :
      *
      *      ./dalai-las-uf3 --las/-i [las input file]
      *                      --uf3/-o [uf3 output file]
      *                      --classification/-c [forced classification switch]
      *
      *  The function starts by reading the input file header in order to detect
-     *  if colours are provided. If colours are not provided by the input file,
+     *  if colors are provided. If colors are not provided by the input file,
      *  the main function reads each point classification value and considers a
-     *  colormap to assign colours to points exported in the output file.
+     *  colormap to assign colors to points exported in the output file.
      *
      *  The function allows to force usage of classification values and colormap
-     *  even if colours are available by using the last argument (as a switch).
+     *  even if colors are available by using the last argument (as a switch).
      *
-     *  \param argc Main function parameters
-     *  \param argv Main function parameters
+     *  \param  argc Main function parameters
+     *  \param  argv Main function parameters
      *
      *  \return Returns standard exit code
      */

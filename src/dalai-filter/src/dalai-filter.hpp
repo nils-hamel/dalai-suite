@@ -134,12 +134,12 @@
      *  function, the homogeneous filtering and the adaptive one. See the
      *  documentation of \b libcommon for more information.
      *
-     *  \param  dl_ostream    Output stream descriptor
-     *  \param  dl_ipath      Input directory path
-     *  \param  dl_mean       Minimum distance mean value
-     *  \param  dl_factor     Minimum distance mean multiplier
-     *  \param  dl_threshold  Neighbour count threshold
-     *  \param  dl_adaptative Adaptative filtering switch
+     *  \param dl_ostream    Output stream descriptor
+     *  \param dl_ipath      Input directory path
+     *  \param dl_mean       Minimum distance mean value
+     *  \param dl_factor     Minimum distance mean multiplier
+     *  \param dl_threshold  Neighbour count threshold
+     *  \param dl_adaptative Adaptative filtering switch
      */
 
     void dl_filter( std::ofstream & dl_ostream, char const * const dl_ipath, double const dl_mean, double const dl_factor, int64_t const dl_threshold, bool const dl_adaptative );
