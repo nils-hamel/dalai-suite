@@ -119,8 +119,8 @@
      *  assign new colors. If a third coordinates is outside of the provided
      *  height range, a cyclic condition is considered.
      *
-     *  \param argc Standard parameter
-     *  \param argv Standard parameter
+     *  \param  argc Standard parameter
+     *  \param  argv Standard parameter
      *
      *  \return Return standard exit code
      */
