@@ -81,10 +81,10 @@
      *  is computed considering a sample of the model (\b lc_statistic_mdmv()).
      *
      *  The function defines a threshold distance given by the multiplication
-     *  of the minimum distance mean value with the provided \b dl_factor The
+     *  of the minimum distance mean value with the provided \b lc_factor The
      *  function checks for each element of the model the amount of neighbour
      *  that are closer to the defined threshold. The elements that have at
-     *  least \b dl_threshold elements below the condition are kept, the other
+     *  least \b lc_threshold elements below the condition are kept, the other
      *  being discarded.
      *
      *  This filtering method is called homogeneous because the model provided
@@ -94,11 +94,11 @@
      *  result, the applied filtering condition is homogeneous from the entire
      *  model point of view.
      *
-     *  \param  dl_istream   Input stream descriptor
-     *  \param  dl_ostream   Output stream descriptor
-     *  \param  dl_mean      Minimums distance mean value
-     *  \param  dl_factor    Mean value multiplier
-     *  \param  dl_threshold Neighbour count threshold
+     *  \param lc_istream   Input stream descriptor
+     *  \param lc_ostream   Output stream descriptor
+     *  \param lc_mean      Minimums distance mean value
+     *  \param lc_factor    Mean value multiplier
+     *  \param lc_threshold Neighbour count threshold
      */
 
     void lc_filter_homogeneous( std::ifstream & lc_istream, std::ofstream & lc_ostream, double const lc_mean, double const lc_factor, int64_t const lc_threshold );
@@ -121,12 +121,12 @@
      *  single stream without to provide a mean value. It can also be used on
      *  streams that contain only a portion of a larger model in order to
      *  implement a filtering algorithm able to take into account the local
-     *  specificities of the model when applying the filtering condition.
+     *  specificity of the model when applying the filtering condition.
      *
-     *  \param  dl_istream   Input stream descriptor
-     *  \param  dl_ostream   Output stream descriptor
-     *  \param  dl_factor    Local mean value multiplier
-     *  \param  dl_threshold Neighbour count threshold
+     *  \param lc_istream   Input stream descriptor
+     *  \param lc_ostream   Output stream descriptor
+     *  \param lc_factor    Local mean value multiplier
+     *  \param lc_threshold Neighbour count threshold
      */
 
     void lc_filter_adaptative( std::ifstream & lc_istream, std::ofstream & lc_ostream, double const lc_factor, int64_t const lc_threshold );

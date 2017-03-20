@@ -71,13 +71,13 @@
      *
      *  \param  argc     Main function parameters
      *  \param  argv     Main function parameters
-     *  \param  er_long  Argument string - long form
-     *  \param  er_short Argument string - short form
+     *  \param  lc_long  Argument string - long form
+     *  \param  lc_short Argument string - short form
      *
      *  \return Returns LC_TRUE if switch is found, LC_FALSE otherwise
      */
 
-    bool lc_read_flag( int const argc, char ** argv, char const * const er_long, char const * const er_short );
+    bool lc_read_flag( int const argc, char ** argv, char const * const lc_long, char const * const lc_short );
 
     /*! \brief arguments and parameters methods
      *
@@ -88,13 +88,13 @@
      *
      *  \param  argc     Main function parameters
      *  \param  argv     Main function parameters
-     *  \param  er_long  Argument string - long form
-     *  \param  er_short Argument string - short form
+     *  \param  lc_long  Argument string - long form
+     *  \param  lc_short Argument string - short form
      *
      *  \return Pointer to parameter string on success, NULL otherwise
      */
 
-    char * lc_read_string( int const argc, char ** argv, char const * const er_long, char const * const er_short );
+    char * lc_read_string( int const argc, char ** argv, char const * const lc_long, char const * const lc_short );
 
     /*! \brief arguments and parameters methods
      *
@@ -107,14 +107,14 @@
      *
      *  \param  argc       Main function parameters
      *  \param  argv       Main function parameters
-     *  \param  er_long    Argument string - long form
-     *  \param  er_short   Argument string - short form
-     *  \param  er_default Parameter default value
+     *  \param  lc_long    Argument string - long form
+     *  \param  lc_short   Argument string - short form
+     *  \param  lc_default Parameter default value
      *
      *  \return Parameter value on success, the default value otherwise
      */
 
-    intmax_t lc_read_signed( int const argc, char ** argv, char const * const er_long, char const * const er_short, intmax_t const er_default );
+    intmax_t lc_read_signed( int const argc, char ** argv, char const * const lc_long, char const * const lc_short, intmax_t const lc_default );
 
     /*! \brief arguments and parameters methods
      *
@@ -127,14 +127,14 @@
      *
      *  \param  argc       Main function parameters
      *  \param  argv       Main function parameters
-     *  \param  er_long    Argument string - long form
-     *  \param  er_short   Argument string - short form
-     *  \param  er_default Parameter default value
+     *  \param  lc_long    Argument string - long form
+     *  \param  lc_short   Argument string - short form
+     *  \param  lc_default Parameter default value
      *
      *  \return Parameter value on success, the default value otherwise
      */
 
-    uintmax_t lc_read_unsigned( int const argc, char ** argv, char const * const er_long, char const * const er_short, uintmax_t const er_default );
+    uintmax_t lc_read_unsigned( int const argc, char ** argv, char const * const lc_long, char const * const lc_short, uintmax_t const lc_default );
 
     /*! \brief arguments and parameters methods
      *
@@ -147,14 +147,14 @@
      *
      *  \param  argc       Main function parameters
      *  \param  argv       Main function parameters
-     *  \param  er_long    Argument string - long form
-     *  \param  er_short   Argument string - short form
-     *  \param  er_default Parameter default value
+     *  \param  lc_long    Argument string - long form
+     *  \param  lc_short   Argument string - short form
+     *  \param  lc_default Parameter default value
      *
      *  \return Parameter value on success, the default value otherwise
      */
 
-    double lc_read_double( int const argc, char ** argv, char const * const er_long, char const * const er_short, double er_default );
+    double lc_read_double( int const argc, char ** argv, char const * const lc_long, char const * const lc_short, double lc_default );
 
 /*
     header - inclusion guard

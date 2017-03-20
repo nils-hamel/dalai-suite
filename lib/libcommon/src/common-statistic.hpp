@@ -80,16 +80,16 @@
      *  mean value of the found minimal distances on the sampled set.
      *
      *  The approximation of the minimum distance mean value gets better as
-     *  \b dl_count increases. Nevertheless, a value of 32 already allows to
+     *  \b lc_count increases. Nevertheless, a value of 32 already allows to
      *  compute a very good approximation of the minimums mean value.
      *
      *  In addition, a chunk size parameter has to be provided. It indicates the
      *  size of the segments to considers to read the provided input stream. It
      *  allows to maintain the amount of used memory to a specific value.
      *
-     *  \param dl_istream Input stream descriptor
-     *  \param dl_count   Number of sampled elements
-     *  \param dl_chunk   Chunk size, in elements count
+     *  \param lc_istream Input stream descriptor
+     *  \param lc_count   Number of sampled elements
+     *  \param lc_chunk   Chunk size, in elements count
      *
      *  \return Returns minimum distance mean value
      */
