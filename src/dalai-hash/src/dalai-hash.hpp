@@ -98,12 +98,14 @@
      *
      *  The functions starts by gathering the parameters and opens the provided
      *  input file. It computes the point cloud minimum distances mean value
-     *  and hashes the point cloud using the \b dl_hash() function. The hashed
-     *  sub point clouds are written in the provided output directory.
+     *  and hashes the point cloud using the \b lc_hash() function. See the
+     *  documentation of \b libcommon for more information. The hashed sub point
+     *  clouds are written in the provided output directory.
      *
      *  The count value gives the amount of points to consider to compute the
-     *  minimums mean value. The hashing parameter is used with the mean value
-     *  to determine the size of the hashed point clouds.
+     *  minimum distance mean value. The hashing parameter is used with the mean
+     *  value to determine the size of the hashed point clouds. See \b libcommon
+     *  documentation for more information.
      *
      *  \param argc Standard parameter
      *  \param argv Standard parameter
