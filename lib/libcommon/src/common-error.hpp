@@ -18,10 +18,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   common-args.h
+    /*! \file   common-error.hpp
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  dalai-suite - common library - arguments and parameters module
+     *  dalai-suite - common library - error module
      */
 
 /*
@@ -53,6 +53,8 @@
     # define LC_ERROR_IO_WRITE  ( 4 )
     # define LC_ERROR_IO_REMOVE ( 5 )
     # define LC_ERROR_FORMAT    ( 6 )
+    # define LC_ERROR_CONTEXT   ( 7 )
+    # define LC_ERROR_DOMAIN    ( 8 )
 
 /*
     header - preprocessor macros
@@ -69,6 +71,15 @@
 /*
     header - function prototypes
  */
+
+    /*! \brief error methods
+     *
+     *  This function analysis the provided error code and displays the related
+     *  error message on the error output (cerr). If the provided error code is
+     *  not recognised, the function does nothing.
+     *
+     *  \param lc_code Error code
+     */
 
     void lc_error( int lc_code );
 

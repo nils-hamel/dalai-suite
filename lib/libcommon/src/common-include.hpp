@@ -18,7 +18,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   common-include.h
+    /*! \file   common-include.hpp
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
      *  dalai-suite - common library - inclusion module

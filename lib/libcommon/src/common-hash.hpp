@@ -18,10 +18,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   common-args.h
+    /*! \file   common-hash.hpp
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  dalai-suite - common library - arguments and parameters module
+     *  dalai-suite - common library - hashing module
      */
 
 /*
@@ -74,20 +74,25 @@
      *  provided point cloud into many smaller point clouds.
      *
      *  The function reads the input stream elements one by one and uses the
-     *  provided hashing parameter and the minimums mean value to determine in
-     *  which sub point cloud each element has to be written. The hash function
-     *  is driven by the following values computation :
+     *  provided hashing parameter and the minimum distance mean value to
+     *  determine in which sub point cloud each element has to be written. The
+     *  hash function is driven by the following h_i values :
      *
      *      h_i = ( int ) floor( p_i / ( dl_param * dl_mean ) )
      *
      *  with i = x,y,z. The three computed h_i values are then used to composed
      *  the sub point clouds file name. All elements sharing the same h_i values
-     *  are then written in the same sub-point-cloud.
+     *  are then written in the same sub point cloud.
      *
-     *  \param  dl_istream Input stream descriptor
-     *  \param  dl_opath   Output path
-     *  \param  dl_param   Hashing parameter
-     *  \param  dl_mean    Minimums mean value
+     *  In addition, a chunk size parameter has to be provided. It indicates the
+     *  size of the segments to considers to read the provided input stream. It
+     *  allows to maintain the amount of used memory to a specific value.
+     *
+     *  \param dl_istream Input stream descriptor
+     *  \param dl_opath   Output directory path
+     *  \param dl_param   Hashing parameter
+     *  \param dl_mean    Minimum distance mean value
+     *  \param dl_chunk   Chunk size, in elements count
      */
 
     void lc_hash( std::ifstream & lc_istream, char const * const lc_opath, double const lc_param, double const lc_mean, int64_t const lc_chunk );

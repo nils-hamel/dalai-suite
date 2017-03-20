@@ -18,10 +18,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   common-args.h
+    /*! \file   common-filter.hpp
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  dalai-suite - common library - arguments and parameters module
+     *  dalai-suite - common library - filtering module
      */
 
 /*
@@ -75,20 +75,30 @@
      *  This filtering function reads the point cloud provided through the input
      *  stream and exports its filtered version in the output stream.
      *
-     *  This function implements a variation of filtering methods implemented
-     *  in \b dl_filter_unity() using the \b DL_FILTER_UNITY_UNIF mode value. In
-     *  addition to the distance criterion, this function only keeps elements
-     *  for which the criterion is true for at least \b dl_threshold of their
-     *  neighbour elements.
+     *  The implemented filtering method is based on the provided minimum
+     *  distance mean value. This value is expected to give the mean value of
+     *  the nearest neighbour of each element of the model. Usually, this value
+     *  is computed considering a sample of the model (\b lc_statistic_mdmv()).
+     *
+     *  The function defines a threshold distance given by the multiplication
+     *  of the minimum distance mean value with the provided \b dl_factor The
+     *  function checks for each element of the model the amount of neighbour
+     *  that are closer to the defined threshold. The elements that have at
+     *  least \b dl_threshold elements below the condition are kept, the other
+     *  being discarded.
+     *
+     *  This filtering method is called homogeneous because the model provided
+     *  through the input stream is assumed to be only a portion of a larger
+     *  model. It follows that the provided minimum distance mean value is
+     *  computed on the overall model instead of the provided portion. As a
+     *  result, the applied filtering condition is homogeneous from the entire
+     *  model point of view.
      *
      *  \param  dl_istream   Input stream descriptor
      *  \param  dl_ostream   Output stream descriptor
-     *  \param  dl_size      Size, in bytes, of the input stream
-     *  \param  dl_mean      Minimums mean value
-     *  \param  dl_factor    Minimums mean multiplier
+     *  \param  dl_mean      Minimums distance mean value
+     *  \param  dl_factor    Mean value multiplier
      *  \param  dl_threshold Neighbour count threshold
-     *
-     *  \return Returns true on success, false otherwise
      */
 
     void lc_filter_homogeneous( std::ifstream & lc_istream, std::ofstream & lc_ostream, double const lc_mean, double const lc_factor, int64_t const lc_threshold );
@@ -98,23 +108,28 @@
      *  This filtering function reads the point cloud provided through the input
      *  stream and exports its filtered version in the output stream.
      *
-     *  This function implements a variation of filtering methods implemented
-     *  in \b dl_filter_unity() using the \b DL_FILTER_UNITY_ADAP mode value. In
-     *  addition to the distance criterion, this function only keeps elements
-     *  for which the criterion is true for at least \b dl_threshold of their
-     *  neighbour elements.
+     *  This function implements a variation of the filtering method implemented
+     *  in the \b lc_filter_homogeneous() function.
+     *
+     *  The variation of the filtering method consists in computing the minimum
+     *  distance mean value of the input stream as if it was a entire model
+     *  rather that a portion of it. The filtering condition is identical as in
+     *  the previous function expect that the condition is computed using the
+     *  computed local mean value.
+     *
+     *  This function can then be used to filter a complete model stored in a
+     *  single stream without to provide a mean value. It can also be used on
+     *  streams that contain only a portion of a larger model in order to
+     *  implement a filtering algorithm able to take into account the local
+     *  specificities of the model when applying the filtering condition.
      *
      *  \param  dl_istream   Input stream descriptor
      *  \param  dl_ostream   Output stream descriptor
-     *  \param  dl_size      Size, in bytes, of the input stream
-     *  \param  dl_mean      Minimums mean value
-     *  \param  dl_factor    Minimums mean multiplier
+     *  \param  dl_factor    Local mean value multiplier
      *  \param  dl_threshold Neighbour count threshold
-     *
-     *  \return Returns true on success, false otherwise
      */
 
-    void lc_filter_adaptative( std::ifstream & lc_istream, std::ofstream & lc_ostream, double const lc_mean, double const lc_factor, int64_t const lc_threshold );
+    void lc_filter_adaptative( std::ifstream & lc_istream, std::ofstream & lc_ostream, double const lc_factor, int64_t const lc_threshold );
 
 /*
     header - inclusion guard

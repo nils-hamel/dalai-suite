@@ -18,10 +18,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   common-args.h
+    /*! \file   common-statistic.hpp
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  dalai-suite - common library - arguments and parameters module
+     *  dalai-suite - common library - statistic module
      */
 
 /*
@@ -74,20 +74,24 @@
      *  elements distance to their closest element. To achieve this computation
      *  in a reasonable amount of time, the following strategy is considered.
      *
-     *  The function starts by sampling \b dl_count elements in the point cloud
+     *  The function starts by sampling \b lc_count elements in the point cloud
      *  provided through the stream descriptor. For each sampled element, it
      *  searches the distance to its closest element. It finally computes the
      *  mean value of the found minimal distances on the sampled set.
      *
-     *  The approximation of the minimums mean value gets better as \b dl_count
-     *  increases. Nevertheless, a value of 32 already allows to compute a very
-     *  good approximation of the minimums mean value.
+     *  The approximation of the minimum distance mean value gets better as
+     *  \b dl_count increases. Nevertheless, a value of 32 already allows to
+     *  compute a very good approximation of the minimums mean value.
      *
-     *  \param  dl_istream Input stream descriptor
-     *  \param  dl_size    Size, in bytes, of the input stream
-     *  \param  dl_count   Number of sampled elements
+     *  In addition, a chunk size parameter has to be provided. It indicates the
+     *  size of the segments to considers to read the provided input stream. It
+     *  allows to maintain the amount of used memory to a specific value.
      *
-     *  \return Returns mean minimum distance on success, 0.0 otherwise
+     *  \param dl_istream Input stream descriptor
+     *  \param dl_count   Number of sampled elements
+     *  \param dl_chunk   Chunk size, in elements count
+     *
+     *  \return Returns minimum distance mean value
      */
 
     double lc_statistic_mdmv( std::ifstream & lc_istream, int64_t const lc_count, int64_t const lc_chunk );

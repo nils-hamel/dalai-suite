@@ -67,6 +67,7 @@
     # include <cstring>
     # include <cstdlib>
     # include <cstdint>
+    # include <cinttypes>
     # include <unistd.h>
     # include <dirent.h>
     # include <common-include.hpp>

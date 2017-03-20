@@ -145,7 +145,7 @@
 
     }
 
-    void lc_filter_adaptative( std::ifstream & lc_istream, std::ofstream & lc_ostream, double const lc_mean, double const lc_factor, int64_t const lc_threshold ) {
+    void lc_filter_adaptative( std::ifstream & lc_istream, std::ofstream & lc_ostream, double const lc_factor, int64_t const lc_threshold ) {
 
         /* buffer variables */
         char    * lc_chunk( nullptr );
@@ -166,7 +166,7 @@
         double lc_distance( 0.0 );
 
         /* condition variables */
-        double lc_condition( lc_mean * lc_mean * lc_factor * lc_factor );
+        double lc_condition( 0.0 );
 
         /* clear input stream */
         lc_istream.clear();

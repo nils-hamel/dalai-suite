@@ -64,31 +64,8 @@
     /* error management */
     } catch ( int dl_code ) {
 
-        /* switch on error code */
-        switch ( dl_code ) {
-
-            case ( LC_ERROR_MEMORY ) : {
-
-                /* display message */
-                std::cerr << "dalai-suite : error : memory allocation" << std::endl;
-
-            } break;
-
-            case ( LC_ERROR_IO_ACCESS ) : {
-
-                /* display message */
-                std::cerr << "dalai-suite : error : stream access" << std::endl;
-
-            } break;
-
-            case ( LC_ERROR_IO_READ ) : {
-
-                /* display message */
-                std::cerr << "dalai-suite : error : stream reading" << std::endl;
-
-            } break;
-
-        };
+        /* error management */
+        lc_error( dl_code );
 
         /* send message */
         return( EXIT_FAILURE );

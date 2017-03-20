@@ -80,6 +80,22 @@
 
             } break;
 
+            /* error message */
+            case ( LC_ERROR_CONTEXT ) : {
+
+                /* display message */
+                std::cerr << "unable to create rendering context";
+
+            } break;
+
+            /* error message */
+            case ( LC_ERROR_DOMAIN ) : {
+
+                /* display message */
+                std::cerr << "parameter out of domain";
+
+            } break;
+
         };
 
         /* display format */

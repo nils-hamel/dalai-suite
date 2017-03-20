@@ -18,10 +18,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   common-args.h
+    /*! \file   common-uf3.hpp
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  dalai-suite - common library - arguments and parameters module
+     *  dalai-suite - common library - uf3 format module
      */
 
 /*

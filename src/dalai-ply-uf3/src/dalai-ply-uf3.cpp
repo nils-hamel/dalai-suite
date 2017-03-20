@@ -66,7 +66,7 @@
             /* character validation */
             if ( ( * dl_accum ) > 0x20 ) {
 
-                /* validate read char */
+                /* validate read character */
                 dl_accum ++;
 
                 /* continue stream reading */

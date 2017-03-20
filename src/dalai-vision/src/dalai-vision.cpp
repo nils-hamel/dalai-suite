@@ -55,7 +55,7 @@
         if ( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
 
             /* throw exception */
-            throw( DL_ERROR_RENDER );
+            throw( LC_ERROR_CONTEXT );
 
         }
 
@@ -63,7 +63,7 @@
         if ( SDL_GetCurrentDisplayMode( 0, & dl_display ) < 0 ) {
 
             /* throw exception */
-            throw( DL_ERROR_RENDER );
+            throw( LC_ERROR_CONTEXT );
 
         }
 
@@ -87,7 +87,7 @@
         if ( ( vs_window = SDL_CreateWindow( "", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, vs_width, vs_height, SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL ) ) == NULL ) {
 
             /* throw exception */
-            throw( DL_ERROR_WINDOW );
+            throw( LC_ERROR_CONTEXT );
 
         }
 
@@ -95,7 +95,7 @@
         if ( ( vs_context = SDL_GL_CreateContext( vs_window ) ) == NULL ) {
 
             /* throw exception */
-            throw( DL_ERROR_OPENGL );
+            throw( LC_ERROR_CONTEXT );
 
         }
 
@@ -183,7 +183,14 @@
 
     void dl_vision_t::vs_set_viewpoint( dl_model_t & dl_model ) {
 
-        /* assign initial translation */
+        /* reset rotation */
+        vs_angle_x = 0.0;
+        vs_angle_y = 0.0;
+        vs_angle_z = 0.0;
+
+        /* reset translation */
+        vs_trans_x = 0.0;
+        vs_trans_y = 0.0;
         vs_trans_z = -dl_model.ml_get_span();
 
     }
@@ -329,6 +336,13 @@
 
                 /* update model point size */
                 dl_model.ml_set_pointsize( vs_event.keysym.sym - SDLK_1 + 1 );
+
+            } break;
+
+            case ( SDLK_r ) : {
+
+                /* reset viewpoint */
+                vs_set_viewpoint( dl_model );
 
             } break;
 
@@ -488,89 +502,36 @@
 
     int main( int argc, char ** argv ) {
 
+    /* error management */
+    try {
+
+        /* vision class variables */
+        dl_vision_t dl_vision;
+
+        /* model class variables */
+        dl_model_t dl_model( lc_read_string( argc, argv, "--model", "-m" ) );
+
+        /* set projection matrix */
+        dl_vision.vs_set_projection( dl_model );
+
+        /* set initial viewpoint */
+        dl_vision.vs_set_viewpoint( dl_model );
+
+        /* principale execution loop */
+        dl_vision.vs_execution( dl_model );
+
+    } catch ( int dl_code ) {
+
         /* error management */
-        try {
+        lc_error( dl_code );
 
-            /* vision class variables */
-            dl_vision_t dl_vision;
+        /* send message */
+        return( EXIT_FAILURE );
 
-            /* model class variables */
-            dl_model_t dl_model( lc_read_string( argc, argv, "--model", "-m" ) );
+    }
 
-            /* set projection matrix */
-            dl_vision.vs_set_projection( dl_model );
-
-            /* set initial viewpoint */
-            dl_vision.vs_set_viewpoint( dl_model );
-
-            /* principale execution loop */
-            dl_vision.vs_execution( dl_model );
-
-        } catch ( int dl_code ) {
-
-            /* switch on error code */
-            switch ( dl_code ) {
-
-                case ( DL_ERROR_MEMORY    ) : {
-
-                    /* display message */
-                    std::cerr << "dalai-suite : error : memory allocation" << std::endl;
-
-                } break;
-
-                case ( DL_ERROR_IO_ACCESS ) : {
-
-                    /* display message */
-                    std::cerr << "dalai-suite : error : unable to access stream" << std::endl;
-
-                } break;
-
-                case ( DL_ERROR_IO_READ   ) : {
-
-                    /* display message */
-                    std::cerr << "dalai-suite : error : stream reading" << std::endl;
-
-                } break;
-
-                case ( DL_ERROR_PARAMS    ) : {
-
-                    /* display message */
-                    std::cerr << "dalai-suite : error : parameter out of range" << std::endl;
-
-                } break;
-
-                case ( DL_ERROR_RENDER ) : {
-
-                    /* display message */
-                    std::cerr << "dalai-suite : error : unable to create rendering context" << std::endl;
-
-                } break;
-
-                case ( DL_ERROR_WINDOW ) : {
-
-                    /* display message */
-                    std::cerr << "dalai-suite : error : unable to create rendering window" << std::endl;
-
-                } break;
-
-                case ( DL_ERROR_OPENGL ) : {
-
-                    /* display message */
-                    std::cerr << "dalai-suite : error : unable to create opengl context" << std::endl;
-
-                } break;
-
-            };
-
-            /* send message */
-            return( EXIT_FAILURE );
-
-        } /* otherwise */ {
-
-            /* send message */
-            return( EXIT_SUCCESS );
-
-        }
+        /* send message */
+        return( EXIT_SUCCESS );
 
     }
 

@@ -57,7 +57,7 @@
         if ( dl_istream.is_open() == false ) {
 
             /* send message */
-            throw( DL_ERROR_IO_ACCESS );
+            throw( LC_ERROR_IO_ACCESS );
 
         }
 
@@ -65,7 +65,7 @@
         if ( ( ml_data = new char[ml_size = dl_istream.tellg()] ) == nullptr ) {
 
             /* send message */
-            throw( DL_ERROR_MEMORY );
+            throw( LC_ERROR_MEMORY );
 
         }
 
@@ -82,7 +82,7 @@
         if ( dl_istream.gcount() != ml_size ) {
 
             /* send message */
-            throw( DL_ERROR_IO_READ );
+            throw( LC_ERROR_IO_READ );
 
         }
 
@@ -201,7 +201,7 @@
         if ( ( dl_surface < 0 ) || ( dl_surface > 2 ) ) {
 
             /* send message */
-            throw( DL_ERROR_PARAMS );
+            throw( LC_ERROR_DOMAIN );
 
         }
 
@@ -261,7 +261,7 @@
         if ( ( dl_array = new double[DL_MODEL_MDMVC] ) == nullptr ) {
 
             /* send message */
-            throw( DL_ERROR_MEMORY );
+            throw( LC_ERROR_MEMORY );
 
         }
 

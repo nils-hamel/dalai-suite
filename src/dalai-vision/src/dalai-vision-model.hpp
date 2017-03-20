@@ -35,7 +35,6 @@
     header - internal includes
  */
 
-    # include "dalai-vision-common.hpp"
     # include "dalai-vision-surface.hpp"
 
 /*

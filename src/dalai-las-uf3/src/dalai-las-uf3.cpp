@@ -26,21 +26,15 @@
 
     int main( int argc, char ** argv ) {
 
-        /* color availability variables */
-        bool dl_color( false );
-
-        /* format variables */
-        int dl_format( 0 );
-
-        /* classifcation index variables */
-        int dl_class( 0 );
-
         /* stream buffer variables */
         char dl_buffer[LC_UF3_RECLEN] = { 0 };
 
         /* buffer mapping variables */
         lc_uf3p_t * dl_pose( ( lc_uf3p_t * ) ( dl_buffer ) );
         lc_uf3d_t * dl_data( ( lc_uf3d_t * ) ( dl_buffer + LC_UF3_DATA ) );
+
+        /* color availability variables */
+        bool dl_color( false );
 
         /* stream variables */
         std::ifstream dl_istream;
@@ -49,17 +43,17 @@
         /* classification colormap variables */
         char dl_colormap[19][3] = DL_COLORMAP;
 
+    /* error management */
+     try {
+
         /* create input stream */
         dl_istream.open( lc_read_string( argc, argv, "--las", "-i" ), std::ios::in | std::ios::binary );
 
         /* check input stream */
         if ( dl_istream.is_open() == false ) {
 
-            /* display message */
-            std::cerr << "dalai-suite : error : unable to access input stream" << std::endl;
-
             /* send message */
-            return( EXIT_FAILURE );
+            throw( LC_ERROR_IO_ACCESS );
 
         }
 
@@ -69,11 +63,8 @@
         /* check output stream */
         if ( dl_ostream.is_open() == false ) {
 
-            /* display message */
-            std::cerr << "dalai-suite : error : unable to access output stream" << std::endl;
-
             /* send message */
-            return( EXIT_FAILURE );
+            throw( LC_ERROR_IO_ACCESS );
 
         }
 
@@ -83,11 +74,8 @@
         /* check format consistency */
         if ( ( dl_las.GetHeader().GetVersionMajor() != 1 ) || ( dl_las.GetHeader().GetVersionMinor() > 4 ) ) {
 
-            /* dispaly message */
-            std::cerr << "dalai-suite : error : supports las format from 1.0 to 1.4" << std::endl;
-
             /* send message */
-            return( EXIT_FAILURE );
+            throw( LC_ERROR_FORMAT );
 
         }
 
@@ -95,7 +83,7 @@
         if ( lc_read_flag( argc, argv, "--classification", "-c" ) == false ) {
 
             /* retrieve input file format */
-            dl_format = dl_las.GetHeader().GetDataFormatId();
+            int dl_format( dl_las.GetHeader().GetDataFormatId() );
 
             /* check color availability */
             if ( ( dl_format == 2 ) || ( dl_format == 3 ) || ( dl_format == 5 ) ) {
@@ -131,7 +119,7 @@
             } else {
 
                 /* retrieve point classification */
-                dl_class = dl_las.GetPoint().GetClassification().GetClass();
+                int dl_class( dl_las.GetPoint().GetClassification().GetClass() );
 
                 /* check classification index */
                 if ( dl_class > 18 ) dl_class = 0;
@@ -153,6 +141,16 @@
 
         /* delete input stream */
         dl_istream.close();
+
+    } catch ( int dl_code ) {
+
+        /* error management */
+        lc_error( dl_code );
+
+        /* send message */
+        return( EXIT_FAILURE );
+
+    }
 
         /* send message */
         return( EXIT_SUCCESS );

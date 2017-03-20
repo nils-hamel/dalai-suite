@@ -294,7 +294,7 @@
         if ( ( dl_swap = ( double * ) realloc( sf_data, ( sf_virt + DL_SURFACE_STEP ) * sizeof( double ) ) ) == nullptr ) {
 
             /* send message */
-            throw( DL_ERROR_MEMORY );
+            throw( LC_ERROR_MEMORY );
 
         }
 

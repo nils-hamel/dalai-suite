@@ -43,25 +43,22 @@
         lc_uf3d_t * dl_idata( nullptr );
         dl_plyd_t * dl_odata( nullptr );
 
-        /* allocate and check i/o buffer memory */
-        if ( ( dl_ibuffer = new ( std::nothrow ) char[DL_UF3_PLY_CHUNK * LC_UF3_RECLEN] ) == nullptr ) {
+    /* error management */
+    try {
 
-            /* display message */
-            std::cerr << "dalai-suite : error : unable to allocate memory" << std::endl;
+        /* allocate and check i/o buffer memory */
+        if ( ( dl_ibuffer = new ( std::nothrow ) char[LC_UF3_CHUNK * LC_UF3_RECLEN] ) == nullptr ) {
 
             /* send message */
-            return( EXIT_FAILURE );
+            throw( LC_ERROR_MEMORY );
 
         }
 
         /* allocate and check i/o buffer memory */
-        if ( ( dl_obuffer = new ( std::nothrow ) char[DL_UF3_PLY_CHUNK * DL_UF3_PLY_RECLEN] ) == nullptr ) {
-
-            /* display message */
-            std::cerr << "dalai-suite : error : unable to allocate memory" << std::endl;
+        if ( ( dl_obuffer = new ( std::nothrow ) char[LC_UF3_CHUNK * DL_UF3_PLY_RECLEN] ) == nullptr ) {
 
             /* send message */
-            return( EXIT_FAILURE );
+            throw( LC_ERROR_MEMORY );
 
         }
 
@@ -71,11 +68,8 @@
         /* check input stream */
         if ( dl_istream.is_open() == false ) {
 
-            /* display message */
-            std::cerr << "dalai-suite : error : unable to access input stream" << std::endl;
-
             /* send message */
-            return( EXIT_FAILURE );
+            throw( LC_ERROR_IO_ACCESS );
 
         }
 
@@ -85,11 +79,8 @@
         /* check output stream */
         if ( dl_ostream.is_open() == false ) {
 
-            /* display message */
-            std::cerr << "dalai-suite : error : unable to access output stream" << std::endl;
-
             /* send message */
-            return( EXIT_FAILURE );
+            throw( LC_ERROR_IO_ACCESS );
 
         }
 
@@ -115,7 +106,7 @@
         do {
 
             /* read input stream chunk */
-            dl_istream.read( dl_ibuffer, DL_UF3_PLY_CHUNK * LC_UF3_RECLEN );
+            dl_istream.read( dl_ibuffer, LC_UF3_CHUNK * LC_UF3_RECLEN );
 
             /* parsing input stream chunk */
             for ( long long int dl_iparse( 0 ), dl_oparse( 0 ); dl_iparse < dl_istream.gcount(); dl_iparse += LC_UF3_RECLEN, dl_oparse += DL_UF3_PLY_RECLEN ) {
@@ -158,6 +149,17 @@
 
         /* release memory allocation */
         delete [] dl_ibuffer;
+
+    /* error management */
+    } catch ( int dl_code ) {
+
+        /* error management */
+        lc_error( dl_code );
+
+        /* send message */
+        return( EXIT_FAILURE );
+
+    }
 
         /* send message */
         return( EXIT_SUCCESS );

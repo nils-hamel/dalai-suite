@@ -18,7 +18,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   common-args.h
+    /*! \file   common-args.hpp
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
      *  dalai-suite - common library - arguments and parameters module

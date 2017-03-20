@@ -65,14 +65,12 @@
     # include <iostream>
     # include <fstream>
     # include <cstdint>
+    # include <cinttypes>
     # include <common-include.hpp>
 
 /*
     header - preprocessor definitions
  */
-
-    /* define universal format chunk size */
-    # define DL_UF3_PLY_CHUNK  ( 131072ll )
 
     /* define ply records length */
     # define DL_UF3_PLY_RECLEN ( ( sizeof( float ) + sizeof( uint8_t ) ) * 3u )
