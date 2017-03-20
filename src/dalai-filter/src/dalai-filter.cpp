@@ -109,7 +109,7 @@
             if ( dl_adaptative == true ) {
 
                 /* filtering method */
-                lc_filter_adaptative( dl_istream, dl_ostream, dl_mean, dl_factor, dl_threshold );
+                lc_filter_adaptative( dl_istream, dl_ostream, dl_factor, dl_threshold );
 
             } else {
 
