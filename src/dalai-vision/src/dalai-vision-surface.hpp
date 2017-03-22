@@ -18,7 +18,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   dalai-vision-model.hpp
+    /*! \file   dalai-vision-surface.hpp
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
      *  dalai-suite - vision - surface module
