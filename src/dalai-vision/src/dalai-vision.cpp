@@ -205,16 +205,16 @@
         while ( vs_state == true ) {
 
             /* events management */
-            while ( SDL_PollEvent( & vs_event ) > 0 ) {
+            while ( SDL_PollEvent( & dl_event ) > 0 ) {
 
                 /* switch on event type */
-                switch ( vs_event.type ) {
+                switch ( dl_event.type ) {
 
                     /* event : keydown */
                     case ( SDL_KEYDOWN ) : {
 
                         /* specialised method */
-                        vs_keydown( vs_event.key, dl_model );
+                        vs_keydown( dl_event.key, dl_model );
 
                     } break;
 
@@ -222,7 +222,7 @@
                     case ( SDL_MOUSEBUTTONDOWN ) : {
 
                         /* specialised method */
-                        vs_button( vs_event.button, dl_model );
+                        vs_button( dl_event.button, dl_model );
 
                     } break;
 
@@ -230,7 +230,7 @@
                     case ( SDL_MOUSEMOTION ) : {
 
                         /* specialised method */
-                        vs_motion( vs_event.motion, dl_model );
+                        vs_motion( dl_event.motion, dl_model );
 
                     } break;
 
@@ -238,7 +238,7 @@
                     case ( SDL_MOUSEWHEEL ) : {
 
                         /* specialised method */
-                        vs_wheel( vs_event.wheel, dl_model );
+                        vs_wheel( dl_event.wheel, dl_model );
 
                     } break;
 
@@ -316,10 +316,10 @@
     source - event methods
  */
 
-    void dl_vision_t::vs_keydown( SDL_KeyboardEvent vs_event, dl_model_t & dl_model ) {
+    void dl_vision_t::vs_keydown( SDL_KeyboardEvent dl_event, dl_model_t & dl_model ) {
 
         /* switch on keycode */
-        switch ( vs_event.keysym.sym ) {
+        switch ( dl_event.keysym.sym ) {
 
             /* keycode : [escape] */
             case ( SDLK_ESCAPE ) : {
@@ -335,7 +335,7 @@
             case ( SDLK_4 ) : {
 
                 /* update model point size */
-                dl_model.ml_set_pointsize( vs_event.keysym.sym - SDLK_1 + 1 );
+                dl_model.ml_set_pointsize( dl_event.keysym.sym - SDLK_1 + 1 );
 
             } break;
 
@@ -399,7 +399,7 @@
 
     }
 
-    void dl_vision_t::vs_button( SDL_MouseButtonEvent vs_event, dl_model_t & dl_model ) {
+    void dl_vision_t::vs_button( SDL_MouseButtonEvent dl_event, dl_model_t & dl_model ) {
 
         /* click components variables */
         double dl_mx( 0.0 );
@@ -407,17 +407,17 @@
         double dl_mz( 0.0 );
 
         /* push mouse position at click */
-        vs_mouse_x = vs_event.x;
-        vs_mouse_y = vs_event.y;
+        vs_mouse_x = dl_event.x;
+        vs_mouse_y = dl_event.y;
 
         /* switch on button */
-        if ( vs_event.button == SDL_BUTTON_LEFT ) {
+        if ( dl_event.button == SDL_BUTTON_LEFT ) {
 
             /* switch on click type */
-            if ( vs_event.clicks == 2 ) {
+            if ( dl_event.clicks == 2 ) {
 
                 /* compute and check click components */
-                if ( vs_get_click( vs_event.x, vs_event.y, & dl_mx, & dl_my, & dl_mz ) == true ) {
+                if ( vs_get_click( dl_event.x, dl_event.y, & dl_mx, & dl_my, & dl_mz ) == true ) {
 
                     /* update model center */
                     dl_model.ml_set_center( dl_mx, dl_my, dl_mz );
@@ -426,10 +426,10 @@
 
             }
 
-        } else if ( vs_event.button == SDL_BUTTON_MIDDLE ) {
+        } else if ( dl_event.button == SDL_BUTTON_MIDDLE ) {
 
             /* switch on click type */
-            if ( vs_event.clicks == 1 ) {
+            if ( dl_event.clicks == 1 ) {
 
                 /* push model center to surface */
                 dl_model.ml_set_point_push();
@@ -440,7 +440,7 @@
 
     }
 
-    void dl_vision_t::vs_motion( SDL_MouseMotionEvent vs_event, dl_model_t & dl_model ) {
+    void dl_vision_t::vs_motion( SDL_MouseMotionEvent dl_event, dl_model_t & dl_model ) {
 
         /* inertia variables */
         float dl_inertia( 1.0 );
@@ -450,29 +450,29 @@
         if ( ( SDL_GetModState() & KMOD_SHIFT ) != 0 ) dl_inertia /= 5;
 
         /* switch on button */
-        if ( ( vs_event.state & SDL_BUTTON_LMASK ) != 0 ) {
+        if ( ( dl_event.state & SDL_BUTTON_LMASK ) != 0 ) {
 
             /* update inertia value */
             dl_inertia *= DL_INERTIA_ANGLE;
 
             /* update view angle */
-            vs_angle_x += dl_inertia * float( int( vs_event.y ) - vs_mouse_y );
-            vs_angle_z += dl_inertia * float( int( vs_event.x ) - vs_mouse_x ) * ( vs_modelview[10] < 0 ? -1.0 : +1.0 );
+            vs_angle_x += dl_inertia * float( int( dl_event.y ) - vs_mouse_y );
+            vs_angle_z += dl_inertia * float( int( dl_event.x ) - vs_mouse_x ) * ( vs_modelview[10] < 0 ? -1.0 : +1.0 );
 
-        } else if ( ( vs_event.state & SDL_BUTTON_RMASK ) != 0 ) {
+        } else if ( ( dl_event.state & SDL_BUTTON_RMASK ) != 0 ) {
 
             /* update inertia value */
             dl_inertia *= DL_INERTIA_TRANS * dl_model.ml_get_mdmv();
 
             /* update model translation */
-            vs_trans_x += dl_inertia * DL_INERTIA_TRANS * float( int( vs_event.x ) - vs_mouse_x );
-            vs_trans_y -= dl_inertia * DL_INERTIA_TRANS * float( int( vs_event.y ) - vs_mouse_y );
+            vs_trans_x += dl_inertia * DL_INERTIA_TRANS * float( int( dl_event.x ) - vs_mouse_x );
+            vs_trans_y -= dl_inertia * DL_INERTIA_TRANS * float( int( dl_event.y ) - vs_mouse_y );
 
         }
 
     }
 
-    void dl_vision_t::vs_wheel( SDL_MouseWheelEvent vs_event, dl_model_t & dl_model ) {
+    void dl_vision_t::vs_wheel( SDL_MouseWheelEvent dl_event, dl_model_t & dl_model ) {
 
         /* inertia variables */
         float dl_inertia( dl_model.ml_get_mdmv() * DL_INERTIA_WZOOM );
@@ -482,12 +482,12 @@
         if ( ( SDL_GetModState() & KMOD_SHIFT ) != 0 ) dl_inertia /= 5;
 
         /* switch on wheel direction */
-        if ( vs_event.y > 0 ) {
+        if ( dl_event.y > 0 ) {
 
             /* update model translation */
             vs_trans_z += dl_inertia;
 
-        } else if ( vs_event.y < 0 ) {
+        } else if ( dl_event.y < 0 ) {
 
             /* update model translation */
             vs_trans_z -= dl_inertia;

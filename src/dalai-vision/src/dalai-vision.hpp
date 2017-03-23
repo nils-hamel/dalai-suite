@@ -93,12 +93,66 @@
     header - structures
  */
 
+    /*! \class dl_vision_t
+     *  \brief Graphical interface class
+     *
+     *  This class holds the information and methods required to operate the
+     *  software graphical user interface.
+     *
+     *  It offers methods for the initialisation and deletion of the graphical
+     *  context, events management and rendering. It also holds the user point
+     *  of view related information.
+     *
+     *  The class also holds copies of the opengl model and projection matrix
+     *  and the viewport vector. These elements are usually used for model
+     *  click interpretation.
+     *
+     *  \var dl_vision_t::vs_window
+     *  Graphical context window
+     *  \var dl_vision_t::vs_context
+     *  Graphical context opengl context
+     *  \var dl_vision_t::dl_event
+     *  Event management structure
+     *  \var dl_vision_t::vs_width
+     *  Width, in pixels, of the interface screen
+     *  \var dl_vision_t::vs_height
+     *  Height, in pixels, of the interface screen
+     *  \var dl_vision_t::vs_near
+     *  Opengl near plane distance
+     *  \var dl_vision_t::vs_far
+     *  Opengl far plane distance
+     *  \var dl_vision_t::vs_state
+     *  Execution loop state
+     *  \var dl_vision_t::vs_angle_x
+     *  Rotation angle of the point of view along the x-axis
+     *  \var dl_vision_t::vs_angle_y
+     *  Rotation angle of the point of view along the y-axis
+     *  \var dl_vision_t::vs_angle_z
+     *  Rotation angle of the point of view along the z-axis
+     *  \var dl_vision_t::vs_trans_x
+     *  Translation of the point of view along the x-axis
+     *  \var dl_vision_t::vs_trans_y
+     *  Translation of the point of view along the y-axis
+     *  \var dl_vision_t::vs_trans_z
+     *  Translation of the point of view along the z-axis
+     *  \var dl_vision_t::vs_mouse_x
+     *  Mouse position along screen x-axis
+     *  \var dl_vision_t::vs_mouse_y
+     *  Mouse position along screen y-axis
+     *  \var dl_vision_t::vs_modelview
+     *  Modelview matrix of opengl
+     *  \var dl_vision_t::vs_projection
+     *  Projection matrix of opengl
+     *  \var dl_vision_t::vs_viewport
+     *  Viewport vector of the opengl render screen
+     */
+
     class dl_vision_t {
 
     private:
         SDL_Window *  vs_window;
         SDL_GLContext vs_context;
-        SDL_Event     vs_event;
+        SDL_Event     dl_event;
 
         int           vs_width;
         int           vs_height;
@@ -122,24 +176,133 @@
         GLint         vs_viewport[4];
 
     public:
+
+        /*! \brief constructor methods
+         *
+         *  The constructor method sets the interface graphical context using
+         *  sdl. After sdl initialisation, it creates the interface windows and
+         *  configures the opengl graphical context.
+         */
+
         dl_vision_t();
+
+        /*! \brief destructor methods
+         *
+         *  The destructor method simply deletes the interface window and the
+         *  opengl graphical context. It finally uninitialise sdl.
+         */
+
         ~dl_vision_t();
 
     public:
+
+        /*! \brief accessor methods
+         *
+         *  This function converts the provided mouse click coordinates into the
+         *  coordinates of a 3d point that belong to the model and corresponding
+         *  to the click position.
+         *
+         *  It returns true as a model point is found under the mouse click,
+         *  false otherwise.
+         *
+         *  \param  dl_mx Mouse click x-position
+         *  \param  dl_my Mouse click y-position
+         *  \param  dl_px Model point x-coordinate
+         *  \param  dl_py Model point y-coordinate
+         *  \param  dl_pz Model point z-coordinate
+         *
+         *  \return Returns true on success, false otherwise
+         */
+
         bool vs_get_click( int const dl_mx, int const dl_my, double * const dl_px, double * const dl_py, double * const dl_pz );
 
     public:
+
+        /*! \brief mutator methods
+         *
+         *  This function sets the opengl viewport and projection matrix based
+         *  on the interface screen sizes.
+         *
+         *  It also specifies the opengl near and far planes by considering the
+         *  model largest diagonal and minimum distance mean value.
+         *
+         *  \param dl_model Model class
+         */
+
         void vs_set_projection( dl_model_t & dl_model );
+
+        /*! \brief mutator methods
+         *
+         *  This function sets the opengl initial point of view. It resets the
+         *  view angles to zero and resets the view translation using the model
+         *  largest diagonal. The initial position of the point of view offers
+         *  an overall view of the model.
+         *
+         *  \param dl_model Model class
+         */
+
         void vs_set_viewpoint( dl_model_t & dl_model );
 
     public:
+
+        /*! \brief execution methods
+         *
+         *  This function holds the interface execution loop. The execution loop
+         *  is responsible of maintaining the software execution.
+         *
+         *  In addition, it has to manage the user interface events and it is
+         *  responsible of the model and interface rendering.
+         *
+         *  \param dl_model Model class
+         */
+
         void vs_execution( dl_model_t & dl_model );
 
     private:
-        void vs_keydown( SDL_KeyboardEvent vs_event, dl_model_t & dl_model );
-        void vs_button( SDL_MouseButtonEvent vs_event, dl_model_t & dl_model );
-        void vs_motion( SDL_MouseMotionEvent vs_event, dl_model_t & dl_model );
-        void vs_wheel( SDL_MouseWheelEvent vs_event, dl_model_t & dl_model );
+
+        /*! \brief event methods
+         *
+         *  This function is responsible of the management of the user interface
+         *  events coming from the keyboard.
+         *
+         *  \param dl_event Event structure
+         *  \param dl_model Model class
+         */
+
+        void vs_keydown( SDL_KeyboardEvent dl_event, dl_model_t & dl_model );
+
+        /*! \brief event methods
+         *
+         *  This function is responsible of the management of the user interface
+         *  events coming from the mouse click.
+         *
+         *  \param dl_event Event structure
+         *  \param dl_model Model class
+         */
+
+        void vs_button( SDL_MouseButtonEvent dl_event, dl_model_t & dl_model );
+
+        /*! \brief event methods
+         *
+         *  This function is responsible of the management of the user interface
+         *  events coming from the mouse motion.
+         *
+         *  \param dl_event Event structure
+         *  \param dl_model Model class
+         */
+
+        void vs_motion( SDL_MouseMotionEvent dl_event, dl_model_t & dl_model );
+
+        /*! \brief event methods
+         *
+         *  This function is responsible of the management of the user interface
+         *  events coming from the mouse wheel.
+         *
+         *  \param dl_event Event structure
+         *  \param dl_model Model class
+         */
+
+        void vs_wheel( SDL_MouseWheelEvent dl_event, dl_model_t & dl_model );
 
     };
 
@@ -149,8 +312,8 @@
 
     /*! \brief main function
      *
-     *  The main function creates the graphical user interface and model class
-     *  instances and starts the management of the interface :
+     *  The main function creates the graphical user interface, model class
+     *  instances and starts execution loop :
      *
      *      ./dalai-vision --model/-m [path to the uf3 file of the model]
      *
@@ -169,22 +332,22 @@
      *  is already in the stack, it is removed by this click.
      *
      *  Pressing [q], [w] or [e] allows the highlight respectively the first,
-     *  second and third model surface. Pressing the key [a] triggers the
+     *  second and third model surfaces. Pressing the key [a] triggers the
      *  automatic (re)selection of the estimation points of the highlighted
      *  surface. The automatic selection only make sense as at least four
      *  estimation points have already been pushed manually to the stack.
      *
-     *  As three surface are defined, the pressing of the return key allows to
-     *  compute and display on the error output the coordinates of the point
-     *  at the intersection of the three surface.
+     *  As three surfaces are defined, pressing the return key allows to compute
+     *  and display on the error output the coordinates of the point at the
+     *  intersection of the three surface.
      *
-     *  Pressing the tabulation key allows to show/hide the model surfaces.
+     *  Pressing the tabulation key allows to show or hide the model surfaces.
      *
      *  Finally, pressing the backspace key allows to clear the estimation
      *  points stack of the highlighted surface.
      *
-     *  The escape key allows to quit the graphical user interface and to stop
-     *  the software.
+     *  The escape key allows to stop the execution loop which causes the
+     *  software to quit.
      *
      *  \param argc Standard parameter
      *  \param argv Standard parameter
