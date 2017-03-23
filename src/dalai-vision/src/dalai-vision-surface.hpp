@@ -157,7 +157,7 @@
 
     public:
 
-        /*! \brief constructor
+        /*! \brief constructor methods
          *
          *  The constructor simply initialises the class members. In addition,
          *  it also initialise the estimation points array.
@@ -165,7 +165,7 @@
 
         dl_surface_t( void );
 
-        /*! \brief destructor
+        /*! \brief destructor methods
          *
          *  The desctructor simply releases the memory allocated to handle the
          *  plane estimation points.

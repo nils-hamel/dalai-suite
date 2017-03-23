@@ -149,6 +149,42 @@
 
     /*! \brief main function
      *
+     *  The main function creates the graphical user interface and model class
+     *  instances and starts the management of the interface :
+     *
+     *      ./dalai-vision --model/-m [path to the uf3 file of the model]
+     *
+     *  The creation of the model class instance triggers the importation and
+     *  analysis of the model contained in the provided uf3 file.
+     *
+     *  The interface allows to manipulate the model using the mouse : by
+     *  maintaining the right click, the motion of the mouse allows to rotate
+     *  the model. By maintaining the left click, the motion of the mouse allows
+     *  to update the translation of the model. Playing with the mouse wheel
+     *  allows to update the distance to the model.
+     *
+     *  The double-click on a point of the model sets it as the model center of
+     *  rotation. By clicking the mouse wheel, the center of rotation is pushed
+     *  on the estimation points stack of the highlighted surface. If the point
+     *  is already in the stack, it is removed by this click.
+     *
+     *  Pressing [q], [w] or [e] allows the highlight respectively the first,
+     *  second and third model surface. Pressing the key [a] triggers the
+     *  automatic (re)selection of the estimation points of the highlighted
+     *  surface. The automatic selection only make sense as at least four
+     *  estimation points have already been pushed manually to the stack.
+     *
+     *  As three surface are defined, the pressing of the return key allows to
+     *  compute and display on the error output the coordinates of the point
+     *  at the intersection of the three surface.
+     *
+     *  Pressing the tabulation key allows to show/hide the model surfaces.
+     *
+     *  Finally, pressing the backspace key allows to clear the estimation
+     *  points stack of the highlighted surface.
+     *
+     *  The escape key allows to quit the graphical user interface and to stop
+     *  the software.
      *
      *  \param argc Standard parameter
      *  \param argv Standard parameter

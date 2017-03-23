@@ -387,7 +387,7 @@
         }
 
         /* check display flag */
-        if ( ml_sflag == 1 ) {
+        if ( ml_sflag != 0 ) {
 
             /* enable blending */
             glEnable( GL_BLEND );
