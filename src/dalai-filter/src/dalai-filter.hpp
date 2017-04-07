@@ -81,7 +81,7 @@
     # define DL_FILTER_DELETE ( 1 )
 
     /* define hashing parameter */
-    # define DL_FILTER_HASH   ( 100.0 )
+    # define DL_FILTER_HASH   ( 75.0 )
 
 /*
     header - preprocessor macros
