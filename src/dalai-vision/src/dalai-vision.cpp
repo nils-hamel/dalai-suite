@@ -395,6 +395,13 @@
 
             } break;
 
+            case ( SDLK_l ) : {
+
+                /* display surface points */
+                dl_model.ml_dis_point();
+
+            } break;
+
         };
 
     }

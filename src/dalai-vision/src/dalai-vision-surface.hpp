@@ -343,6 +343,10 @@
 
         void sf_ren_point( void );
 
+        /* ... */
+
+        void sf_dis_point( void );
+
     };
 
 /*

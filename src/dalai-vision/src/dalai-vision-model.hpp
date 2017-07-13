@@ -334,6 +334,10 @@
 
         void ml_ren_frame( void );
 
+        /* ... */
+
+        void ml_dis_point( void );
+
     };
 
 /*

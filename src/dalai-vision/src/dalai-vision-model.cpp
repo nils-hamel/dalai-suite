@@ -473,3 +473,14 @@
 
     }
 
+/*
+    source - display methods
+ */
+
+    void dl_model_t::ml_dis_point( void ) {
+
+        /* display enable surface point */
+        ml_s[ml_sact].sf_dis_point();
+
+    }
+

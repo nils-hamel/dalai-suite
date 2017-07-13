@@ -328,7 +328,7 @@
     }
 
 /*
-    source - render methods
+    source - rendering methods
  */
 
     void dl_surface_t::sf_ren_surface( double const dl_w ) {
@@ -366,6 +366,22 @@
 
         /* display opengl primitive arrays */
         glDrawArrays( GL_POINTS, 0, sf_size / 3 );
+
+    }
+
+/*
+    source - display methods
+ */
+
+    void dl_surface_t::sf_dis_point( void ) {
+
+        /* parsing surface points */
+        for ( long long dl_parse( 0 ); dl_parse < sf_size; dl_parse += 3 ) {
+
+            /* display point coordinates */
+            fprintf( stdout, "%f %f %f\n", sf_data[dl_parse], sf_data[dl_parse + 1], sf_data[dl_parse + 2] );
+
+        }
 
     }
 
