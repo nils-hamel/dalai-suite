@@ -85,15 +85,22 @@
     void dl_surface_t::sf_set_point_push( double const dl_x, double const dl_y, double const dl_z, double const dl_limit ) {
 
         /* point removal procedure - abort on remove */
-        if ( sf_set_point_remove( dl_x, dl_y, dl_z, dl_limit ) == true ) return;
+        if ( sf_set_point_remove( dl_x, dl_y, dl_z, dl_limit ) != true ) {
 
-        /* check buffer memory state */
-        if ( ( sf_size + 3 ) >= sf_virt ) sf_set_memory();
+            /* check buffer memory state */
+            if ( ( sf_size + 3 ) >= sf_virt ) {
 
-        /* push point on buffer */
-        sf_data[sf_size ++] = dl_x;
-        sf_data[sf_size ++] = dl_y;
-        sf_data[sf_size ++] = dl_z;
+                /* update buffer memory */
+                sf_set_memory();
+
+            }
+
+            /* push point on buffer */
+            sf_data[sf_size ++] = dl_x;
+            sf_data[sf_size ++] = dl_y;
+            sf_data[sf_size ++] = dl_z;
+
+        }
 
         /* recompute surface equation */
         sf_set_equation();
