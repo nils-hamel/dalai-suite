@@ -334,7 +334,12 @@
 
         void ml_ren_frame( void );
 
-        /* ... */
+        /*! \brief display methods
+         *
+         *  This function displays the estimation points of the highlighted
+         *  surface. It uses the surface method to dumps the points coordinates
+         *  in the terminal.
+         */
 
         void ml_dis_point( void );
 
