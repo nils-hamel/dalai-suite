@@ -88,9 +88,19 @@
 
     /*! \brief main methods
      *
+     *  The main function reads the content of the provided input file and
+     *  applies the provided shift to the respective dimensions :
      *
-     *      ./dalai-shift --uf3/-i [uf3 input file]
+     *      ./dalai-shift --input/-i [uf3 input file]
+     *                    --output/-o [uf3 output file]
+     *                    --x/-x [x-coordinates shift]
+     *                    --y/-y [y-coordinates shift]
+     *                    --z/-z [z-coordinates shift]
      *
+     *  The main function starts by opening both input and output streams before
+     *  to read chunks of the input file. The provided shift values are then
+     *  added to the points coordinates of the read chunk. The processed chunk
+     *  is then exported in the output file.
      *
      *  \param  argc Standard parameter
      *  \param  argv Standard parameter
