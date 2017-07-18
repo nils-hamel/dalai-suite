@@ -88,9 +88,14 @@
 
     /*! \brief main methods
      *
+     *  The main function reads the point cloud provided through the input file
+     *  and displays its content on the terminal :
      *
      *      ./dalai-cat --uf3/-i [uf3 input file]
      *
+     *  The main function opens the provided file and reads its point cloud
+     *  point by point. For each read point, the main function displays the
+     *  three coordinates and the point color on a line of the terminal.
      *
      *  \param  argc Standard parameter
      *  \param  argv Standard parameter
