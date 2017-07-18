@@ -105,10 +105,10 @@
 
                             }
 
-                        }
+                            /* write stream chunk */
+                            dl_ostream.write( dl_buffer, dl_read );
 
-                        /* write stream chunk */
-                        dl_ostream.write( dl_buffer, LC_UF3_CHUNK * LC_UF3_RECLEN );
+                        }
 
                     } while ( dl_read > 0 );
 
