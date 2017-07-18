@@ -1,5 +1,5 @@
 /*
- *  dalai-suite - uf3-ply
+ *  dalai-suite - cat
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
  *      Copyright (c) 2016-2017 EPFL CDH DHLAB
@@ -18,10 +18,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   dalai-uf3-ply.hpp
+    /*! \file   dalai-cat.hpp
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  dalai-suite - uf3-ply
+     *  dalai-suite - cat
      */
 
     /*! \mainpage dalai-suite
@@ -51,8 +51,8 @@
     header - inclusion guard
  */
 
-    # ifndef __DL_UF3_CAT__
-    # define __DL_UF3_CAT__
+    # ifndef __DL_CAT__
+    # define __DL_CAT__
 
 /*
     header - internal includes
@@ -89,7 +89,7 @@
     /*! \brief main methods
      *
      *
-     *      ./dalai-uf3-cat --uf3/-i [uf3 input file]
+     *      ./dalai-cat --uf3/-i [uf3 input file]
      *
      *
      *  \param  argc Standard parameter

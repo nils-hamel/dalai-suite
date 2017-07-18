@@ -1,5 +1,5 @@
 /*
- *  dalai-suite - uf3-ply
+ *  dalai-suite - cat
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
  *      Copyright (c) 2016-2017 EPFL CDH DHLAB
@@ -18,7 +18,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    # include "dalai-uf3-cat.hpp"
+    # include "dalai-cat.hpp"
 
 /*
     source - main methods
