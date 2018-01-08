@@ -19,6 +19,6 @@ The code documentation is built using Doxygen.
 ## Copyright and License
 
 **dalai-suite** - Nils Hamel <br >
-Copyright (c) 2016-2017 EPFL CDH DHLAB
+Copyright (c) 2016-2018 DHLAB, EPFL
 
 This program is licensed under the terms of the GNU GPLv3.
