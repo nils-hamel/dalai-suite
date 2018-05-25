@@ -14,6 +14,10 @@ The _dalai-suite_ comes with the following package dependencies (Ubuntu 16.04 LT
 * libsdl2-dev
 * libeigen3-dev
 
+and the following external dependencies provided as sub-modules :
+
+* liberatosthene beta@5a1be8e
+
 The code documentation is built using Doxygen.
 
 ## Copyright and License

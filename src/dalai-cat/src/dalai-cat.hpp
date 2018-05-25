@@ -65,6 +65,7 @@
     # include <iostream>
     # include <fstream>
     # include <common-include.hpp>
+    # include <eratosthene-include.h>
 
 /*
     header - preprocessor definitions
