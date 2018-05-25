@@ -21,6 +21,31 @@
     # include "dalai-cat.hpp"
 
 /*
+    source - address methods
+ */
+
+    void dl_cat_address( le_address_t const * const dl_addr ) {
+
+        /* string variable */
+        char dl_string[_LE_USE_DEPTH + 1] =  { 0 };
+
+        /* address size variable */
+        int dl_size = le_address_get_size( dl_addr );
+
+        /* convert address to string */
+        for ( int dl_parse( 0 ); dl_parse < dl_size; dl_parse ++ ) {
+
+            /* assign digit */
+            dl_string[dl_parse] = le_address_get_digit( dl_addr, dl_parse ) + 48;
+
+        }
+
+        /* display address index */
+        printf( "%s ", dl_string );
+
+    }
+
+/*
     source - main methods
  */
 
@@ -34,6 +59,12 @@
 
         /* stream buffer variables */
         char dl_buffer[LC_UF3_RECLEN];
+
+        /* format switch and parameter variable */
+        le_byte_t dl_index( lc_read_unsigned( argc, argv, "--index", "-x", 0 ) );
+
+        /* address variable */
+        le_address_t dl_address = LE_ADDRESS_C_SIZE( dl_index );
 
         /* stream variables */
         std::ifstream dl_stream( lc_read_string( argc, argv, "--uf3", "-i" ), std::ios::in | std::ios::binary );
@@ -64,8 +95,21 @@
             /* check reading */
             if ( dl_stream.gcount() == LC_UF3_RECLEN ) {
 
-                /* display position */
-                printf( "%e %e %e ", dl_pose[0], dl_pose[1], dl_pose[2] );
+                /* check format switch */
+                if ( dl_index != 0 ) {
+
+                    /* convert record to address */
+                    le_address_set_pose( & dl_address, dl_pose );
+
+                    /* display address index */
+                    dl_cat_address( & dl_address );
+
+                } else {
+
+                    /* display position in geographic coordinates */
+                    printf( "%e %e %e ", dl_pose[0], dl_pose[1], dl_pose[2] );
+
+                }
 
                 /* display data */
                 printf( "%02x %02x %02x\n", dl_data[0], dl_data[1], dl_data[2] );

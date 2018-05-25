@@ -87,16 +87,31 @@
     header - function prototypes
  */
 
+    /*! \brief address methods
+     *
+     *  This function is used to display an address structure spatial index as
+     *  a sequence of digit in base eight. The provided address structure is
+     *  expected to contain a valid index consistent with its size.
+     *
+     *  \param dl_addr Address structure
+     */
+
+    void dl_cat_address( le_address_t const * const dl_addr );
+
     /*! \brief main methods
      *
      *  The main function reads the point cloud provided through the input file
      *  and displays its content on the terminal :
      *
-     *      ./dalai-cat --uf3/-i [uf3 input file]
+     *      ./dalai-cat --uf3/-i [uf3 input file] --index/-x [size]
      *
      *  The main function opens the provided file and reads its point cloud
-     *  point by point. For each read point, the main function displays the
-     *  three coordinates and the point colour on a line of the terminal.
+     *  point by point. For each point, the main function display a line on the
+     *  terminal. If the '--index' parameter is zero or not provided, each point
+     *  is displayed in terms of geographic coordinates and colour.
+     *
+     *  If the '--index' is non-zero, the function displays the points index and
+     *  colour instead of the geographical coordinates.
      *
      *  \param  argc Standard parameter
      *  \param  argv Standard parameter
