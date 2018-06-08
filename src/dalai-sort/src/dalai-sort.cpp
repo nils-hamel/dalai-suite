@@ -21,136 +21,184 @@
     # include "dalai-sort.hpp"
 
 /*
-    source - comparison methods
+    source - common methods
  */
 
-    bool dl_sort_function( le_real_t const * const dl_pose_a, le_real_t const * const dl_pose_b, le_byte_t const dl_length ) {
+    le_size_t dl_sort_filesize( le_char_t const * const dl_path ) {
 
-        /* position variable */
-        le_real_t dl_pa[3] = {
+        /* statistics structure */
+        struct stat dl_stat = { 0 };
 
-        ( dl_pose_a[0] - LE_ADDRESS_MIN_L ) * LE_ADDRESS_IRN_L,
-        ( dl_pose_a[1] - LE_ADDRESS_MIN_A ) * LE_ADDRESS_IRN_A,
-        ( dl_pose_a[2] - LE_ADDRESS_MIN_H ) * LE_ADDRESS_IRN_H,
+        /* retrieve statistics */
+        if ( stat( ( char * ) dl_path, & dl_stat ) != 0 ) {
 
-        };
-
-        /* position variable */
-        le_real_t dl_pb[3] = {
-
-        ( dl_pose_b[0] - LE_ADDRESS_MIN_L ) * LE_ADDRESS_IRN_L,
-        ( dl_pose_b[1] - LE_ADDRESS_MIN_A ) * LE_ADDRESS_IRN_A,
-        ( dl_pose_b[2] - LE_ADDRESS_MIN_H ) * LE_ADDRESS_IRN_H,
-
-        };
-
-        /* digit variable */
-        le_byte_t dl_da( 0 );
-        le_byte_t dl_db( 0 );
-
-        /* comparison function */
-        for ( le_size_t dl_parse( 0 ); dl_parse < dl_length; dl_parse ++ ) {
-
-            /* check digit value */
-            if ( ( dl_pa[0] *= 2.0 ) >= 1.0 ) {
-
-                /* assign digit component */
-                dl_da = 0x01;
-
-                /* update dimension value */
-                dl_pa[0] -= 1.0;
-
-            /* initialise digit */
-            } else { dl_da = 0x00; }
-
-            /* check digit value */
-            if ( ( dl_pb[0] *= 2.0 ) >= 1.0 ) {
-
-                /* assign digit component */
-                dl_db = 0x01;
-
-                /* update dimension value */
-                dl_pb[0] -= 1.0;
-
-            /* initialise digit */
-            } else { dl_db = 0x00; }
-
-            /* asynchronous dimension */
-            if ( dl_parse >= LE_ADDRESS_DEPTH_P ) {
-
-                /* check digit value */
-                if ( ( dl_pa[1] *= 2.0 ) >= 1.0 ) {
-
-                    /* assign digit component */
-                    dl_da |= 0x02;
-
-                    /* update dimension value */
-                    dl_pa[1] -= 1.0;
-
-                }
-
-                /* check digit value */
-                if ( ( dl_pb[1] *= 2.0 ) >= 1.0 ) {
-
-                    /* assign digit component */
-                    dl_db |= 0x02;
-
-                    /* update dimension value */
-                    dl_pb[1] -= 1.0;
-
-                }
-
-                /* asynchronous dimension */
-                if ( dl_parse >= LE_ADDRESS_DEPTH_A ) {
-
-                    /* check digit value */
-                    if ( ( dl_pa[2] *= 2.0 ) >= 1.0 ) {
-
-                        /* assign digit component */
-                        dl_da |= 0x04;
-
-                        /* update dimension value */
-                        dl_pa[2] -= 1.0;
-
-                    }
-
-                    /* check digit value */
-                    if ( ( dl_pb[2] *= 2.0 ) >= 1.0 ) {
-
-                        /* assign digit component */
-                        dl_db |= 0x04;
-
-                        /* update dimension value */
-                        dl_pb[2] -= 1.0;
-
-                    }
-
-                }
-
-            }
-
-            /* compare digit */
-            if ( dl_da > dl_db ) {
-
-                /* send result */
-                return( true );
-
-            } else {
-
-                /* compare digit */
-                if ( dl_da < dl_db ) {
-
-                    /* send result */
-                    return( false );
-
-                }
-
-            }
+            /* send message */
+            return( 0 );
 
         }
 
-        /* send result */
-        return( false );
+        /* return size */
+        return( dl_stat.st_size );
+
+    }
+
+    le_void_t dl_sort_copy( le_char_t const * const dl_ipath, le_char_t const * const dl_opath ) {
+
+        /* buffer variable */
+        le_byte_t * dl_buffer( nullptr );
+
+        /* stream variable */
+        std::fstream dl_istream;
+
+        /* stream variable */
+        std::fstream dl_ostream;
+
+        /* read variable */
+        le_size_t dl_read( 1 );
+
+        /* allocate buffer memory */
+        if ( ( dl_buffer = new ( std::nothrow ) le_byte_t[DL_SORT_BUFFER] ) == nullptr ) {
+
+            /* send message */
+            throw( LC_ERROR_MEMORY );
+
+        }
+
+        /* create input stream */
+        dl_istream.open( ( char * ) dl_ipath, std::ios::in | std::ios::binary );
+
+        /* check input stream */
+        if ( dl_istream.is_open() == false ) {
+
+            /* send message */
+            throw( LC_ERROR_IO_ACCESS );
+
+        }
+
+        /* create output stream */
+        dl_ostream.open( ( char * ) dl_opath, std::ios::out | std::ios::binary );
+
+        /* check output stream */
+        if ( dl_ostream.is_open() == false ) {
+
+            /* send message */
+            throw( LC_ERROR_IO_ACCESS );
+
+        }
+
+        /* copy loop */
+        do {
+
+            /* read buffer */
+            dl_istream.read( ( char * ) dl_buffer, DL_SORT_BUFFER );
+
+            /* read byte count */
+            dl_read = dl_istream.gcount();
+
+            /*  write buffer */
+            dl_ostream.write( ( char * ) dl_buffer, dl_read );
+
+        } while ( dl_read > 0 );
+
+        /* delete output stream */
+        dl_ostream.close();
+
+        /* delete input stream */
+        dl_istream.close();
+
+        /* release buffer memory */
+        delete [] dl_buffer;
+
+    }
+
+/*
+    source - dispatch methods
+ */
+
+    le_size_t dl_sort_dispatch( le_char_t const * const dl_path, le_size_t const dl_size, le_byte_t const dl_depth, le_char_t const * const dl_temp ) {
+
+        /* stream variable */
+        std::fstream dl_istream;
+
+        /* stream variable */
+        std::fstream dl_ostream;
+
+        /* buffer variable */
+        le_byte_t * dl_buffer( nullptr );
+
+        /* head variable */
+        le_size_t dl_head( 0 );
+
+        /* reading variable */
+        le_size_t dl_read( 0 );
+
+        /* dispatch variable */
+        le_size_t dl_segment( 0 );
+
+        /* string variable */
+        le_char_t dl_tfile[_LE_USE_PATH] = { 0 };
+
+        /* allocate buffer memory */
+        if ( ( dl_buffer = new ( std::nothrow ) le_byte_t[DL_SORT_CHUNK] ) == nullptr ) {
+
+            /* send message */
+            throw( LC_ERROR_MEMORY );
+
+        }
+
+        /* create input stream */
+        dl_istream.open( ( char * ) dl_path, std::ios::in | std::ios::binary );
+
+        /* check input stream */
+        if ( dl_istream.is_open() == false ) {
+
+            /* send message */
+            throw( LC_ERROR_IO_ACCESS );
+
+        }
+
+        /* reading input stream */
+        while ( dl_head < dl_size ) {
+
+            /* read stream chunk */
+            dl_istream.read( ( char * ) dl_buffer, DL_SORT_CHUNK );
+
+            /* update head and chunk size */
+            dl_head += ( dl_read = dl_istream.gcount() );
+
+            /* sort chunk buffer */
+            dl_buffer = dl_sort_algorithm_memory( dl_buffer, dl_read, dl_depth );
+
+            /* compose chunk path */
+            sprintf( ( char * ) dl_tfile, DL_SORT_ORIGIN, dl_temp, dl_segment ++ );
+
+            /* create output stream */
+            dl_ostream.open( ( char * ) dl_tfile, std::ios::out | std::ios::binary );
+
+            /* check output stream */
+            if ( dl_ostream.is_open() == false ) {
+
+                /* send message */
+                throw( LC_ERROR_IO_ACCESS );
+
+            }
+
+            /* export sorted chunk */
+            dl_ostream.write( ( char * ) dl_buffer, dl_read );
+
+            /* delete output stream */
+            dl_ostream.close();
+
+        }
+
+        /* delete input stream */
+        dl_istream.close();
+
+        /* release buffer memory */
+        delete [] dl_buffer;
+
+        /* return counter */
+        return( dl_segment );
 
     }
 
@@ -158,152 +206,183 @@
     source - sorting methods
  */
 
-    le_byte_t * dl_sort( le_byte_t * const dl_buffer, le_size_t const dl_size, le_byte_t const dl_length ) {
+    void dl_sort_memory( le_char_t const * const dl_ipath, le_char_t const * const dl_opath, le_size_t const dl_size, le_byte_t const dl_depth ) {
 
         /* buffer variable */
-        le_byte_t * dl_stack[2] = { dl_buffer, nullptr };
+        le_byte_t * dl_buffer( nullptr );
 
-        /* buffer switch variable */
-        le_size_t dl_head( 0 );
-        le_size_t dl_dual( 1 );
+        /* stream variable */
+        std::fstream dl_stream;
 
-        /* merge range variable */
-        le_size_t dl_rahead( 0 );
-        le_size_t dl_raedge( 0 );
-        le_size_t dl_rbhead( 0 );
-        le_size_t dl_rbedge( 0 );
-
-        /* merge index variable */
-        le_size_t dl_index( 0 );
-
-        /* merge step variable */
-        le_size_t dl_step( LC_UF3_RECLEN );
-
-        /* allocate dual buffer memory */
-        if ( ( dl_stack[dl_dual] = new ( std::nothrow ) le_byte_t[dl_size] ) == nullptr ) {
+        /* allocate buffer memory */
+        if ( ( dl_buffer = new ( std::nothrow ) le_byte_t[dl_size] ) == nullptr ) {
 
             /* send message */
             throw( LC_ERROR_MEMORY );
 
         }
 
-        /* merge sort main loop */
-        while ( dl_step < dl_size ) {
+        /* create input stream */
+        dl_stream.open( ( char * ) dl_ipath, std::ios::in | std::ios::binary );
 
-            /* reset merge index */
-            dl_index = 0;
+        /* check input stream */
+        if ( dl_stream.is_open() == false ) {
 
-            /* reset merge range */
-            dl_rahead = 0;
-
-            /* parsing merge ranges */
-            while ( dl_rahead < dl_size ) {
-
-                /* compute merge range */
-                dl_raedge = dl_rahead + dl_step;
-                dl_rbhead = dl_raedge;
-                dl_rbedge = dl_rbhead + dl_step;
-
-                /* check range edge */
-                if ( dl_raedge > dl_size ) {
-
-                    /* edge correction */
-                    dl_raedge = dl_size;
-
-                }
-
-                /* check range edge */
-                if ( dl_rbedge > dl_size ) {
-
-                    /* edge correction */
-                    dl_rbedge = dl_size;
-
-                }
-                
-                /* ranges merge */
-                while ( ( dl_rahead < dl_raedge ) || ( dl_rbhead < dl_rbedge ) ) {
-
-                    /* merge condition */
-                    if ( dl_rahead >= dl_raedge ) {
-
-                        /* record selection */
-                        std::memcpy( dl_stack[dl_dual] + dl_index, dl_stack[dl_head] + dl_rbhead, LC_UF3_RECLEN );
-
-                        /* update merge head */
-                        dl_rbhead += LC_UF3_RECLEN;
-
-                    } else {
-
-                        /* merge condition */
-                        if ( dl_rbhead >= dl_rbedge ) {
-
-                            /* record selection */
-                            std::memcpy( dl_stack[dl_dual] + dl_index, dl_stack[dl_head] + dl_rahead, LC_UF3_RECLEN );
-
-                            /* update merge head */
-                            dl_rahead += LC_UF3_RECLEN;
-
-                        } else {
-
-                            /* merge condition */
-                            if ( dl_sort_function( ( le_real_t * ) ( dl_stack[dl_head] + dl_rahead ), ( le_real_t * ) ( dl_stack[dl_head] + dl_rbhead ), dl_length ) == true ) {
-
-                                /* record selection */
-                                std::memcpy( dl_stack[dl_dual] + dl_index, dl_stack[dl_head] + dl_rbhead, LC_UF3_RECLEN );
-
-                                /* update merge head */
-                                dl_rbhead += LC_UF3_RECLEN;
-
-                            } else {
-
-                                /* record selection */
-                                std::memcpy( dl_stack[dl_dual] + dl_index, dl_stack[dl_head] + dl_rahead, LC_UF3_RECLEN );
-
-                                /* update merge head */
-                                dl_rahead += LC_UF3_RECLEN;
-
-                            }
-
-                        }
-
-                    }
-
-                    /* update merge index */
-                    dl_index += LC_UF3_RECLEN;
-
-                }
-
-                /* push next range */
-                dl_rahead = dl_rbedge;
-
-            }
-
-            /* update merge step */
-            dl_step <<= 1;
-
-            /* swap buffer switch */
-            dl_head = 1 - dl_head;
-            dl_dual = 1 - dl_dual;
+            /* send message */
+            throw( LC_ERROR_IO_ACCESS );
 
         }
 
-        /* check buffer switch */
-        if ( dl_head == 1 ) {
+        /* import stream bytes */
+        dl_stream.read( ( char * ) dl_buffer, dl_size );
 
-            /* release dual buffer memory */
-            delete [] dl_stack[0];
+        /* delete input stream */
+        dl_stream.close();
 
-            /* return sorted buffer */
-            return( dl_stack[1] );
+        /* sorting buffer */
+        dl_buffer = dl_sort_algorithm_memory( dl_buffer, dl_size, dl_depth );
 
-        } else {
+        /* create ouptut stream */
+        dl_stream.open( ( char * ) dl_opath, std::ios::out | std::ios::binary );
 
-            /* release dual buffer memory */
-            delete [] dl_stack[1];
+        /* check output stream */
+        if ( dl_stream.is_open() == false ) {
 
-            /* return sorted buffer */
-            return( dl_stack[0] );
+            /* send message */
+            throw( LC_ERROR_IO_ACCESS );
 
+        }
+
+        /* export stream bytes */
+        dl_stream.write( ( char * ) dl_buffer, dl_size );
+
+        /* delete output stream */
+        dl_stream.close();
+
+        /* release buffer memory */
+        delete [] dl_buffer;
+
+    }
+
+    void dl_sort_disk( le_char_t const * const dl_ipath, le_char_t const * const dl_opath, le_size_t const dl_size, le_byte_t const dl_depth, le_char_t const * const dl_temp ) {
+
+        /* path variable */
+        le_char_t dl_ffile[_LE_USE_PATH] = { 0 };
+
+        /* path variable */
+        le_char_t dl_sfile[_LE_USE_PATH] = { 0 };
+
+        /* path variable */
+        le_char_t dl_ofile[_LE_USE_PATH] = { 0 };
+
+        /* count variable */
+        le_size_t dl_segment( 0 );
+
+        /* parsing variable */
+        le_size_t dl_parse( 0 );
+
+        /* size variable */
+        le_size_t dl_flength;
+
+        /* size variable */
+        le_size_t dl_slength;
+        
+        /* dispatch stream chunks */
+        dl_segment = dl_sort_dispatch( dl_ipath, dl_size, dl_depth, dl_temp );
+
+        /* stream chunks merge */
+        while ( dl_segment > 1 ) {
+
+            /* reset parser */
+            dl_parse = 0;
+
+            /* merge chunks */
+            while ( dl_parse < dl_segment ) {
+
+                /* compose chunk path */
+                sprintf( ( char * ) dl_ffile, DL_SORT_ORIGIN, dl_temp, dl_parse );
+
+                /* compose chunk path */
+                sprintf( ( char * ) dl_ofile, DL_SORT_TARGET, dl_temp, dl_parse >> 1 );
+
+                /* check remaining odd-chunk */
+                if ( ( dl_parse + 1 ) == dl_segment ) {
+
+                    /* chunk direct copy */
+                    rename( ( char * ) dl_ffile, ( char * ) dl_ofile );
+
+                } else {
+
+                    /* compose chunk path */
+                    sprintf( ( char * ) dl_sfile, DL_SORT_ORIGIN, dl_temp, dl_parse + 1 );
+
+                    /* retrieve chunk size */
+                    dl_flength = dl_sort_filesize( dl_ffile );
+
+                    /* retrieve chunk size */
+                    dl_slength = dl_sort_filesize( dl_sfile );
+
+                    /* disk-based merge sort */
+                    dl_sort_algorithm_disk( dl_ffile, dl_flength, dl_sfile, dl_slength, dl_ofile, dl_depth );
+
+                    /* remove origin chunk */
+                    remove( ( char * ) dl_ffile );
+
+                    /* remove origin chunk */
+                    remove( ( char * ) dl_sfile );
+
+                }
+
+                /* update parser */
+                dl_parse += 2;
+
+            }
+
+            /* update counter */
+            dl_segment = ( dl_segment >> 1 ) + ( dl_segment % 2 );
+
+            /* reset parser */
+            dl_parse = 0;
+
+            /* parsing files */
+            while ( dl_parse < dl_segment ) {
+
+                /* compose chunk path */
+                sprintf( ( char * ) dl_ffile, DL_SORT_TARGET, dl_temp, dl_parse );
+
+                /* compose chunk path */
+                sprintf( ( char * ) dl_ofile, DL_SORT_ORIGIN, dl_temp, dl_parse );
+
+                /* target chunk to origin chunk */
+                rename( ( char * ) dl_ffile, ( char * ) dl_ofile );
+
+                /* update parser */
+                dl_parse ++;
+
+            }
+
+        }
+
+        /* check existing output file */
+        if ( le_get_exist( dl_opath ) == _LE_TRUE ) {
+
+            /* remove existing output file */
+            remove( ( char * ) dl_opath );
+
+        }
+
+        /* compose final chunk path */
+        sprintf( ( char * ) dl_ofile, DL_SORT_ORIGIN, dl_temp, _LE_SIZE_L( 0 ) );
+
+        /* copy final chunk to output file */
+        if ( rename( ( char * ) dl_ofile, ( char * ) dl_opath ) != 0 ) {
+
+            /* proper copy */
+            dl_sort_copy( dl_ofile, dl_opath );
+
+            /* remove source */
+            remove( ( char * ) dl_ofile );
+    
         }
 
     }
@@ -314,76 +393,62 @@
 
     int main( int argc, char ** argv ) {
 
-        /* stream variable */
-        std::fstream dl_stream;
+        /* path variable */
+        le_char_t * dl_ipath( ( le_char_t * ) lc_read_string( argc, argv, "--input", "-i" ) );
+
+        /* path variable */
+        le_char_t * dl_opath( ( le_char_t * ) lc_read_string( argc, argv, "--output", "-o" ) );
+
+        /* path variable */
+        le_char_t * dl_tpath( ( le_char_t * ) lc_read_string( argc, argv, "--temporary", "-t" ) );
+
+        /* index length variable */
+        le_byte_t dl_depth( lc_read_unsigned( argc, argv, "--index", "-x", 0 ) );
 
         /* stream size variable */
         le_size_t dl_size( 0 );
 
-        /* stream buffer */
-        le_byte_t * dl_buffer( nullptr );
-
-        /* index size variable */
-        le_byte_t dl_length( lc_read_unsigned( argc, argv, "--index", "-x", 0 ) );
-
-    /* error management */
+    /* error bloc */
     try {
 
-        /* create input stream */
-        dl_stream.open( lc_read_string( argc, argv, "--input", "-i" ), std::ios::in | std::ios::ate | std::ios::binary );
+        /* check consistency */
+        if ( ( dl_depth == 0 ) || ( dl_depth >= _LE_USE_DEPTH ) ) {
 
-        /* check input stream */
-        if ( dl_stream.is_open() == false ) {
+            /* send message */
+            throw( LC_ERROR_DOMAIN );
+
+        }
+
+        /* check consistency */
+        if ( ( dl_size = dl_sort_filesize( dl_ipath ) ) == 0 ) {
 
             /* send message */
             throw( LC_ERROR_IO_ACCESS );
 
         }
 
-        /* extract file size */
-        dl_size = dl_stream.tellg();
+        /* select sorting algorithm */
+        if ( dl_size > ( le_size_t ) DL_SORT_CHUNK ) {
 
-        /* allocate memory */
-        if ( ( dl_buffer = new ( std::nothrow ) le_byte_t[dl_size] ) == nullptr ) {
+            /* check consistency */
+            if ( le_get_exist( dl_tpath ) == _LE_FALSE ) {
 
-            /* send message */
-            throw( LC_ERROR_MEMORY );
+                /* send message */
+                throw( LC_ERROR_IO_ACCESS );
 
-        }
+            }
 
-        /* rewind stream */
-        dl_stream.seekg( 0, std::ios::beg );
+            /* disk-based sorting process */
+            dl_sort_disk( dl_ipath, dl_opath, dl_size, dl_depth, dl_tpath );
 
-        /* read stream buffer */
-        dl_stream.read( ( char * ) dl_buffer, dl_size );
+        } else {
 
-        /* delete stream */
-        dl_stream.close();
-
-        /* sorting buffer */
-        dl_buffer = dl_sort( dl_buffer, dl_size, dl_length );
-
-        /* create output stream */
-        dl_stream.open( lc_read_string( argc, argv, "--output", "-o" ), std::ios::out | std::ios::binary );
-
-        /* check output stream */
-        if ( dl_stream.is_open() == false ) {
-
-            /* send message */
-            throw( LC_ERROR_IO_ACCESS );
+            /* memory-based sorting process */
+            dl_sort_memory( dl_ipath, dl_opath, dl_size, dl_depth );   
 
         }
 
-        /* write stream buffer */
-        dl_stream.write( ( char * ) dl_buffer, dl_size );
-
-        /* close output stream */
-        dl_stream.close();
-
-        /* release buffer memory */
-        delete [] dl_buffer;
-
-    /* error management */
+    /* error bloc */
     } catch ( int dl_code ) {
 
         /* error management */

@@ -44,7 +44,7 @@
             case ( LC_ERROR_IO_ACCESS ) : {
 
                 /* display message */
-                std::cerr << "unable to access stream";
+                std::cerr << "unable to access element";
 
             } break;
 

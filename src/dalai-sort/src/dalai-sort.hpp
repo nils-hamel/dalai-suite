@@ -58,16 +58,17 @@
     header - internal includes
  */
 
+    # include "dalai-sort-algorithm.hpp"
+
 /*
     header - external includes
  */
 
-    # include <iostream>
-    # include <fstream>
-    # include <string>
-    # include <cstdint>
     # include <common-include.hpp>
     # include <eratosthene-include.h>
+    # include <cstdio>
+    # include <fstream>
+    # include <sys/stat.h>
 
 /*
     header - preprocessor definitions
@@ -76,6 +77,10 @@
 /*
     header - preprocessor macros
  */
+
+    /* define path composition pattern */
+    # define DL_SORT_ORIGIN "%s/c-%" _LE_SIZE_P ".tmp"
+    # define DL_SORT_TARGET "%s/d-%" _LE_SIZE_P ".tmp"
 
 /*
     header - type definition
@@ -91,11 +96,23 @@
 
     /* *** */
 
-    bool dl_sort_function( le_real_t const * const dl_pose_a_, le_real_t const * const dl_pose_b_, le_byte_t const dl_length );
+    le_size_t dl_sort_filesize( le_char_t const * const dl_path );
 
     /* *** */
 
-    le_byte_t * dl_sort( le_byte_t * const dl_buffer, le_size_t const dl_size, le_byte_t const dl_length );
+    le_void_t dl_sort_copy( le_char_t const * const dl_ipath, le_char_t const * const dl_opath );
+
+    /* *** */
+
+    le_size_t dl_sort_dispatch( le_char_t const * const dl_path, le_size_t const dl_size, le_byte_t const dl_depth, le_char_t const * const dl_temp );
+
+    /* *** */
+
+    void dl_sort_memory( le_char_t const * const dl_ipath, le_char_t const * const dl_opath, le_size_t const dl_size, le_byte_t const dl_depth );
+
+    /* *** */
+
+    void dl_sort_disk( le_char_t const * const dl_ipath, le_char_t const * const dl_opath, le_size_t const dl_size, le_byte_t const dl_depth, le_char_t const * const dl_temp );
 
     /*! \brief main methods
      *
