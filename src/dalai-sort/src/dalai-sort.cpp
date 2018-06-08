@@ -377,7 +377,7 @@
         /* copy final chunk to output file */
         if ( rename( ( char * ) dl_ofile, ( char * ) dl_opath ) != 0 ) {
 
-            /* proper copy */
+            /* formal copy */
             dl_sort_copy( dl_ofile, dl_opath );
 
             /* remove source */
@@ -403,7 +403,7 @@
         le_char_t * dl_tpath( ( le_char_t * ) lc_read_string( argc, argv, "--temporary", "-t" ) );
 
         /* index length variable */
-        le_byte_t dl_depth( lc_read_unsigned( argc, argv, "--index", "-x", 0 ) );
+        le_byte_t dl_depth( lc_read_unsigned( argc, argv, "--depth", "-d", 0 ) );
 
         /* stream size variable */
         le_size_t dl_size( 0 );
