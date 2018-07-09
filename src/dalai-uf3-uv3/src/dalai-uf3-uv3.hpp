@@ -99,6 +99,17 @@
 
     /*! \brief main function
      *
+     *  The main function reads the provided uf3 file and converts it into a uv3
+     *  file :
+     *
+     *      ./dalai-uf3-uv3 --uf3/-i [uf3 input file]
+     *                      --uv3/-o [uv3 output file]
+     *
+     *  The main function starts by creating the two input and output streams
+     *  before to starts the conversion. The input file is read by chunks and
+     *  each chunk is converted from uf3 to uv3 format. The converted chunks are
+     *  then exported in the output stream.
+     *
      *  \param argc Standard parameter
      *  \param argv Standard parameter
      *

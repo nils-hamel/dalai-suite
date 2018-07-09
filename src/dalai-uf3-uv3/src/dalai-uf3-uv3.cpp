@@ -81,10 +81,10 @@
         /* reading loop */
         do {
 
-            /* read chunk */
+            /* read stream chunk */
             dl_istream.read( ( char * ) dl_ibuffer, DL_CHUNK * LE_UV3_RECORD );
 
-            /* check reading */
+            /* check stream reading */
             if ( ( dl_read = dl_istream.gcount() ) > 0 ) {
 
                 /* record conversion */
@@ -108,6 +108,7 @@
 
             }
 
+        /* reading loop condition */
         } while ( dl_read > 0 );
 
         /* delete stream */
