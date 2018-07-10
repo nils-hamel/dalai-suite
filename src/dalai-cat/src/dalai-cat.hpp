@@ -71,9 +71,6 @@
     header - preprocessor definitions
  */
 
-    /* define chunk size */
-    # define DL_CHUNK ( 2396745 )
-
 /*
     header - preprocessor macros
  */

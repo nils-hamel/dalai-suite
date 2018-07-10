@@ -51,20 +51,22 @@
 
     int main( int argc, char ** argv ) {
 
-        /* thread count variables */
-        int dl_thread( lc_read_signed( argc, argv, "--thread", "-t", 1 ) );
-
-        /* color mapping variables */
+        /* color mapping variable */
         double dl_ledge( lc_read_double( argc, argv, "--minimum", "-m",  0.0 ) );
         double dl_hedge( lc_read_double( argc, argv, "--maximum", "-x", 50.0 ) );
 
-        /* stream variables */
+        /* stream variable */
         std::ifstream dl_istream;
         std::ofstream dl_ostream;
 
-        /* stream buffer variables */
-        char * dl_buffer( nullptr );
-        char * dl_cbound( nullptr );
+        /* stream buffer variable */
+        le_byte_t * dl_buffer( nullptr );
+
+        /* stream buffer variable */
+        le_byte_t * dl_bound( nullptr );
+
+    /* error management */
+    try {
 
         /* create input stream */
         dl_istream.open( lc_read_string( argc, argv, "--input", "-i" ), std::ios::in | std::ios::binary );
@@ -72,11 +74,8 @@
         /* check input stream */
         if ( dl_istream.is_open() == false ) {
 
-            /* display message */
-            std::cerr << "dalai-suite : error : unable to access input stream" << std::endl;
-
             /* send message */
-            return( EXIT_FAILURE );
+            return( LC_ERROR_IO_READ );
 
         }
 
@@ -86,47 +85,37 @@
         /* check output stream */
         if ( dl_ostream.is_open() == false ) {
 
-            /* display message */
-            std::cerr << "dalai-suite : error : unable to access output stream" << std::endl;
-
             /* send message */
-            return( EXIT_FAILURE );
+            return( LC_ERROR_IO_WRITE );
 
         }
 
         /* allocate and check memory */
-        if ( ( dl_buffer = new ( std::nothrow ) char [LC_UF3_CHUNK * LC_UF3_RECLEN] ) == nullptr ) {
-
-            /* display message */
-            std::cerr << "dalai-suite : error : unable to allocate memory" << std::endl;
+        if ( ( dl_buffer = new ( std::nothrow ) le_byte_t[DL_CHUNK * LE_UV3_RECORD] ) == nullptr ) {
 
             /* send message */
-            return( EXIT_FAILURE );
+            return( LC_ERROR_MEMORY );
 
         }
 
         do {
 
             /* read input stream */
-            dl_istream.read( dl_buffer, LC_UF3_CHUNK * LC_UF3_RECLEN );
+            dl_istream.read( ( char * ) dl_buffer, DL_CHUNK * LE_UV3_RECORD );
 
             /* compute buffer boundary */
-            dl_cbound = dl_buffer + dl_istream.gcount();
+            dl_bound = dl_buffer + dl_istream.gcount();
 
-            # ifdef __OPENMP__
-            # pragma omp parallel for firstprivate(dl_buffer,dl_cbound,dl_ledge,dl_hedge) num_threads( dl_thread )
-            # endif
-
-            /* parsing stream buffer elements */
-            for ( char * dl_parse = dl_buffer; dl_parse < dl_cbound; dl_parse += LC_UF3_RECLEN ) {
+            /* parsing buffer elements */
+            for ( le_byte_t * dl_parse = dl_buffer; dl_parse < dl_bound; dl_parse += LE_UV3_RECORD ) {
 
                 /* compute element color */
-                dl_color( ( ( lc_uf3p_t * ) dl_parse )[2], ( lc_uf3d_t * ) ( dl_parse + LC_UF3_DATA ), dl_ledge, dl_hedge );
+                dl_color( ( ( le_real_t * ) dl_parse )[2], ( le_data_t * ) ( dl_parse + LE_UV3_POSE + LE_UV3_TYPE ), dl_ledge, dl_hedge );
 
             }
 
-            /* export processed chunk */
-            dl_ostream.write( dl_buffer, dl_istream.gcount() );
+            /* write output stream */
+            dl_ostream.write( ( char * ) dl_buffer, dl_istream.gcount() );
 
         /* reading stream chunks */
         } while ( dl_istream.gcount() > 0 );
@@ -139,6 +128,16 @@
 
         /* delete input stream */
         dl_istream.close();
+
+    } catch ( int dl_code ) {
+
+        /* error management */
+        lc_error( dl_code );
+
+        /* send message */
+        return( EXIT_FAILURE );
+
+    }
 
         /* send message */
         return( EXIT_SUCCESS );

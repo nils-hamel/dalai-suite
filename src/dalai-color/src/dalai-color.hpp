@@ -66,10 +66,14 @@
     # include <fstream>
     # include <cmath>
     # include <common-include.hpp>
+    # include <eratosthene-include.h>
 
 /*
     header - preprocessor definitions
  */
+
+    /* define chunk size */
+    # define DL_CHUNK ( 2396745 )
 
 /*
     header - preprocessor macros
@@ -105,19 +109,18 @@
 
     /*! \brief main methods
      *
-     *  The main function reads the point cloud provided through the input file
-     *  and overrides the colors using a colormap based on heights. The result
-     *  is exported in the output file :
+     *  The main function reads the elements provided through the uv3 input file
+     *  and overrides their color using a colormap based on element height. The
+     *  corrected element are exported in the output uv3 file : 
      *
      *      ./dalai-color --input/-i [input file]
      *                    --output/-o [output file]
-     *                    --minimum/-m [colormap low height]
-     *                    --maximum/-x [colormap high height]
-     *                    --thread/-t [number of thread]
+     *                    --minimum/-m [colormap low boundary]
+     *                    --maximum/-x [colormap high boundary]
      *
-     *  The point cloud third coordinates are used to access the colormap and
-     *  assign new colors. If a third coordinates is outside of the provided
-     *  height range, a cyclic condition is considered.
+     *  The element height is understood as the value of their third coordinate
+     *  assumed to corresponds to natural model altitude. If the third component
+     *  is outside of the provided range, a cyclic condition is considered.
      *
      *  \param  argc Standard parameter
      *  \param  argv Standard parameter
