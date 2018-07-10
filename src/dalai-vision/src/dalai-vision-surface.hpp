@@ -48,6 +48,7 @@
     # include <GL/glu.h>
     # include <Eigen/Dense>
     # include <common-include.hpp>
+    # include <eratosthene-include.h>
 
 /*
     header - preprocessor definitions
@@ -342,14 +343,6 @@
          */
 
         void sf_ren_point( void );
-
-        /*! \brief display methods
-         *
-         *  This function simply displays the surface estimation points. It
-         *  writes the points coordinates in the terminal, line by line.
-         */
-
-        void sf_dis_point( void );
 
     };
 

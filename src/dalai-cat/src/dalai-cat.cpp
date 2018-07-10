@@ -51,14 +51,17 @@
 
     int main( int argc, char ** argv ) {
 
-        /* stream record pointers */
-        double * dl_pose( nullptr );
+        /* stream record pointer variable */
+        le_real_t * dl_pose( nullptr );
 
-        /* stream record pointers */
-        char * dl_data( nullptr );
+        /* stream record pointer variable */
+        le_byte_t * dl_type( nullptr );
 
-        /* stream buffer variables */
-        char dl_buffer[LC_UF3_RECLEN];
+        /* stream record pointer variable */
+        le_data_t * dl_data( nullptr );
+
+        /* stream buffer variable */
+        le_byte_t dl_buffer[LE_UV3_RECORD];
 
         /* format switch and parameter variable */
         le_byte_t dl_index( lc_read_unsigned( argc, argv, "--index", "-x", 0 ) );
@@ -67,33 +70,39 @@
         le_address_t dl_address = LE_ADDRESS_C_SIZE( dl_index );
 
         /* stream variables */
-        std::ifstream dl_stream( lc_read_string( argc, argv, "--uf3", "-i" ), std::ios::in | std::ios::binary );
+        std::ifstream dl_stream;
+
+    /* error management */
+    try {
+
+        /* create input stream */
+        dl_stream.open( lc_read_string( argc, argv, "--uv3", "-i" ), std::ios::in | std::ios::binary );
 
         /* check stream */
         if ( dl_stream.is_open() != true ) {
 
-            /* display message */
-            std::cerr << "dalai-suite : error : unable to access input stream" << std::endl;
-
             /* send message */
-            return( EXIT_FAILURE );
+            throw( LC_ERROR_IO_READ );
 
         }
 
-        /* create record pointers */
-        dl_pose = ( double * ) dl_buffer;
+        /* create record pointer */
+        dl_pose = ( le_real_t * ) ( dl_buffer );
+
+        /* create record pointer */
+        dl_type = ( le_byte_t * ) ( dl_buffer + LE_UV3_POSE );
 
         /* create record pointers */
-        dl_data = dl_buffer + sizeof( double ) * 3;
+        dl_data = ( le_data_t * ) ( dl_buffer + LE_UV3_POSE + LE_UV3_TYPE );
 
         /* stream reading loop */
         do {
 
             /* read stream chunk */
-            dl_stream.read( dl_buffer, LC_UF3_RECLEN );
+            dl_stream.read( ( char * ) dl_buffer, LE_UV3_RECORD );
 
             /* check reading */
-            if ( dl_stream.gcount() == LC_UF3_RECLEN ) {
+            if ( dl_stream.gcount() == LE_UV3_RECORD ) {
 
                 /* check format switch */
                 if ( dl_index != 0 ) {
@@ -112,7 +121,7 @@
                 }
 
                 /* display data */
-                printf( "%02x %02x %02x\n", dl_data[0], dl_data[1], dl_data[2] );
+                printf( "%02x %02x %02x %02x\n", dl_type[0], dl_data[0], dl_data[1], dl_data[2] );
 
             }
 
@@ -120,6 +129,16 @@
 
         /* delete stream */
         dl_stream.close();
+
+    } catch ( int dl_code ) {
+
+        /* error management */
+        lc_error( dl_code );
+
+        /* send message */
+        return( EXIT_FAILURE );
+
+    }
 
         /* send message */
         return( EXIT_SUCCESS );

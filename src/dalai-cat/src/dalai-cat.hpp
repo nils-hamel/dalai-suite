@@ -71,6 +71,9 @@
     header - preprocessor definitions
  */
 
+    /* define chunk size */
+    # define DL_CHUNK ( 2396745 )
+
 /*
     header - preprocessor macros
  */
@@ -90,8 +93,9 @@
     /*! \brief address methods
      *
      *  This function is used to display an address structure spatial index as
-     *  a sequence of digit in base eight. The provided address structure is
-     *  expected to contain a valid index consistent with its size.
+     *  a sequence of digits in base eight on the standard output. The provided
+     *  address structure is expected to contain a valid index consistent with
+     *  its size.
      *
      *  \param dl_addr Address structure
      */
@@ -100,18 +104,19 @@
 
     /*! \brief main methods
      *
-     *  The main function reads the point cloud provided through the input file
-     *  and displays its content on the terminal :
+     *  The main function reads the primitives stored in the provided uv3 file 
+     *  and displays its content on the standard output :
      *
-     *      ./dalai-cat --uf3/-i [uf3 input file] --index/-x [size]
+     *      ./dalai-cat --uv3/-i [uv3 input file] --index/-x [size]
      *
-     *  The main function opens the provided file and reads its point cloud
-     *  point by point. For each point, the main function display a line on the
-     *  terminal. If the '--index' parameter is zero or not provided, each point
-     *  is displayed in terms of geographic coordinates and colour.
+     *  The main function opens the provided file and reads its element one by
+     *  one. For each element, the main function displays a line on the standard
+     *  output containing the element coordinates, type and color.
      *
-     *  If the '--index' is non-zero, the function displays the points index and
-     *  colour instead of the geographical coordinates.
+     *  If the '--index' parameter is provided to a non-zero value, the function
+     *  displays the elements coordinates in terms of eratosthene index instead
+     *  of geographical coordinates. The elements provided in the uv3 file are
+     *  then expected to be provided in the WGS84 ellipsoidal frame.
      *
      *  \param  argc Standard parameter
      *  \param  argv Standard parameter

@@ -82,7 +82,7 @@
         do {
 
             /* read stream chunk */
-            dl_istream.read( ( char * ) dl_ibuffer, DL_CHUNK * LE_UV3_RECORD );
+            dl_istream.read( ( char * ) dl_ibuffer, DL_CHUNK * DL_UF3_RECORD );
 
             /* check stream reading */
             if ( ( dl_read = dl_istream.gcount() ) > 0 ) {

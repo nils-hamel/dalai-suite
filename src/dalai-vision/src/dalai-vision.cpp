@@ -115,9 +115,6 @@
 
     dl_vision_t::~dl_vision_t() {
 
-        /* unknown necessity */
-        SDL_Delay( 500 );
-
         /* delete opengl context */
         SDL_GL_DeleteContext( vs_context );
 
@@ -174,7 +171,8 @@
         glLoadIdentity();
 
         /* compute matrix coefficients */
-        gluPerspective( 45.0, double( vs_width ) / double( vs_height ), dl_model.ml_get_mdmv() * 10.0, dl_model.ml_get_span() * 2.0 );
+        //gluPerspective( 45.0, double( vs_width ) / double( vs_height ), dl_model.ml_get_mdmv() * 10.0, dl_model.ml_get_span() * 2.0 );
+        gluPerspective( 45.0, double( vs_width ) / double( vs_height ), dl_model.ml_get_span() * 0.01, dl_model.ml_get_span() * 10.0 );
 
         /* push projection matrix */
         glGetDoublev( GL_PROJECTION_MATRIX, vs_projection );
@@ -392,13 +390,6 @@
 
                 /* surface point auto-push */
                 dl_model.ml_set_point_auto();
-
-            } break;
-
-            case ( SDLK_l ) : {
-
-                /* display surface points */
-                dl_model.ml_dis_point();
 
             } break;
 

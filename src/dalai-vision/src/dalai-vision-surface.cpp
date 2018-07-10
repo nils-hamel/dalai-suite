@@ -138,7 +138,8 @@
         sf_size = 0;
 
         /* parsing model elements */
-        for( long long dl_parse( 0 ); dl_parse < dl_size; dl_parse += 27 ) {
+        //for( long long dl_parse( 0 ); dl_parse < dl_size; dl_parse += 27 ) {
+        for ( long long dl_parse( 0 ); dl_parse < dl_size; dl_parse += LE_UV3_RECORD ) {
 
             /* compute and assign array mapping */
             dl_pose = ( double * ) ( dl_data + dl_parse );
@@ -369,19 +370,4 @@
 
     }
 
-/*
-    source - display methods
- */
-
-    void dl_surface_t::sf_dis_point( void ) {
-
-        /* parsing surface points */
-        for ( long long dl_parse( 0 ); dl_parse < sf_size; dl_parse += 3 ) {
-
-            /* display point coordinates */
-            fprintf( stdout, "%f %f %f\n", sf_data[dl_parse], sf_data[dl_parse + 1], sf_data[dl_parse + 2] );
-
-        }
-
-    }
 

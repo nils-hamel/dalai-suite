@@ -50,6 +50,7 @@
     # include <GL/glu.h>
     # include <Eigen/Dense>
     # include <common-include.hpp>
+    # include <eratosthene-include.h>
 
 /*
     header - preprocessor definitions
@@ -59,15 +60,15 @@
     # define DL_MODEL_MDMVC  ( 32 )
 
     /* define opengl arrays types */
-    # define DL_MODEL_V_TYPE ( GL_DOUBLE )
-    # define DL_MODEL_C_TYPE ( GL_UNSIGNED_BYTE )
+    //# define DL_MODEL_V_TYPE ( GL_DOUBLE )
+    //# define DL_MODEL_C_TYPE ( GL_UNSIGNED_BYTE )
 
     /* define opengl arrays base pointer */
-    # define DL_MODEL_V_BASE ( 0 )
-    # define DL_MODEL_C_BASE ( sizeof( double ) * 3 )
+    //# define DL_MODEL_V_BASE ( 0 )
+    //# define DL_MODEL_C_BASE ( sizeof( double ) * 3 )
 
     /* define opengl arrays stripe */
-    # define DL_MODEL_STRIPE ( ( sizeof( double ) + sizeof( char ) ) * 3 )
+    //# define DL_MODEL_STRIPE ( ( sizeof( double ) + sizeof( char ) ) * 3 )
 
 /*
     header - preprocessor macros
@@ -141,6 +142,14 @@
         long long    ml_size;
         char *       ml_data;
 
+        //int          ml_lsize;
+        //int          ml_tsize;
+        //GLuint *     ml_lprim;
+        //GLuint *     ml_tprim;
+
+        GLuint       ml_gsize[3];
+        GLuint *     ml_gdata[3];
+        
         long long    ml_psize;
         long long    ml_sflag;
         long long    ml_pflag;
@@ -333,15 +342,6 @@
          */
 
         void ml_ren_frame( void );
-
-        /*! \brief display methods
-         *
-         *  This function displays the estimation points of the highlighted
-         *  surface. It uses the surface method to dumps the points coordinates
-         *  in the terminal.
-         */
-
-        void ml_dis_point( void );
 
     };
 

@@ -281,8 +281,13 @@
 
         }
 
+        ml_gsize[0] = 0;
+        ml_gsize[1] = 0;
+        ml_gsize[2] = 0;
+
         /* parsing model elements */
-        for ( long long int dl_parse( 0 ); dl_parse < ml_size; dl_parse += 27 ) {
+        //for ( long long int dl_parse( 0 ); dl_parse < ml_size; dl_parse += 27 ) {
+        for ( long long int dl_parse( 0 ); dl_parse < ml_size; dl_parse += LE_UV3_RECORD ) {
 
             /* compute array mapping */
             dl_posea = ( double * ) ( ml_data + dl_parse );
@@ -299,7 +304,8 @@
             for ( long long int dl_index( 0 ); dl_index < DL_MODEL_MDMVC; dl_index ++ ) {
 
                 /* compute array mapping */
-                dl_poseb = ( double * ) ( ml_data + dl_index * ( ( ml_size / 27 ) / DL_MODEL_MDMVC ) * 27 );
+                //dl_poseb = ( double * ) ( ml_data + dl_index * ( ( ml_size / 27 ) / DL_MODEL_MDMVC ) * 27 );
+                dl_poseb = ( double * ) ( ml_data + dl_index * ( ( ml_size / LE_UV3_RECORD ) / DL_MODEL_MDMVC ) * LE_UV3_RECORD );
 
                 /* compute distance */
                 dl_distance = ( dl_posea[0] - dl_poseb[0] ) * ( dl_posea[0] - dl_poseb[0] ) +
@@ -310,6 +316,24 @@
                 if ( ( dl_distance > 0.0 ) && ( dl_distance < dl_array[dl_index] ) ) dl_array[dl_index] = dl_distance;
 
             }
+
+            ml_gsize[( * ( ( le_byte_t * ) ( dl_posea + 3 ) ) ) - 1] ++;
+
+        }
+
+        ml_gdata[0] = new GLuint[ml_gsize[0]];
+        ml_gdata[1] = new GLuint[ml_gsize[1]];
+        ml_gdata[2] = new GLuint[ml_gsize[2]];
+
+        ml_gsize[0] = 0;
+        ml_gsize[1] = 0;
+        ml_gsize[2] = 0;
+
+        for ( long long int dl_parse( 0 ); dl_parse < ml_size; dl_parse += LE_UV3_RECORD ) {
+
+            int dl_prime = ( * ( ( le_byte_t * ) ( dl_posea + 3 ) ) ) - 1;
+
+            ml_gdata[dl_prime][ml_gsize[dl_prime]++] = dl_parse / LE_UV3_RECORD;
 
         }
 
@@ -357,11 +381,26 @@
         glEnableClientState( GL_COLOR_ARRAY  );
 
         /* configure opengl arrays */
-        glVertexPointer( 3, DL_MODEL_V_TYPE, DL_MODEL_STRIPE, ml_data + DL_MODEL_V_BASE );
-        glColorPointer ( 3, DL_MODEL_C_TYPE, DL_MODEL_STRIPE, ml_data + DL_MODEL_C_BASE );
+        //glVertexPointer( 3, DL_MODEL_V_TYPE, DL_MODEL_STRIPE, ml_data + DL_MODEL_V_BASE );
+        //glColorPointer ( 3, DL_MODEL_C_TYPE, DL_MODEL_STRIPE, ml_data + DL_MODEL_C_BASE );
+
+        /* reference to vertex array */
+        glVertexPointer( 3, GL_DOUBLE, LE_UV3_RECORD, ml_data );
+
+        /* reference to color array */
+        glColorPointer ( 3, GL_UNSIGNED_BYTE, LE_UV3_RECORD, ml_data + LE_UV3_POSE + LE_UV3_TYPE );
 
         /* display opengl arrays content - points */
-        glDrawArrays( GL_POINTS, 0, ml_size / 27 );
+        //glDrawArrays( GL_POINTS, 0, ml_size / 27 );
+        //glDrawArrays( GL_POINTS, 0, ml_size / LE_UV3_RECORD );
+
+        glDrawElements( GL_POINTS, ml_gsize[0], GL_UNSIGNED_INT, ml_gdata[0] );
+
+        glDrawElements( GL_LINES, ml_gsize[1], GL_UNSIGNED_INT, ml_gdata[1] );
+
+        glDrawElements( GL_TRIANGLES, ml_gsize[2], GL_UNSIGNED_INT, ml_gdata[2] );        
+
+        //glDrawElements( GL_TRIANGLES, ml_tsize, GL_UNSIGNED_INT, ml_tprim );
 
     }
 
@@ -470,17 +509,6 @@
 
         /* opengl primitives */
         glEnd();
-
-    }
-
-/*
-    source - display methods
- */
-
-    void dl_model_t::ml_dis_point( void ) {
-
-        /* display enable surface point */
-        ml_s[ml_sact].sf_dis_point();
 
     }
 
