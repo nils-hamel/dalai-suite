@@ -84,7 +84,7 @@
                     if ( lc_ostream.is_open() == false ) {
 
                         /* send message */
-                        throw( LC_ERROR_IO_ACCESS );
+                        throw( LC_ERROR_IO_WRITE );
 
                     }
 

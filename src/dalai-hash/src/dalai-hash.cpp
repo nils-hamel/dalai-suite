@@ -48,15 +48,15 @@
         if ( dl_istream.is_open() == false ) {
 
             /* send message */
-            throw( LC_ERROR_IO_ACCESS );
+            throw( LC_ERROR_IO_READ );
 
         }
 
         /* compute model mean value */
-        dl_mean = lc_statistic_mdmv( dl_istream, dl_count, LC_UF3_CHUNK );
+        dl_mean = lc_statistic_mdmv( dl_istream, dl_count );
 
         /* hash model */
-        lc_hash( dl_istream, lc_read_string( argc, argv, "--output", "-o" ), dl_param, dl_mean, LC_UF3_CHUNK );
+        lc_hash( dl_istream, lc_read_string( argc, argv, "--output", "-o" ), dl_param, dl_mean );
 
         /* delete input stream */
         dl_istream.close();
