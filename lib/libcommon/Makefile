@@ -28,7 +28,7 @@
 
     BUILD_FLAGS:=-Wall -funsigned-char -O3
     BUILD_LINKD:=-lm
-    BUILD_SUBMD:=
+    BUILD_SUBMD:=$(MAKE_LIBRAR)/liberatosthene
 
 #
 #   make - Modules

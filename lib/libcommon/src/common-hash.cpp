@@ -24,7 +24,7 @@
     source - hashing methods
  */
 
-    void lc_hash( std::ifstream & lc_istream, char const * const lc_opath, double const lc_param, double const lc_mean, int64_t const lc_chunk ) {
+    void lc_hash( std::ifstream & lc_istream, char const * const lc_opath, double const lc_param, double const lc_mean ) {
 
         /* hashing parameter variables */
         double lc_segment( lc_param * lc_mean );
@@ -44,7 +44,7 @@
         char * lc_buffer( nullptr );
 
         /* allocate and check buffer memory */
-        if ( ( lc_buffer = new ( std::nothrow ) char[lc_chunk * LC_UF3_RECLEN] ) == nullptr ) {
+        if ( ( lc_buffer = new ( std::nothrow ) char[LE_UV3_CHUNK * LE_UV3_RECORD] ) == nullptr ) {
 
             /* send message */
             throw( LC_ERROR_MEMORY );
@@ -61,35 +61,40 @@
         do {
 
             /* read input stream chunk */
-            lc_istream.read( lc_buffer, lc_chunk * LC_UF3_RECLEN );
+            lc_istream.read( lc_buffer, LE_UV3_CHUNK * LE_UV3_RECORD );
 
             /* parsing input stream chunk */
-            for ( char * lc_parse( lc_buffer ), * lc_limit( lc_buffer + lc_istream.gcount() ); lc_parse < lc_limit; lc_parse += LC_UF3_RECLEN ) {
+            for ( char * lc_parse( lc_buffer ), * lc_limit( lc_buffer + lc_istream.gcount() ); lc_parse < lc_limit; lc_parse += LE_UV3_RECORD ) {
 
-                /* compute hash index */
-                lc_xhash = floor( ( ( lc_uf3p_t * ) ( lc_parse ) )[0] / lc_segment );
-                lc_yhash = floor( ( ( lc_uf3p_t * ) ( lc_parse ) )[1] / lc_segment );
-                lc_zhash = floor( ( ( lc_uf3p_t * ) ( lc_parse ) )[2] / lc_segment );
+                /* check primitive type */
+                if ( * ( lc_parse + LE_UV3_POSE ) == LE_UV3_POINT ) {
 
-                /* compute stream path */
-                sprintf( lc_hpath, "%s/%+" PRId64 "_%+" PRId64 "_%+" PRId64 ".uf3", lc_opath, lc_xhash, lc_yhash, lc_zhash );
+                    /* compute hash index */
+                    lc_xhash = floor( ( ( le_real_t * ) ( lc_parse ) )[0] / lc_segment );
+                    lc_yhash = floor( ( ( le_real_t * ) ( lc_parse ) )[1] / lc_segment );
+                    lc_zhash = floor( ( ( le_real_t * ) ( lc_parse ) )[2] / lc_segment );
 
-                /* create output stream */
-                lc_ostream.open( lc_hpath, std::ios::app | std::ios::out | std::ios::binary );
+                    /* compute stream path */
+                    sprintf( lc_hpath, "%s/%+" PRId64 "_%+" PRId64 "_%+" PRId64 ".uf3", lc_opath, lc_xhash, lc_yhash, lc_zhash );
 
-                /* check output stream */
-                if ( lc_ostream.is_open() == false ) {
+                    /* create output stream */
+                    lc_ostream.open( lc_hpath, std::ios::app | std::ios::out | std::ios::binary );
 
-                    /* send message */
-                    throw( LC_ERROR_IO_ACCESS );
+                    /* check output stream */
+                    if ( lc_ostream.is_open() == false ) {
+
+                        /* send message */
+                        throw( LC_ERROR_IO_ACCESS );
+
+                    }
+
+                    /* export chunk element */
+                    lc_ostream.write( lc_parse, LE_UV3_RECORD );
+
+                    /* delete output stream */
+                    lc_ostream.close();
 
                 }
-
-                /* export chunk element */
-                lc_ostream.write( lc_parse, LC_UF3_RECLEN );
-
-                /* delete output stream */
-                lc_ostream.close();
 
             }
 

@@ -46,6 +46,7 @@
     # include <cmath>
     # include <cstdint>
     # include <inttypes.h>
+    # include <eratosthene-include.h>
 
 /*
     header - preprocessor definitions
@@ -71,7 +72,8 @@
      *
      *  This function imports the point cloud provided by the input stream and
      *  hashes it in the output directory. The hashing consists in cutting the
-     *  provided point cloud into many smaller point clouds.
+     *  provided point cloud into many smaller point clouds based on cell-based
+     *  space segmentation. Only primitive of the 'point' type are considered.
      *
      *  The function reads the input stream elements one by one and uses the
      *  provided hashing parameter and the minimum distance mean value to
@@ -84,18 +86,13 @@
      *  the sub point clouds file name. All elements sharing the same h_i values
      *  are then written in the same sub point cloud.
      *
-     *  In addition, a chunk size parameter has to be provided. It indicates the
-     *  size of the segments to considers to read the provided input stream. It
-     *  allows to maintain the amount of used memory to a specific value.
-     *
      *  \param lc_istream Input stream descriptor
      *  \param lc_opath   Output directory path
      *  \param lc_param   Hashing parameter
      *  \param lc_mean    Minimum distance mean value
-     *  \param lc_chunk   Chunk size, in elements count
      */
 
-    void lc_hash( std::ifstream & lc_istream, char const * const lc_opath, double const lc_param, double const lc_mean, int64_t const lc_chunk );
+    void lc_hash( std::ifstream & lc_istream, char const * const lc_opath, double const lc_param, double const lc_mean );
 
 /*
     header - inclusion guard

@@ -77,11 +77,11 @@
  */
 
     /* define storage modes */
-    # define DL_FILTER_CREATE ( 0 )
-    # define DL_FILTER_DELETE ( 1 )
+    # define DL_CREATE ( 0 )
+    # define DL_DELETE ( 1 )
 
     /* define hashing parameter */
-    # define DL_FILTER_HASH   ( 75.0 )
+    # define DL_HASH   ( 75.0 )
 
 /*
     header - preprocessor macros
@@ -101,7 +101,7 @@
 
     /*! \brief storage methods
      *
-     *  As \b DL_FILTER_CREATE is provided as mode, the function asks the system
+     *  As \b DL_CREATE is provided as mode, the function asks the system
      *  for an unused temporary directory in the system temporary volume. On
      *  success, the function creates the temporary directory and updates the
      *  content of the provided path with the created directory path.
@@ -155,6 +155,9 @@
      *                     --factor/-f [minimum distance mean multiplier]
      *                     --count/-c [sampled elements for mean computation]
      *                     --threshold/-t [neighbour elements count threshold]
+     *
+     *  It follows that only 'point' type elements of the provided uv3 file are
+     *  considered through this filtering process.
      *
      *  The main function starts by reading the parameters and opens the input
      *  file. It computes the point cloud elements minimum distances mean value

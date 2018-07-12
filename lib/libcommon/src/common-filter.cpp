@@ -70,7 +70,7 @@
         lc_istream.read( lc_chunk, lc_size );
 
         /* allocate and check buffer memory */
-        if ( ( lc_count = new ( std::nothrow ) int64_t[lc_size / LC_UF3_RECLEN] ) == nullptr ) {
+        if ( ( lc_count = new ( std::nothrow ) int64_t[lc_size / LE_UV3_RECORD] ) == nullptr ) {
 
             /* send message */
             throw( LC_ERROR_MEMORY );
@@ -78,19 +78,19 @@
         }
 
         /* initialise buffer */
-        std::memset( lc_count, 0, ( lc_size / LC_UF3_RECLEN ) * sizeof( int64_t ) );
+        std::memset( lc_count, 0, ( lc_size / LE_UV3_RECORD ) * sizeof( int64_t ) );
 
         /* parsing input stream elements */
-        for ( int64_t lc_parse( 0 ), lc_limit( lc_size - LC_UF3_RECLEN ); lc_parse < lc_limit; lc_parse += LC_UF3_RECLEN ) {
+        for ( int64_t lc_parse( 0 ), lc_limit( lc_size - LE_UV3_RECORD ); lc_parse < lc_limit; lc_parse += LE_UV3_RECORD ) {
 
             /* compute and assign array mapping */
-            lc_posea = ( lc_uf3p_t * ) ( lc_chunk + lc_parse );
+            lc_posea = ( le_real_t * ) ( lc_chunk + lc_parse );
 
             /* parsing input stream elements */
-            for ( int64_t lc_index( lc_parse + LC_UF3_RECLEN ); lc_index < lc_size; lc_index += LC_UF3_RECLEN ) {
+            for ( int64_t lc_index( lc_parse + LE_UV3_RECORD ); lc_index < lc_size; lc_index += LE_UV3_RECORD ) {
 
                 /* compute and assign array mapping */
-                lc_poseb = ( lc_uf3p_t * ) ( lc_chunk + lc_index );
+                lc_poseb = ( le_real_t * ) ( lc_chunk + lc_index );
 
                 /* compute element-element distance */
                 lc_distance = ( lc_posea[0] - lc_poseb[0] ) * ( lc_posea[0] - lc_poseb[0] ) +
@@ -101,10 +101,10 @@
                 if ( lc_distance < lc_condition ) {
 
                     /* update element count */
-                    lc_count[lc_parse / LC_UF3_RECLEN] ++;
+                    lc_count[lc_parse / LE_UV3_RECORD] ++;
 
                     /* update element count */
-                    lc_count[lc_index / LC_UF3_RECLEN] ++;
+                    lc_count[lc_index / LE_UV3_RECORD] ++;
 
                 }
 
@@ -116,7 +116,7 @@
         lc_delay = 0;
 
         /* parsing count array */
-        for ( int64_t lc_parse( 0 ), lc_limit( lc_size / LC_UF3_RECLEN ); lc_parse < lc_limit; lc_parse ++ ) {
+        for ( int64_t lc_parse( 0 ), lc_limit( lc_size / LE_UV3_RECORD ); lc_parse < lc_limit; lc_parse ++ ) {
 
             /* filtering condition */
             if ( lc_count[lc_parse] >= lc_threshold ) {
@@ -125,7 +125,7 @@
                 if ( lc_delay < lc_parse ) {
 
                     /* index filtered element */
-                    std::memcpy( lc_chunk + ( lc_delay * LC_UF3_RECLEN ), lc_chunk + ( lc_parse * LC_UF3_RECLEN ), LC_UF3_RECLEN );
+                    std::memcpy( lc_chunk + ( lc_delay * LE_UV3_RECORD ), lc_chunk + ( lc_parse * LE_UV3_RECORD ), LE_UV3_RECORD );
 
                 }
 
@@ -137,7 +137,7 @@
         }
 
         /* exported filtered elements */
-        lc_ostream.write( lc_chunk, lc_delay * LC_UF3_RECLEN );
+        lc_ostream.write( lc_chunk, lc_delay * LE_UV3_RECORD );
 
         /* release buffer memory */
         delete [] lc_chunk;
@@ -192,7 +192,7 @@
         lc_istream.read( lc_chunk, lc_size );
 
         /* allocate and check buffer memory */
-        if ( ( lc_count = new ( std::nothrow ) int64_t[lc_size / LC_UF3_RECLEN] ) == nullptr ) {
+        if ( ( lc_count = new ( std::nothrow ) int64_t[lc_size / LE_UV3_RECORD] ) == nullptr ) {
 
             /* send message */
             throw( LC_ERROR_MEMORY );
@@ -200,7 +200,7 @@
         }
 
         /* allocate and check buffer memory */
-        if ( ( lc_dists = new ( std::nothrow ) double[lc_size / LC_UF3_RECLEN] ) == nullptr ) {
+        if ( ( lc_dists = new ( std::nothrow ) double[lc_size / LE_UV3_RECORD] ) == nullptr ) {
 
             /* send message */
             throw( LC_ERROR_MEMORY );
@@ -208,7 +208,7 @@
         }
 
         /* initialise array values */
-        for ( int64_t lc_parse( 0 ), lc_limit( lc_size / LC_UF3_RECLEN ); lc_parse < lc_limit; lc_parse ++ ) {
+        for ( int64_t lc_parse( 0 ), lc_limit( lc_size / LE_UV3_RECORD ); lc_parse < lc_limit; lc_parse ++ ) {
 
             /* assign initial value */
             lc_count[lc_parse] = 0;
@@ -228,16 +228,16 @@
         lc_istream.read( lc_chunk, lc_size );
 
         /* parsing input stream elements */
-        for ( int64_t lc_parse( 0 ), lc_limit( lc_size - LC_UF3_RECLEN ); lc_parse < lc_limit; lc_parse += LC_UF3_RECLEN ) {
+        for ( int64_t lc_parse( 0 ), lc_limit( lc_size - LE_UV3_RECORD ); lc_parse < lc_limit; lc_parse += LE_UV3_RECORD ) {
 
             /* compute and assign array mapping */
-            lc_pose1 = ( double * ) ( lc_chunk + lc_parse );
+            lc_pose1 = ( le_real_t * ) ( lc_chunk + lc_parse );
 
             /* parsing input stream elements */
-            for ( int64_t lc_index( lc_parse + LC_UF3_RECLEN ); lc_index < lc_size; lc_index += LC_UF3_RECLEN ) {
+            for ( int64_t lc_index( lc_parse + LE_UV3_RECORD ); lc_index < lc_size; lc_index += LC_UF3_RECLEN ) {
 
                 /* compute and assign array mapping */
-                lc_pose2 = ( double * ) ( lc_chunk + lc_index );
+                lc_pose2 = ( le_real_t  * ) ( lc_chunk + lc_index );
 
                 /* compute element-element distance */
                 lc_distance = ( lc_pose1[0] - lc_pose2[0] ) * ( lc_pose1[0] - lc_pose2[0] ) +
@@ -245,8 +245,8 @@
                               ( lc_pose1[2] - lc_pose2[2] ) * ( lc_pose1[2] - lc_pose2[2] );
 
                 /* search minimal distances */
-                if ( lc_distance < lc_dists[lc_parse/LC_UF3_RECLEN] ) lc_dists[lc_parse/LC_UF3_RECLEN] = lc_distance;
-                if ( lc_distance < lc_dists[lc_index/LC_UF3_RECLEN] ) lc_dists[lc_index/LC_UF3_RECLEN] = lc_distance;
+                if ( lc_distance < lc_dists[lc_parse/LE_UV3_RECORD] ) lc_dists[lc_parse/LE_UV3_RECORD] = lc_distance;
+                if ( lc_distance < lc_dists[lc_index/LE_UV3_RECORD] ) lc_dists[lc_index/LE_UV3_RECORD] = lc_distance;
 
             }
 
@@ -256,7 +256,7 @@
         lc_condition = 0.0;
 
         /* prepare local threshold condition */
-        for ( int64_t lc_parse( 0 ), lc_limit( lc_size / LC_UF3_RECLEN ); lc_parse < lc_limit; lc_parse ++ ) {
+        for ( int64_t lc_parse( 0 ), lc_limit( lc_size / LE_UV3_RECORD ); lc_parse < lc_limit; lc_parse ++ ) {
 
             /* accumulate local condition */
             lc_condition += sqrt( lc_dists[lc_parse] );
@@ -264,22 +264,22 @@
         }
 
         /* compute local threshold condition */
-        lc_condition = lc_condition / ( lc_size / LC_UF3_RECLEN );
+        lc_condition = lc_condition / ( lc_size / LE_UV3_RECORD );
 
         /* compute local threshold condition */
         lc_condition = lc_condition * lc_condition * lc_factor * lc_factor;
 
         /* parsing input stream elements */
-        for ( int64_t lc_parse( 0 ), lc_limit( lc_size - LC_UF3_RECLEN ); lc_parse < lc_limit; lc_parse += LC_UF3_RECLEN ) {
+        for ( int64_t lc_parse( 0 ), lc_limit( lc_size - LE_UV3_RECORD ); lc_parse < lc_limit; lc_parse += LE_UV3_RECORD ) {
 
             /* compute and assign array mapping */
-            lc_pose1 = ( double * ) ( lc_chunk + lc_parse );
+            lc_pose1 = ( le_real_t * ) ( lc_chunk + lc_parse );
 
             /* parsing input stream elements */
-            for ( int64_t lc_index( lc_parse + LC_UF3_RECLEN ); lc_index < lc_size; lc_index += LC_UF3_RECLEN ) {
+            for ( int64_t lc_index( lc_parse + LE_UV3_RECORD ); lc_index < lc_size; lc_index += LE_UV3_RECORD ) {
 
                 /* compute and assign array mapping */
-                lc_pose2 = ( double * ) ( lc_chunk + lc_index );
+                lc_pose2 = ( le_real_t * ) ( lc_chunk + lc_index );
 
                 /* compute element-element distance */
                 lc_distance = ( lc_pose1[0] - lc_pose2[0] ) * ( lc_pose1[0] - lc_pose2[0] ) +
@@ -290,10 +290,10 @@
                 if ( lc_distance < lc_condition ) {
 
                     /* update element count */
-                    lc_count[lc_parse/LC_UF3_RECLEN] ++;
+                    lc_count[lc_parse/LE_UV3_RECORD] ++;
 
                     /* update element count */
-                    lc_count[lc_index/LC_UF3_RECLEN] ++;
+                    lc_count[lc_index/LE_UV3_RECORD] ++;
 
                 }
 
@@ -305,7 +305,7 @@
         lc_delay = 0;
 
         /* parsing count array */
-        for ( int64_t lc_parse( 0 ), lc_limit( lc_size / LC_UF3_RECLEN ); lc_parse < lc_limit; lc_parse ++ ) {
+        for ( int64_t lc_parse( 0 ), lc_limit( lc_size / LE_UV3_RECORD ); lc_parse < lc_limit; lc_parse ++ ) {
 
             /* filtering condition */
             if ( lc_count[lc_parse] >= lc_threshold ) {
@@ -314,7 +314,7 @@
                 if ( lc_delay < lc_parse ) {
 
                     /* index filtered element */
-                    std::memcpy( lc_chunk + ( lc_delay * LC_UF3_RECLEN ), lc_chunk + ( lc_parse * LC_UF3_RECLEN ), LC_UF3_RECLEN );
+                    std::memcpy( lc_chunk + ( lc_delay * LE_UV3_RECORD ), lc_chunk + ( lc_parse * LE_UV3_RECORD ), LE_UV3_RECORD );
 
                 }
 
@@ -326,7 +326,7 @@
         }
 
         /* exported filtered elements */
-        lc_ostream.write( lc_chunk, lc_delay * LC_UF3_RECLEN );
+        lc_ostream.write( lc_chunk, lc_delay * LE_UV3_RECORD );
 
         /* release buffer memory */
         delete [] lc_chunk;

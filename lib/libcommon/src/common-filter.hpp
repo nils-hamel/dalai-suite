@@ -49,6 +49,7 @@
     # include <cstring>
     # include <cstdint>
     # include <inttypes.h>
+    # include <eratosthene-include.h>
 
 /*
     header - preprocessor definitions

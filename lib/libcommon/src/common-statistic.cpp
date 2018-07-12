@@ -24,7 +24,7 @@
     source - statistical methods
  */
 
-    double lc_statistic_mdmv( std::ifstream & lc_istream, int64_t const lc_count, int64_t const lc_chunk ) {
+    double lc_statistic_mdmv( std::ifstream & lc_istream, int64_t const lc_count ) {
 
         /* array mapping variables */
         lc_uf3p_t * lc_posei( nullptr );
@@ -42,7 +42,7 @@
         double * lc_values( nullptr );
 
         /* allocate and check buffer memory */
-        if ( ( lc_sample = new ( std::nothrow ) char[lc_count * LC_UF3_RECLEN] ) == nullptr ) {
+        if ( ( lc_sample = new ( std::nothrow ) char[lc_count * LE_UV3_RECORD] ) == nullptr ) {
 
             /* send message */
             throw( LC_ERROR_MEMORY );
@@ -50,7 +50,7 @@
         }
 
         /* allocate and check buffer memory */
-        if ( ( lc_chunks = new ( std::nothrow ) char[lc_chunk * LC_UF3_RECLEN] ) == nullptr ) {
+        if ( ( lc_chunks = new ( std::nothrow ) char[LE_UV3_CHUNK * LE_UV3_RECORD] ) == nullptr ) {
 
             /* send message */
             throw( LC_ERROR_MEMORY );
@@ -89,10 +89,10 @@
         for ( int64_t lc_parse( 0 ); lc_parse < lc_count; lc_parse ++ ) {
 
             /* assign stream position */
-            lc_istream.seekg( lc_parse * ( ( ( lc_size / LC_UF3_RECLEN ) / lc_count ) * LC_UF3_RECLEN ) );
+            lc_istream.seekg( lc_parse * ( ( ( lc_size / LE_UV3_RECORD ) / lc_count ) * LE_UV3_RECORD ) );
 
             /* read sample values */
-            lc_istream.read( lc_sample + ( lc_parse * LC_UF3_RECLEN ), LC_UF3_RECLEN );
+            lc_istream.read( lc_sample + ( lc_parse * LE_UV3_RECORD ), LE_UV3_RECORD );
 
         }
 
@@ -106,19 +106,19 @@
         do {
 
             /* read input stream chunk */
-            lc_istream.read( lc_chunks, lc_chunk * LC_UF3_RECLEN );
+            lc_istream.read( lc_chunks, LE_UV3_CHUNK * LE_UV3_RECORD );
 
             /* parsing input stream chunk */
-            for ( int64_t lc_parse( 0 ), lc_limit( lc_istream.gcount() ); lc_parse < lc_limit; lc_parse += LC_UF3_RECLEN ) {
+            for ( int64_t lc_parse( 0 ), lc_limit( lc_istream.gcount() ); lc_parse < lc_limit; lc_parse += LE_UV3_RECORD ) {
 
                 /* compute and assign array mapping */
-                lc_posei = ( lc_uf3p_t * ) ( lc_chunks + lc_parse );
+                lc_posei = ( le_real_t * ) ( lc_chunks + lc_parse );
 
                 /* parsing sample array */
                 for ( int64_t lc_index( 0 ); lc_index < lc_count; lc_index ++ ) {
 
                     /* compute and assign array mapping */
-                    lc_poses = ( lc_uf3p_t * ) ( lc_sample + ( lc_index * LC_UF3_RECLEN ) );
+                    lc_poses = ( le_real_t * ) ( lc_sample + ( lc_index * LE_UV3_RECORD ) );
 
                     /* compute and check distance */
                     if ( ( lc_distance =

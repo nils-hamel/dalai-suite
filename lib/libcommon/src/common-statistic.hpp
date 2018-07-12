@@ -47,6 +47,7 @@
     # include <cmath>
     # include <cstdint>
     # include <inttypes.h>
+    # include <eratosthene-include.h>
 
 /*
     header - preprocessor definitions
@@ -70,31 +71,26 @@
 
     /*! \brief statistical methods
      *
-     *  This function computes and returns the mean value of the point cloud
-     *  elements distance to their closest element. To achieve this computation
-     *  in a reasonable amount of time, the following strategy is considered.
+     *  This function computes and returns the mean value of the elements vertex
+     *  distance to their closest element. To achieve this computation in a
+     *  reasonable amount of time, the following strategy is considered.
      *
-     *  The function starts by sampling \b lc_count elements in the point cloud
+     *  The function starts by sampling \b lc_count elements in the input stream
      *  provided through the stream descriptor. For each sampled element, it
      *  searches the distance to its closest element. It finally computes the
      *  mean value of the found minimal distances on the sampled set.
      *
      *  The approximation of the minimum distance mean value gets better as
      *  \b lc_count increases. Nevertheless, a value of 32 already allows to
-     *  compute a very good approximation of the minimums mean value.
-     *
-     *  In addition, a chunk size parameter has to be provided. It indicates the
-     *  size of the segments to considers to read the provided input stream. It
-     *  allows to maintain the amount of used memory to a specific value.
+     *  compute a very good approximation of the minimum distance mean value.
      *
      *  \param lc_istream Input stream descriptor
      *  \param lc_count   Number of sampled elements
-     *  \param lc_chunk   Chunk size, in elements count
      *
      *  \return Returns minimum distance mean value
      */
 
-    double lc_statistic_mdmv( std::ifstream & lc_istream, int64_t const lc_count, int64_t const lc_chunk );
+    double lc_statistic_mdmv( std::ifstream & lc_istream, int64_t const lc_count );
 
 /*
     header - inclusion guard

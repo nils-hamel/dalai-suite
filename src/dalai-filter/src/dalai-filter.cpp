@@ -27,7 +27,7 @@
     void dl_filter_temporary( char * const dl_path, int dl_mode ) {
 
         /* check mode value */
-        if ( dl_mode == DL_FILTER_CREATE ) {
+        if ( dl_mode == DL_CREATE ) {
 
             /* compose temporary storage path */
             strcpy( dl_path, "/tmp/dalai-suite-XXXXXX" );
@@ -137,22 +137,22 @@
 
     int main( int argc, char ** argv ) {
 
-        /* filtering factor variables */
+        /* filtering factor variable */
         double dl_factor( lc_read_double( argc, argv, "--factor", "-f", 2.0 ) );
 
-        /* computation count variables */
+        /* computation count variable */
         int64_t dl_count( lc_read_signed( argc, argv, "--count", "-c", 64 ) );
 
-        /* filtering threshold variables */
+        /* filtering threshold variable */
         int64_t dl_thres( lc_read_signed( argc, argv, "--threshold", "-t", 2 ) );
 
-        /* filtering mode variables */
+        /* filtering mode variable */
         bool dl_mode( lc_read_flag( argc, argv, "--adaptative", "-a" ) );
 
-        /* temporary path variables */
+        /* temporary path variable */
         char dl_path[256];
 
-        /* minimums mean variables */
+        /* minimums mean variable */
         double dl_mean( 0.0 );
 
         /* stream variables */
@@ -185,19 +185,19 @@
         }
 
         /* create temporary storage */
-        dl_filter_temporary( dl_path, DL_FILTER_CREATE );
+        dl_filter_temporary( dl_path, DL_CREATE );
 
         /* compute minimum distance mean value */
-        dl_mean = lc_statistic_mdmv( dl_istream, dl_count, LC_UF3_CHUNK );
+        dl_mean = lc_statistic_mdmv( dl_istream, dl_count );
 
         /* create hashed storage */
-        lc_hash( dl_istream, dl_path, DL_FILTER_HASH, dl_mean, LC_UF3_CHUNK );
+        lc_hash( dl_istream, dl_path, DL_HASH, dl_mean );
 
         /* filtering process */
         dl_filter( dl_ostream, dl_path, dl_mean, dl_factor, dl_thres, dl_mode );
 
         /* delete temporary storage */
-        dl_filter_temporary( dl_path, DL_FILTER_DELETE );
+        dl_filter_temporary( dl_path, DL_DELETE );
 
         /* delete output stream */
         dl_ostream.close();
