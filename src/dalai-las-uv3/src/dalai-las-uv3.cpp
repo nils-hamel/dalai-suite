@@ -1,5 +1,5 @@
 /*
- *  dalai-suite - las-uf3
+ *  dalai-suite - las-uv3
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
  *      Copyright (c) 2016-2018 DHLAB, EPFL
@@ -18,7 +18,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    # include "dalai-las-uf3.hpp"
+    # include "dalai-las-uv3.hpp"
 
 /*
     source - main methods
@@ -27,11 +27,12 @@
     int main( int argc, char ** argv ) {
 
         /* stream buffer variables */
-        char dl_buffer[LC_UF3_RECLEN] = { 0 };
+        le_byte_t dl_buffer[LE_UV3_RECORD] = { 0 };
 
         /* buffer mapping variables */
-        lc_uf3p_t * dl_pose( ( lc_uf3p_t * ) ( dl_buffer ) );
-        lc_uf3d_t * dl_data( ( lc_uf3d_t * ) ( dl_buffer + LC_UF3_DATA ) );
+        le_real_t * dl_pose( ( le_real_t * ) ( dl_buffer ) );
+        le_byte_t * dl_type( ( le_byte_t * ) ( dl_buffer + LE_UV3_POSE ) ); 
+        le_data_t * dl_data( ( le_data_t * ) ( dl_buffer + LE_UV3_POSE + LE_UV3_TYPE ) );
 
         /* color availability variables */
         bool dl_color( false );
@@ -53,7 +54,7 @@
         if ( dl_istream.is_open() == false ) {
 
             /* send message */
-            throw( LC_ERROR_IO_ACCESS );
+            throw( LC_ERROR_IO_READ );
 
         }
 
@@ -64,7 +65,7 @@
         if ( dl_ostream.is_open() == false ) {
 
             /* send message */
-            throw( LC_ERROR_IO_ACCESS );
+            throw( LC_ERROR_IO_WRITE );
 
         }
 
@@ -94,6 +95,9 @@
             }
 
         }
+
+        /* initialise recrod type */
+        * ( dl_type ) = LE_UV3_POINT;
 
         /* parsing input stream */
         while ( dl_las.ReadNextPoint() == true ) {
@@ -132,7 +136,7 @@
             }
 
             /* output stream exportation */
-            dl_ostream.write( dl_buffer, LC_UF3_RECLEN );
+            dl_ostream.write( ( char * ) dl_buffer, LE_UV3_RECORD );
 
         }
 

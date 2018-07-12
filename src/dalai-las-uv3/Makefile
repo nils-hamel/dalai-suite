@@ -5,7 +5,7 @@
 #   make - Configuration
 #
 
-    CONFIG_NAME:=dalai-las-uf3
+    CONFIG_NAME:=dalai-las-uv3
     CONFIG_CODE:=cpp
     CONFIG_TYPE:=suite
 

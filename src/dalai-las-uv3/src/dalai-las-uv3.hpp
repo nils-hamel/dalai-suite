@@ -1,5 +1,5 @@
 /*
- *  dalai-suite - las-uf3
+ *  dalai-suite - las-uv3
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
  *      Copyright (c) 2016-2018 DHLAB, EPFL
@@ -18,10 +18,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   dalai-las-uf3.hpp
+    /*! \file   dalai-las-uv3.hpp
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  dalai-suite - las-uf3
+     *  dalai-suite - las-uv3
      */
 
     /*! \mainpage dalai-suite
@@ -73,7 +73,27 @@
  */
 
     /* define classification colormap */
-    # define DL_COLORMAP { { 64, 64, 64 }, { 128, 128, 128 }, { 51, 64, 55 }, { 37, 64, 37 }, { 74, 127, 75 }, { 111, 191, 112 }, { 255, 138, 40 }, { 191, 52, 49 }, { 64, 17, 16 }, { 60, 98, 191 }, { 229, 188, 61 }, { 255, 209, 68 }, { 64, 17, 16 }, { 255, 194, 54 }, { 232, 158, 50 }, { 255, 153, 67 }, { 232, 106, 50 }, { 255, 88, 54 }, { 255, 62, 52 } }
+    # define DL_COLORMAP { \
+        {  64,  64,  64 }, \
+        { 128, 128, 128 }, \
+        {  51,  64,  55 }, \
+        {  37,  64,  37 }, \
+        {  74, 127,  75 }, \
+        { 111, 191, 112 }, \
+        { 255, 138,  40 }, \
+        { 191,  52,  49 }, \
+        {  64,  17,  16 }, \
+        {  60,  98, 191 }, \
+        { 229, 188,  61 }, \
+        { 255, 209,  68 }, \
+        {  64,  17,  16 }, \
+        { 255, 194,  54 }, \
+        { 232, 158,  50 }, \
+        { 255, 153,  67 }, \
+        { 232, 106,  50 }, \
+        { 255,  88,  54 }, \
+        { 255,  62,  52 }  \
+     }
 
 /*
     header - preprocessor macros
@@ -94,9 +114,9 @@
     /*! \brief main function
      *
      *  The main function converts the provided las (asprs) file and converts
-     *  it into a universal format 3 (uf3) file :
+     *  it into a universal vector 3 (uv3) format file :
      *
-     *      ./dalai-las-uf3 --las/-i [las input file]
+     *      ./dalai-las-uv3 --las/-i [las input file]
      *                      --uf3/-o [uf3 output file]
      *                      --classification/-c [forced classification switch]
      *
