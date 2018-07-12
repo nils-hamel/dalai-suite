@@ -26,23 +26,26 @@
 
     int main( int argc, char ** argv ) {
 
-        /* i/o variables */
-        long long dl_read( 0 );
-
         /* stream variables */
         std::ifstream dl_istream;
         std::ofstream dl_ostream;
 
+        /* i/o variables */
+        le_size_t dl_read( 0 );
+
         /* stream buffer variables */
-        char * dl_buffer( nullptr );
+        le_byte_t * dl_buffer( nullptr );
 
         /* buffer pointer variables */
-        double * dl_pose( nullptr );
+        le_real_t * dl_pose( nullptr );
 
         /* shift constant variables */
-        double dl_xshift( lc_read_double( argc, argv, "--x", "-x", 0.0 ) );
-        double dl_yshift( lc_read_double( argc, argv, "--y", "-y", 0.0 ) );
-        double dl_zshift( lc_read_double( argc, argv, "--z", "-z", 0.0 ) );
+        le_real_t dl_xshift( lc_read_double( argc, argv, "--x", "-x", 0.0 ) );
+        le_real_t dl_yshift( lc_read_double( argc, argv, "--y", "-y", 0.0 ) );
+        le_real_t dl_zshift( lc_read_double( argc, argv, "--z", "-z", 0.0 ) );
+
+    /* error management */
+    try {
 
         /* create input stream */
         dl_istream.open( lc_read_string( argc, argv, "--input", "-i" ), std::ios::in | std::ios::binary );
@@ -50,82 +53,78 @@
         /* check input stream */
         if ( dl_istream.is_open() != true ) {
 
-            /* display message */
-            std::cerr << "dalai-suite : error : unable to access input stream" << std::endl;
+            /* send message */
+            throw( LC_ERROR_IO_READ );
+
+        }
+
+        /* create output stream */
+        dl_ostream.open( lc_read_string( argc, argv, "--output", "-o" ), std::ios::out | std::ios::binary );
+
+        /* check output stream */
+        if ( dl_ostream.is_open() != true ) {
 
             /* send message */
-            return( EXIT_FAILURE );
+            throw( LC_ERROR_IO_WRITE );
 
-        } else {
+        }
 
-            /* create output stream */
-            dl_ostream.open( lc_read_string( argc, argv, "--output", "-o" ), std::ios::out | std::ios::binary );
+        /* allocate memory */
+        if ( ( dl_buffer = new ( std::nothrow ) le_byte_t[LE_UV3_CHUNK * LE_UV3_RECORD] ) == nullptr ) {
 
-            /* check output stream */
-            if ( dl_ostream.is_open() != true ) {
+            /* send message */
+            throw( LC_ERROR_MEMORY );
 
-                /* display message */
-                std::cerr << "dalai-suite : error : unable to access output stream" << std::endl;
+        }
 
-                /* send message */
-                return( EXIT_FAILURE );
+        /* stream reading */
+        do {
 
-            } else {
+            /* read stream chunk */
+            dl_istream.read( ( char * ) dl_buffer, LE_UV3_CHUNK * LE_UV3_RECORD );
 
-                /* allocate memory */
-                if ( ( dl_buffer = new ( std::nothrow ) char [LC_UF3_CHUNK * LC_UF3_RECLEN] ) == nullptr ) {
+            /* check chunk reading */
+            if ( ( dl_read = dl_istream.gcount() ) > 0 ) {
 
-                    /* display message */
-                    std::cerr << "dalai-suite : error : unable to allocate memory" << std::endl;
+                /* parsing chunk */
+                for ( long long dl_parse( 0 ); dl_parse < dl_read; dl_parse += LE_UV3_RECORD ) {
 
-                    /* send message */
-                    return( EXIT_FAILURE );
+                    /* create buffer pointer */
+                    dl_pose = ( le_real_t * ) ( dl_buffer + dl_parse );
 
-                } else {
-
-                    /* stream reading */
-                    do {
-
-                        /* read stream chunk */
-                        dl_istream.read( dl_buffer, LC_UF3_CHUNK * LC_UF3_RECLEN );
-
-                        /* check chunk reading */
-                        if ( ( dl_read = dl_istream.gcount() ) > 0 ) {
-
-                            /* parsing chunk */
-                            for ( long long dl_parse( 0 ); dl_parse < dl_read; dl_parse += LC_UF3_RECLEN ) {
-
-                                /* create buffer pointer */
-                                dl_pose = ( double * ) ( dl_buffer + dl_parse );
-
-                                /* apply shift on coordinates */
-                                dl_pose[0] += dl_xshift;
-                                dl_pose[1] += dl_yshift;
-                                dl_pose[2] += dl_zshift;
-
-                            }
-
-                            /* write stream chunk */
-                            dl_ostream.write( dl_buffer, dl_read );
-
-                        }
-
-                    } while ( dl_read > 0 );
-
-                    /* delete stream buffer */
-                    delete[] dl_buffer;
+                    /* apply shift on coordinates */
+                    dl_pose[0] += dl_xshift;
+                    dl_pose[1] += dl_yshift;
+                    dl_pose[2] += dl_zshift;
 
                 }
 
-                /* delete output stream */
-                dl_ostream.close();
+                /* write stream chunk */
+                dl_ostream.write( ( char * ) dl_buffer, dl_read );
 
             }
 
-            /* delete input stream */
-            dl_istream.close();
+        /* reading condition */
+        } while ( dl_read > 0 );
 
-        }
+        /* delete stream buffer */
+        delete[] dl_buffer;
+
+        /* delete output stream */
+        dl_ostream.close();
+
+        /* delete input stream */
+        dl_istream.close();
+
+    } catch ( int dl_code ) {
+
+        /* error management */
+        lc_error( dl_code );
+
+        /* send message */
+        return( EXIT_FAILURE );
+
+    }
 
         /* send message */
         return( EXIT_SUCCESS );

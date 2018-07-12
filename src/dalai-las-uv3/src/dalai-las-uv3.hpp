@@ -67,6 +67,7 @@
     # include <cstdint>
     # include <liblas/liblas.hpp>
     # include <common-include.hpp>
+    # include <eratosthene-include.h>
 
 /*
     header - preprocessor definitions

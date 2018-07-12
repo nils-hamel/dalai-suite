@@ -65,6 +65,7 @@
     # include <iostream>
     # include <fstream>
     # include <common-include.hpp>
+    # include <eratosthene-include.h>
 
 /*
     header - preprocessor definitions
@@ -88,7 +89,7 @@
 
     /*! \brief main methods
      *
-     *  The main function reads the content of the provided input file and
+     *  The main function reads the content of the provided input uv3 file and
      *  applies the provided shift to the respective dimensions :
      *
      *      ./dalai-shift --input/-i [uf3 input file]
