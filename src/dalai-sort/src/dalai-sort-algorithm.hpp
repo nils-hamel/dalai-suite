@@ -39,20 +39,22 @@
     header - external includes
  */
 
-    # include <common-include.hpp>
-    # include <eratosthene-include.h>
     # include <fstream>
     # include <cstring>
+    # include <common-include.hpp>
+    # include <eratosthene-include.h>
 
 /*
     header - preprocessor definitions
  */
 
     /* define chunk size */
-    # define DL_SORT_CHUNK  ( LE_ARRAY_UF3 * 9942053 )
+    //# define DL_SORT_CHUNK  ( LE_ARRAY_UF3 * 9942053 )
+    # define DL_SORT_CHUNK  ( LE_UV3_RECORD * 9942053 )
 
     /* define buffer size */
-    # define DL_SORT_BUFFER ( LE_ARRAY_UF3 * 4971026 )
+    //# define DL_SORT_BUFFER ( LE_ARRAY_UF3 * 4971026 )
+    # define DL_SORT_BUFFER ( LE_UV3_RECORD * 4971026 )
 
 /*
     header - preprocessor macros

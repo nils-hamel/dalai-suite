@@ -177,7 +177,7 @@
         le_size_t dl_index( 0 );
 
         /* step variable */
-        le_size_t dl_step( LC_UF3_RECLEN );
+        le_size_t dl_step( LE_UV3_RECORD );
 
         /* allocate buffer memory */
         if ( ( dl_pair[dl_target] = new ( std::nothrow ) le_byte_t[dl_size] ) == nullptr ) {
@@ -247,23 +247,23 @@
                             if ( dl_sort_algorithm( ( le_real_t * ) ( dl_pair[dl_origin] + dl_fhead ), ( le_real_t * ) ( dl_pair[dl_origin] + dl_shead ), dl_depth ) == true ) {
 
                                 /* copy record */
-                                std::memcpy( dl_pair[dl_target] + dl_index, dl_pair[dl_origin] + dl_shead, LC_UF3_RECLEN );
+                                std::memcpy( dl_pair[dl_target] + dl_index, dl_pair[dl_origin] + dl_shead, LE_UV3_RECORD );
 
                                 /* update head */
-                                dl_shead += LC_UF3_RECLEN;
+                                dl_shead += LE_UV3_RECORD;
 
                             } else {
 
                                 /* copy record */
-                                std::memcpy( dl_pair[dl_target] + dl_index, dl_pair[dl_origin] + dl_fhead, LC_UF3_RECLEN );
+                                std::memcpy( dl_pair[dl_target] + dl_index, dl_pair[dl_origin] + dl_fhead, LE_UV3_RECORD );
 
                                 /* update head */
-                                dl_fhead += LC_UF3_RECLEN;
+                                dl_fhead += LE_UV3_RECORD;
 
                             }
 
                             /* update index */
-                            dl_index += LC_UF3_RECLEN;
+                            dl_index += LE_UV3_RECORD;
 
                         }
 
@@ -423,10 +423,10 @@
                 if ( dl_fedge == 0 ) {
 
                     /* copy record */
-                    std::memcpy( ( char * ) ( dl_obuffer + dl_ohead ), ( char * ) ( dl_sbuffer + dl_shead ), LE_ARRAY_UF3 );
+                    std::memcpy( ( char * ) ( dl_obuffer + dl_ohead ), ( char * ) ( dl_sbuffer + dl_shead ), LE_UV3_RECORD );
 
                     /* update head */
-                    dl_shead += LE_ARRAY_UF3;
+                    dl_shead += LE_UV3_RECORD;
 
                 } else {
 
@@ -434,10 +434,10 @@
                     if ( dl_sedge == 0 ) {
 
                         /* copy record */
-                        std::memcpy( ( char * ) ( dl_obuffer + dl_ohead ), ( char * ) ( dl_fbuffer + dl_fhead ), LE_ARRAY_UF3 );
+                        std::memcpy( ( char * ) ( dl_obuffer + dl_ohead ), ( char * ) ( dl_fbuffer + dl_fhead ), LE_UV3_RECORD );
 
                         /* update head */
-                        dl_fhead += LE_ARRAY_UF3;
+                        dl_fhead += LE_UV3_RECORD;
 
                     } else {
 
@@ -445,18 +445,18 @@
                         if ( dl_sort_algorithm( ( le_real_t * ) ( dl_fbuffer + dl_fhead ), ( le_real_t * ) ( dl_sbuffer + dl_shead ), dl_depth ) == true ) {
 
                             /* copy record */
-                            std::memcpy( ( char * ) ( dl_obuffer + dl_ohead ), ( char * ) ( dl_sbuffer + dl_shead ), LE_ARRAY_UF3 );
+                            std::memcpy( ( char * ) ( dl_obuffer + dl_ohead ), ( char * ) ( dl_sbuffer + dl_shead ), LE_UV3_RECORD );
 
                             /* update head */
-                            dl_shead += LE_ARRAY_UF3;
+                            dl_shead += LE_UV3_RECORD;
 
                         } else {
 
                             /* copy record */
-                            std::memcpy( ( char * ) ( dl_obuffer + dl_ohead ), ( char * ) ( dl_fbuffer + dl_fhead ), LE_ARRAY_UF3 );
+                            std::memcpy( ( char * ) ( dl_obuffer + dl_ohead ), ( char * ) ( dl_fbuffer + dl_fhead ), LE_UV3_RECORD );
 
                             /* update head */
-                            dl_fhead += LE_ARRAY_UF3;
+                            dl_fhead += LE_UV3_RECORD;
 
                         }
 
@@ -465,7 +465,7 @@
                 }
 
                 /* check buffer state */
-                if ( ( dl_ohead += LE_ARRAY_UF3 ) == DL_SORT_BUFFER ) {
+                if ( ( dl_ohead += LE_UV3_RECORD ) == DL_SORT_BUFFER ) {
 
                     /* write stream chunk */
                     dl_ostream.write( ( char * ) dl_obuffer, dl_ohead );

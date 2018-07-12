@@ -64,11 +64,11 @@
     header - external includes
  */
 
-    # include <common-include.hpp>
-    # include <eratosthene-include.h>
     # include <cstdio>
     # include <fstream>
     # include <sys/stat.h>
+    # include <common-include.hpp>
+    # include <eratosthene-include.h>
 
 /*
     header - preprocessor definitions
