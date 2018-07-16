@@ -1,5 +1,5 @@
 /*
- *  dalai-suite - uf3-ply
+ *  dalai-suite - uv3-ply
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
  *      Copyright (c) 2016-2018 DHLAB, EPFL
@@ -18,10 +18,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   dalai-uf3-ply.hpp
+    /*! \file   dalai-uv3-ply.hpp
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  dalai-suite - uf3-ply
+     *  dalai-suite - uv3-ply
      */
 
     /*! \mainpage dalai-suite
@@ -51,8 +51,8 @@
     header - inclusion guard
  */
 
-    # ifndef __DL_UF3_PLY__
-    # define __DL_UF3_PLY__
+    # ifndef __DL_UV3_PLY__
+    # define __DL_UV3_PLY__
 
 /*
     header - internal includes
@@ -67,13 +67,20 @@
     # include <cstdint>
     # include <cinttypes>
     # include <common-include.hpp>
+    # include <eratosthene-include.h>
 
 /*
     header - preprocessor definitions
  */
 
-    /* define ply records length */
-    # define DL_UF3_PLY_RECLEN ( ( sizeof( float ) + sizeof( uint8_t ) ) * 3u )
+    /* define ply record */
+    # define DL_PLY_VERTEX ( ( sizeof( float ) + sizeof( uint8_t ) ) * 3 )
+
+    /* define ply record */
+    # define DL_PLY_EDGE   ( sizeof( uint32_t ) * 2 )
+
+    /* define ply record */
+    # define DL_PLY_FACE   ( sizeof( uint8_t ) + sizeof( uint32_t ) * 3 )
 
 /*
     header - preprocessor macros
@@ -83,10 +90,6 @@
     header - type definition
  */
 
-    /* define ply types */
-    typedef float   dl_plyp_t;
-    typedef uint8_t dl_plyd_t;
-
 /*
     header - structures
  */
@@ -95,12 +98,32 @@
     header - function prototypes
  */
 
+    /* *** */
+
+    le_void_t dl_uv3_ply_header( std::fstream & dl_stream, le_size_t const dl_vertex, le_size_t const dl_edge, le_size_t const dl_face );
+
+    /* *** */
+
+    le_void_t dl_uv3_ply_primitive( std::fstream & dl_stream, le_size_t * const dl_edge, le_size_t * const dl_face );
+
+    /* *** */
+
+    le_void_t dl_uv3_ply_vertex( std::fstream & dl_istream, std::fstream & dl_ostream );
+
+    /* *** */
+
+    le_void_t dl_uv3_ply_edge( std::fstream & dl_istream, std::fstream & dl_ostream );
+
+    /* *** */
+
+    le_void_t dl_uv3_ply_face( std::fstream & dl_istream, std::fstream & dl_ostream );
+
     /*! \brief main methods
      *
      *  The main function reads the provided universal format file and converts
      *  it into a ply file :
      *
-     *      ./dalai-uf3-ply --uf3/-i [uf3 input file]
+     *      ./dalai-uv3-ply --uf3/-i [uf3 input file]
      *                      --ply/-o [ply output file]
      *
      *  The function starts by allocating the required i/o buffers memory and
