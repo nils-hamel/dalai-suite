@@ -77,10 +77,10 @@
     # define DL_PLY_VERTEX ( ( sizeof( float ) + sizeof( uint8_t ) ) * 3 )
 
     /* define ply record */
-    # define DL_PLY_EDGE   ( sizeof( uint32_t ) * 2 )
+    # define DL_PLY_LINE   ( sizeof( uint8_t ) + sizeof( int32_t ) * 2 )
 
     /* define ply record */
-    # define DL_PLY_FACE   ( sizeof( uint8_t ) + sizeof( uint32_t ) * 3 )
+    # define DL_PLY_FACE   ( sizeof( uint8_t ) + sizeof( int32_t ) * 3 )
 
 /*
     header - preprocessor macros
@@ -100,7 +100,7 @@
 
     /* *** */
 
-    le_void_t dl_uv3_ply_header( std::fstream & dl_stream, le_size_t const dl_vertex, le_size_t const dl_edge, le_size_t const dl_face );
+    le_void_t dl_uv3_ply_header( std::fstream & dl_stream, le_size_t const dl_vertex, le_size_t const dl_face );
 
     /* *** */
 
@@ -109,10 +109,6 @@
     /* *** */
 
     le_void_t dl_uv3_ply_vertex( std::fstream & dl_istream, std::fstream & dl_ostream );
-
-    /* *** */
-
-    le_void_t dl_uv3_ply_edge( std::fstream & dl_istream, std::fstream & dl_ostream );
 
     /* *** */
 

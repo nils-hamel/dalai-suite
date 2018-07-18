@@ -24,7 +24,7 @@
     source - header methods
  */
 
-    le_void_t dl_uv3_ply_header( std::fstream & dl_stream, le_size_t const dl_vertex, le_size_t const dl_edge, le_size_t const dl_face ) {
+    le_void_t dl_uv3_ply_header( std::fstream & dl_stream, le_size_t const dl_vertex, le_size_t const dl_face ) {
 
         /* export header */
         dl_stream << "ply" << std::endl;
@@ -36,16 +36,6 @@
         dl_stream << "property uchar red" << std::endl;
         dl_stream << "property uchar green" << std::endl;
         dl_stream << "property uchar blue" << std::endl;
-
-        /* check primitive */
-        if ( dl_edge != 0 ) {
-
-            /* export header */
-            dl_stream << "element edge " << dl_edge << std::endl;
-            dl_stream << "property int vertex1" << std::endl;
-            dl_stream << "property int vertex2" << std::endl;
-
-        }
 
         /* check primitive */
         if ( dl_face != 0 ) {
@@ -65,13 +55,17 @@
     source - statistical methods
  */
 
-    le_void_t dl_uv3_ply_primitive( std::fstream & dl_stream, le_size_t * const dl_edge, le_size_t * const dl_face ) {
+    le_size_t dl_uv3_ply_primitive( std::fstream & dl_stream ) {
 
         /* buffer variable */
         le_byte_t * dl_buffer( nullptr );
 
         /* reading variable */
         le_size_t dl_read( 1 );
+
+        /* count variable */
+        le_size_t dl_lcount( 0 );
+        le_size_t dl_tcount( 0 );
 
         /* allocate buffer memory */
         if ( ( dl_buffer = new ( std::nothrow ) le_byte_t[LE_UV3_CHUNK * LE_UV3_RECORD] ) == nullptr ) {
@@ -86,10 +80,6 @@
 
         /* begining of stream */
         dl_stream.seekg( 0, std::ios::beg );
-
-        /* reset primitive count */
-        ( * dl_edge ) = 0;
-        ( * dl_face ) = 0;
 
         /* primitive analysis */
         while ( dl_read != 0 ) {
@@ -107,12 +97,12 @@
                 if ( dl_buffer[dl_parse] == LE_UV3_LINE ) {
 
                     /* update primitive count */
-                    ( * dl_edge ) ++;
+                    dl_lcount ++;
 
                 } else if ( dl_buffer[dl_parse] == LE_UV3_TRIANGLE ) {
 
                     /* update primitive count */
-                    ( * dl_face ) ++;
+                    dl_tcount ++;
 
                 }
 
@@ -120,12 +110,11 @@
 
         }
 
-        /* count correction */
-        ( * dl_edge ) /= 2;
-        ( * dl_face ) /= 3;
-
         /* release buffer memory */
         delete [] dl_buffer;
+
+        /* return primitive count */
+        return( ( dl_lcount / 2 ) + ( dl_tcount / 3 ) );
 
     }
 
@@ -169,7 +158,7 @@
         /* clear stream state */
         dl_istream.clear();
 
-        /* begining of stream */
+        /* stream offset */
         dl_istream.seekg( 0, std::ios::beg );
 
         /* parse stream */
@@ -221,110 +210,26 @@
 
     }
 
-    le_void_t dl_uv3_ply_edge( std::fstream & dl_istream, std::fstream & dl_ostream ) {
-
-        /* buffer variable */
-        le_byte_t * dl_ibuffer( nullptr );
-        le_byte_t * dl_obuffer( nullptr );
-
-        /* reading variable */
-        le_size_t dl_read( 1 );
-
-        /* translation variable */
-        le_size_t dl_index( 0 );
-
-        /* offset variable */
-        le_size_t dl_offset( 0 );
-
-        /* pointer variable */
-        le_data_t * dl_uv3d( nullptr );
-
-        /* allocate buffer memory */
-        if ( ( dl_ibuffer = new ( std::nothrow ) le_byte_t[LE_UV3_CHUNK * LE_UV3_RECORD] ) == nullptr ) {
-
-            /* send message */
-            throw( LC_ERROR_MEMORY );
-
-        }
-
-        /* allocate buffer memory */
-        if ( ( dl_obuffer = new ( std::nothrow ) le_byte_t[DL_PLY_EDGE] ) == nullptr ) {
-
-            /* send message */
-            throw( LC_ERROR_MEMORY );
-
-        }
-
-        /* clear stream state */
-        dl_istream.clear();
-
-        /* begining of stream */
-        dl_istream.seekg( 0, std::ios::beg );
-
-        /* parse stream */
-        while ( dl_read != 0 ) {
-
-            /* read stream chunk */
-            dl_istream.read( ( char * ) dl_ibuffer, LE_UV3_CHUNK * LE_UV3_RECORD );
-
-            /* read byte count */
-            dl_read = dl_istream.gcount();
-
-            /* parsing read chunk */
-            for ( le_size_t dl_parse( 0 ); dl_parse < dl_read; dl_parse += LE_UV3_RECORD ) {
-
-                /* compute buffer pointer */
-                dl_uv3d = ( le_data_t * ) ( dl_ibuffer + dl_parse + LE_UV3_POSE );
-
-                /* check primitive */
-                if ( dl_uv3d[0] == LE_UV3_LINE ) {
-
-                    /* assign primitive index */
-                    ( ( uint32_t * ) dl_obuffer )[dl_index] = dl_offset + ( dl_parse / LE_UV3_RECORD );
-
-                    /* update index */
-                    if ( ( ++ dl_index ) > 1 ) {
-
-                        /* reset index */
-                        dl_index = 0;
-
-                        /* export buffer */
-                        dl_ostream.write( ( char * ) dl_obuffer, DL_PLY_EDGE );
-
-                    }
-
-                }
-
-            }
-
-            dl_offset += ( dl_read / LE_UV3_RECORD );
-
-        }
-
-        /* release buffer memory */
-        delete [] dl_obuffer;
-
-        /* release buffer memory */
-        delete [] dl_ibuffer;
-
-    }
-
     le_void_t dl_uv3_ply_face( std::fstream & dl_istream, std::fstream & dl_ostream ) {
 
         /* buffer variable */
         le_byte_t * dl_ibuffer( nullptr );
-        le_byte_t * dl_obuffer( nullptr );
+
+        /* buffer variable */
+        le_byte_t dl_lbuffer[DL_PLY_LINE];
+        le_byte_t dl_tbuffer[DL_PLY_FACE];
+
+        /* primitive module variable */
+        le_size_t dl_lmodule( 0 );
+        le_size_t dl_tmodule( 0 );
 
         /* reading variable */
         le_size_t dl_read( 1 );
 
-        /* translation variable */
-        le_size_t dl_index( 0 );
-
         /* offset variable */
         le_size_t dl_offset( 0 );
 
-        /* pointer variable */
+        /* buffer pointer variable */
         le_data_t * dl_uv3d( nullptr );
 
         /* allocate buffer memory */
@@ -335,52 +240,61 @@
 
         }
 
-        /* allocate buffer memory */
-        if ( ( dl_obuffer = new ( std::nothrow ) le_byte_t[DL_PLY_FACE] ) == nullptr ) {
-
-            /* send message */
-            throw( LC_ERROR_MEMORY );
-
-        }
-
-        /* assign primitive count */
-        ( * dl_obuffer ) = 3;
-
         /* clear stream state */
         dl_istream.clear();
 
-        /* begining of stream */
+        /* stream offset */
         dl_istream.seekg( 0, std::ios::beg );
 
-        /* parse stream */
+        /* initialise primitive buffer */
+        ( * dl_lbuffer ) = 2;
+        ( * dl_tbuffer ) = 3;
+
+        /* parse input stream */
         while ( dl_read != 0 ) {
 
             /* read stream chunk */
             dl_istream.read( ( char * ) dl_ibuffer, LE_UV3_CHUNK * LE_UV3_RECORD );
 
-            /* read byte count */
+            /* retrieve byte count */
             dl_read = dl_istream.gcount();
 
-            /* parsing read chunk */
+            /* parsing stream chunk */
             for ( le_size_t dl_parse( 0 ); dl_parse < dl_read; dl_parse += LE_UV3_RECORD ) {
 
                 /* compute buffer pointer */
                 dl_uv3d = ( le_data_t * ) ( dl_ibuffer + dl_parse + LE_UV3_POSE );
 
-                /* check primitive */
-                if ( dl_uv3d[0] == LE_UV3_TRIANGLE ) {
+                /* check primitive type */
+                if ( ( * dl_uv3d ) == LE_UV3_LINE ) {
 
-                    /* assign primitive index */
-                    ( ( uint32_t * ) ( dl_obuffer + 1 ) )[dl_index] = dl_offset + ( dl_parse / LE_UV3_RECORD );
+                    /* assign vertex index */
+                    ( ( int32_t * ) ( dl_lbuffer + 1 ) )[dl_lmodule] = dl_offset + ( dl_parse / LE_UV3_RECORD );
 
-                    /* update index */
-                    if ( ( ++ dl_index ) > 2 ) {
+                    /* update primitive module */
+                    if ( ( ++ dl_lmodule ) == 2 ) {
 
-                        /* reset index */
-                        dl_index = 0;
+                        /* reset module */
+                        dl_lmodule = 0;
+    
+                        /* export buffer */
+                        dl_ostream.write( ( char * ) dl_lbuffer, DL_PLY_LINE );
+
+                    }
+
+                } else if ( ( * dl_uv3d ) == LE_UV3_TRIANGLE ) {
+
+                    /* assign vertex index */
+                    ( ( int32_t * ) ( dl_tbuffer + 1 ) )[dl_tmodule] = dl_offset + ( dl_parse / LE_UV3_RECORD );
+
+                    /* update primitive module */
+                    if ( ( ++ dl_tmodule ) == 3 ) {
+
+                        /* reset module */
+                        dl_tmodule = 0;
 
                         /* export buffer */
-                        dl_ostream.write( ( char * ) dl_obuffer, DL_PLY_FACE );
+                        dl_ostream.write( ( char * ) dl_tbuffer, DL_PLY_FACE );
 
                     }
 
@@ -388,12 +302,10 @@
 
             }
 
+            /* update offset */
             dl_offset += ( dl_read / LE_UV3_RECORD );
 
         }
-
-        /* release buffer memory */
-        delete [] dl_obuffer;
 
         /* release buffer memory */
         delete [] dl_ibuffer;
@@ -412,7 +324,6 @@
 
         /* primitive variable */
         le_size_t dl_vertex( 0 );
-        le_size_t dl_edge  ( 0 );
         le_size_t dl_face  ( 0 );
 
     /* error management */
@@ -452,29 +363,29 @@
         if ( lc_read_flag( argc, argv, "--vertex-only", "-v" ) == false ) {
 
             /* compute primitive count */
-            dl_uv3_ply_primitive( dl_istream, & dl_edge, & dl_face );
+            dl_face = dl_uv3_ply_primitive( dl_istream );
 
-        }
-
-        /* export ply header */
-        dl_uv3_ply_header( dl_ostream, dl_vertex, dl_edge, dl_face );
-
-        /* export primitive */
-        dl_uv3_ply_vertex( dl_istream, dl_ostream );
-
-        /* check primitive */
-        if ( dl_edge > 0 ) {
+            /* export ply header */
+            dl_uv3_ply_header( dl_ostream, dl_vertex, dl_face );
 
             /* export primitive */
-            dl_uv3_ply_edge( dl_istream, dl_ostream );
+            dl_uv3_ply_vertex( dl_istream, dl_ostream );
 
-        }
+            /* check primitive count */
+            if ( dl_face > 0 ) {
 
-        /* check primitive */
-        if ( dl_face > 0 ) {
+                /* export primitive */
+                dl_uv3_ply_face( dl_istream, dl_ostream );
+
+            }
+
+        } else {
+
+            /* export ply header */
+            dl_uv3_ply_header( dl_ostream, dl_vertex, 0 );
 
             /* export primitive */
-            dl_uv3_ply_face( dl_istream, dl_ostream );
+            dl_uv3_ply_vertex( dl_istream, dl_ostream );
 
         }
 
