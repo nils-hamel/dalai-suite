@@ -5,7 +5,7 @@
 #   make - Configuration
 #
 
-    CONFIG_NAME:=dalai-ply-uf3
+    CONFIG_NAME:=dalai-ply-uv3
     CONFIG_CODE:=cpp
     CONFIG_TYPE:=suite
 
