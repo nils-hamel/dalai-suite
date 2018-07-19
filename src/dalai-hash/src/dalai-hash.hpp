@@ -65,6 +65,7 @@
     # include <iostream>
     # include <fstream>
     # include <common-include.hpp>
+    # include <eratosthene-include.h>
 
 /*
     header - preprocessor definitions
@@ -86,7 +87,7 @@
     header - function prototypes
  */
 
-    /*! \brief main function
+    /*! \brief main function (revoked)
      *
      *  The main function hashes the provided point cloud into a set of smaller
      *  sub point clouds stored in the output directory :

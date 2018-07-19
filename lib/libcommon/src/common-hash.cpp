@@ -75,7 +75,7 @@
                     lc_zhash = floor( ( ( le_real_t * ) ( lc_parse ) )[2] / lc_segment );
 
                     /* compute stream path */
-                    sprintf( ( char * ) lc_hpath, "%s/%+" PRId64 "_%+" PRId64 "_%+" PRId64 ".uf3", lc_opath, lc_xhash, lc_yhash, lc_zhash );
+                    sprintf( ( char * ) lc_hpath, "%s/%+" PRId64 "_%+" PRId64 "_%+" PRId64 ".uv3", lc_opath, lc_xhash, lc_yhash, lc_zhash );
 
                     /* create output stream */
                     lc_ostream.open( ( char * ) lc_hpath, std::ios::app | std::ios::out | std::ios::binary );

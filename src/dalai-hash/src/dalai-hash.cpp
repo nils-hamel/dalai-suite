@@ -26,25 +26,25 @@
 
     int main( int argc, char ** argv ) {
 
-        /* sampling count variables */
-        int64_t dl_count( lc_read_signed( argc, argv, "--count", "-c", 64 ) );
+        /* sampling variable */
+        le_size_t dl_count( lc_read_signed( argc, argv, "--count", "-c", 64 ) );
 
-        /* hashing parameter variables */
-        double dl_param( lc_read_double( argc, argv, "--param", "-p", 250.0 ) );
+        /* hashing variable */
+        le_real_t dl_param( lc_read_double( argc, argv, "--param", "-p", 250.0 ) );
 
-        /* model mean value variables */
-        double dl_mean( 0.0 );
+        /* minimum distance mean variable */
+        le_real_t dl_mean( 0.0 );
 
-        /* input stream variables */
+        /* input variable */
         std::ifstream dl_istream;
 
     /* error management */
     try {
 
-        /* create input stream */
-        dl_istream.open( lc_read_string( argc, argv, "--uf3", "-i" ), std::ios::in | std::ios::ate | std::ios::binary );
+        /* create stream */
+        dl_istream.open( lc_read_string( argc, argv, "--uv3", "-i" ), std::ios::in | std::ios::binary );
 
-        /* check input stream */
+        /* check stream */
         if ( dl_istream.is_open() == false ) {
 
             /* send message */
@@ -52,13 +52,13 @@
 
         }
 
-        /* compute model mean value */
+        /* compute mean value */
         dl_mean = lc_statistic_mdmv( dl_istream, dl_count );
 
-        /* hash model */
-        lc_hash( dl_istream, lc_read_string( argc, argv, "--output", "-o" ), dl_param, dl_mean );
+        /* model hashing */
+        lc_hash( dl_istream, ( le_char_t * ) lc_read_string( argc, argv, "--output", "-o" ), dl_param, dl_mean );
 
-        /* delete input stream */
+        /* delete stream */
         dl_istream.close();
 
     /* error management */

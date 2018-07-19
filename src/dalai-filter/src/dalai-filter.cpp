@@ -115,7 +115,7 @@
         /* temporary path variable */
         le_char_t dl_path[_LE_USE_PATH];
 
-        /* minimums mean variable */
+        /* minimum distance mean variable */
         le_real_t dl_mean( 0.0 );
 
         /* stream variable */
