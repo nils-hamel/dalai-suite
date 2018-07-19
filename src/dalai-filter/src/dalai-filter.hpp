@@ -64,13 +64,13 @@
 
     # include <iostream>
     # include <fstream>
-    # include <cstring>
     # include <cstdlib>
     # include <cstdint>
     # include <cinttypes>
     # include <unistd.h>
     # include <dirent.h>
     # include <common-include.hpp>
+    # include <eratosthene-include.h>
 
 /*
     header - preprocessor definitions
@@ -115,7 +115,7 @@
      *  \param dl_mode Temporary storage mode
      */
 
-    void dl_filter_temporary( char * const dl_path, int dl_mode );
+    //void dl_filter_temporary( char * const dl_path, int dl_mode );
 
     /*! \brief filtering methods
      *
@@ -142,7 +142,7 @@
      *  \param dl_adaptative Adaptative filtering switch
      */
 
-    void dl_filter( std::ofstream & dl_ostream, char const * const dl_ipath, double const dl_mean, double const dl_factor, int64_t const dl_threshold, bool const dl_adaptative );
+    void dl_filter( std::ofstream & dl_ostream, le_char_t const * const dl_ipath, le_real_t const dl_mean, le_real_t const dl_factor, le_size_t const dl_threshold, bool const dl_adaptative );
 
     /*! \brief main function
      *

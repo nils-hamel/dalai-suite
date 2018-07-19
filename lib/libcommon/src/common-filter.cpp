@@ -24,27 +24,27 @@
     source - filtering methods
  */
 
-    void lc_filter_homogeneous( std::ifstream & lc_istream, std::ofstream & lc_ostream, double const lc_mean, double const lc_factor, int64_t const lc_threshold ) {
+    le_void_t lc_filter_homogeneous( std::ifstream & lc_istream, std::ofstream & lc_ostream, le_real_t const lc_mean, le_real_t const lc_factor, le_size_t const lc_threshold ) {
 
         /* array mapping variables */
-        lc_uf3p_t * lc_posea( nullptr );
-        lc_uf3p_t * lc_poseb( nullptr );
+        le_real_t * lc_posea( nullptr );
+        le_real_t * lc_poseb( nullptr );
 
         /* buffer variables */
-        char    * lc_chunk( nullptr );
-        int64_t * lc_count( nullptr );
+        le_byte_t * lc_chunk( nullptr );
+        le_size_t * lc_count( nullptr );
 
         /* stream size variables */
-        int64_t lc_size( 0 );
+        le_size_t lc_size( 0 );
 
         /* indexation variables */
-        int64_t lc_delay( 0 );
+        le_size_t lc_delay( 0 );
 
         /* distance variables */
-        double lc_distance( 0.0 );
+        le_real_t lc_distance( 0.0 );
 
         /* condition variables */
-        double lc_condition( lc_mean * lc_mean * lc_factor * lc_factor );
+        le_real_t lc_condition( lc_mean * lc_mean * lc_factor * lc_factor );
 
         /* clear input stream */
         lc_istream.clear();
@@ -56,7 +56,7 @@
         lc_size = lc_istream.tellg();
 
         /* allocate and check buffer memory */
-        if ( ( lc_chunk = new ( std::nothrow ) char [lc_size] ) == nullptr ) {
+        if ( ( lc_chunk = new ( std::nothrow ) le_byte_t[lc_size] ) == nullptr ) {
 
             /* send message */
             throw( LC_ERROR_MEMORY );
@@ -67,10 +67,10 @@
         lc_istream.seekg( 0, std::ios::beg );
 
         /* read input stream */
-        lc_istream.read( lc_chunk, lc_size );
+        lc_istream.read( ( char * ) lc_chunk, lc_size );
 
         /* allocate and check buffer memory */
-        if ( ( lc_count = new ( std::nothrow ) int64_t[lc_size / LE_UV3_RECORD] ) == nullptr ) {
+        if ( ( lc_count = new ( std::nothrow ) le_size_t[lc_size / LE_UV3_RECORD] ) == nullptr ) {
 
             /* send message */
             throw( LC_ERROR_MEMORY );
@@ -78,16 +78,16 @@
         }
 
         /* initialise buffer */
-        std::memset( lc_count, 0, ( lc_size / LE_UV3_RECORD ) * sizeof( int64_t ) );
+        std::memset( ( char * ) lc_count, 0, ( lc_size / LE_UV3_RECORD ) * sizeof( le_size_t ) );
 
         /* parsing input stream elements */
-        for ( int64_t lc_parse( 0 ), lc_limit( lc_size - LE_UV3_RECORD ); lc_parse < lc_limit; lc_parse += LE_UV3_RECORD ) {
+        for ( le_size_t lc_parse( 0 ), lc_limit( lc_size - LE_UV3_RECORD ); lc_parse < lc_limit; lc_parse += LE_UV3_RECORD ) {
 
             /* compute and assign array mapping */
             lc_posea = ( le_real_t * ) ( lc_chunk + lc_parse );
 
             /* parsing input stream elements */
-            for ( int64_t lc_index( lc_parse + LE_UV3_RECORD ); lc_index < lc_size; lc_index += LE_UV3_RECORD ) {
+            for ( le_size_t lc_index( lc_parse + LE_UV3_RECORD ); lc_index < lc_size; lc_index += LE_UV3_RECORD ) {
 
                 /* compute and assign array mapping */
                 lc_poseb = ( le_real_t * ) ( lc_chunk + lc_index );
@@ -116,7 +116,7 @@
         lc_delay = 0;
 
         /* parsing count array */
-        for ( int64_t lc_parse( 0 ), lc_limit( lc_size / LE_UV3_RECORD ); lc_parse < lc_limit; lc_parse ++ ) {
+        for ( le_size_t lc_parse( 0 ), lc_limit( lc_size / LE_UV3_RECORD ); lc_parse < lc_limit; lc_parse ++ ) {
 
             /* filtering condition */
             if ( lc_count[lc_parse] >= lc_threshold ) {
@@ -137,7 +137,7 @@
         }
 
         /* exported filtered elements */
-        lc_ostream.write( lc_chunk, lc_delay * LE_UV3_RECORD );
+        lc_ostream.write( ( char * ) lc_chunk, lc_delay * LE_UV3_RECORD );
 
         /* release buffer memory */
         delete [] lc_chunk;
@@ -145,28 +145,28 @@
 
     }
 
-    void lc_filter_adaptative( std::ifstream & lc_istream, std::ofstream & lc_ostream, double const lc_factor, int64_t const lc_threshold ) {
+    le_void_t lc_filter_adaptative( std::ifstream & lc_istream, std::ofstream & lc_ostream, le_real_t const lc_factor, le_size_t const lc_threshold ) {
 
         /* buffer variables */
-        char    * lc_chunk( nullptr );
-        double  * lc_dists( nullptr );
-        int64_t * lc_count( nullptr );
+        le_byte_t * lc_chunk( nullptr );
+        le_real_t * lc_dists( nullptr );
+        le_size_t * lc_count( nullptr );
 
         /* array mapping variables */
-        double * lc_pose1( nullptr );
-        double * lc_pose2( nullptr );
+        le_real_t * lc_pose1( nullptr );
+        le_real_t * lc_pose2( nullptr );
 
         /* stream size variables */
-        int64_t lc_size( 0 );
+        le_size_t lc_size( 0 );
 
         /* indexation variables */
-        int64_t lc_delay( 0 );
+        le_size_t lc_delay( 0 );
 
         /* distance variables */
-        double lc_distance( 0.0 );
+        le_real_t lc_distance( 0.0 );
 
         /* condition variables */
-        double lc_condition( 0.0 );
+        le_real_t lc_condition( 0.0 );
 
         /* clear input stream */
         lc_istream.clear();
@@ -178,7 +178,7 @@
         lc_size = lc_istream.tellg();
 
         /* allocate and check buffer memory */
-        if ( ( lc_chunk = new ( std::nothrow ) char[lc_size] ) == nullptr ) {
+        if ( ( lc_chunk = new ( std::nothrow ) le_byte_t[lc_size] ) == nullptr ) {
 
             /* send message */
             throw( LC_ERROR_MEMORY );
@@ -189,10 +189,10 @@
         lc_istream.seekg( 0, std::ios::beg );
 
         /* read input stream */
-        lc_istream.read( lc_chunk, lc_size );
+        lc_istream.read( ( char * ) lc_chunk, lc_size );
 
         /* allocate and check buffer memory */
-        if ( ( lc_count = new ( std::nothrow ) int64_t[lc_size / LE_UV3_RECORD] ) == nullptr ) {
+        if ( ( lc_count = new ( std::nothrow ) le_size_t[lc_size / LE_UV3_RECORD] ) == nullptr ) {
 
             /* send message */
             throw( LC_ERROR_MEMORY );
@@ -200,7 +200,7 @@
         }
 
         /* allocate and check buffer memory */
-        if ( ( lc_dists = new ( std::nothrow ) double[lc_size / LE_UV3_RECORD] ) == nullptr ) {
+        if ( ( lc_dists = new ( std::nothrow ) le_real_t[lc_size / LE_UV3_RECORD] ) == nullptr ) {
 
             /* send message */
             throw( LC_ERROR_MEMORY );
@@ -208,7 +208,7 @@
         }
 
         /* initialise array values */
-        for ( int64_t lc_parse( 0 ), lc_limit( lc_size / LE_UV3_RECORD ); lc_parse < lc_limit; lc_parse ++ ) {
+        for ( le_size_t lc_parse( 0 ), lc_limit( lc_size / LE_UV3_RECORD ); lc_parse < lc_limit; lc_parse ++ ) {
 
             /* assign initial value */
             lc_count[lc_parse] = 0;
@@ -225,16 +225,16 @@
         lc_istream.seekg( 0 );
 
         /* read input stream */
-        lc_istream.read( lc_chunk, lc_size );
+        lc_istream.read( ( char * ) lc_chunk, lc_size );
 
         /* parsing input stream elements */
-        for ( int64_t lc_parse( 0 ), lc_limit( lc_size - LE_UV3_RECORD ); lc_parse < lc_limit; lc_parse += LE_UV3_RECORD ) {
+        for ( le_size_t lc_parse( 0 ), lc_limit( lc_size - LE_UV3_RECORD ); lc_parse < lc_limit; lc_parse += LE_UV3_RECORD ) {
 
             /* compute and assign array mapping */
             lc_pose1 = ( le_real_t * ) ( lc_chunk + lc_parse );
 
             /* parsing input stream elements */
-            for ( int64_t lc_index( lc_parse + LE_UV3_RECORD ); lc_index < lc_size; lc_index += LC_UF3_RECLEN ) {
+            for ( le_size_t lc_index( lc_parse + LE_UV3_RECORD ); lc_index < lc_size; lc_index += LC_UF3_RECLEN ) {
 
                 /* compute and assign array mapping */
                 lc_pose2 = ( le_real_t  * ) ( lc_chunk + lc_index );
@@ -256,7 +256,7 @@
         lc_condition = 0.0;
 
         /* prepare local threshold condition */
-        for ( int64_t lc_parse( 0 ), lc_limit( lc_size / LE_UV3_RECORD ); lc_parse < lc_limit; lc_parse ++ ) {
+        for ( le_size_t lc_parse( 0 ), lc_limit( lc_size / LE_UV3_RECORD ); lc_parse < lc_limit; lc_parse ++ ) {
 
             /* accumulate local condition */
             lc_condition += sqrt( lc_dists[lc_parse] );
@@ -270,13 +270,13 @@
         lc_condition = lc_condition * lc_condition * lc_factor * lc_factor;
 
         /* parsing input stream elements */
-        for ( int64_t lc_parse( 0 ), lc_limit( lc_size - LE_UV3_RECORD ); lc_parse < lc_limit; lc_parse += LE_UV3_RECORD ) {
+        for ( le_size_t lc_parse( 0 ), lc_limit( lc_size - LE_UV3_RECORD ); lc_parse < lc_limit; lc_parse += LE_UV3_RECORD ) {
 
             /* compute and assign array mapping */
             lc_pose1 = ( le_real_t * ) ( lc_chunk + lc_parse );
 
             /* parsing input stream elements */
-            for ( int64_t lc_index( lc_parse + LE_UV3_RECORD ); lc_index < lc_size; lc_index += LE_UV3_RECORD ) {
+            for ( le_size_t lc_index( lc_parse + LE_UV3_RECORD ); lc_index < lc_size; lc_index += LE_UV3_RECORD ) {
 
                 /* compute and assign array mapping */
                 lc_pose2 = ( le_real_t * ) ( lc_chunk + lc_index );
@@ -305,7 +305,7 @@
         lc_delay = 0;
 
         /* parsing count array */
-        for ( int64_t lc_parse( 0 ), lc_limit( lc_size / LE_UV3_RECORD ); lc_parse < lc_limit; lc_parse ++ ) {
+        for ( le_size_t lc_parse( 0 ), lc_limit( lc_size / LE_UV3_RECORD ); lc_parse < lc_limit; lc_parse ++ ) {
 
             /* filtering condition */
             if ( lc_count[lc_parse] >= lc_threshold ) {
@@ -326,7 +326,7 @@
         }
 
         /* exported filtered elements */
-        lc_ostream.write( lc_chunk, lc_delay * LE_UV3_RECORD );
+        lc_ostream.write( ( char * ) lc_chunk, lc_delay * LE_UV3_RECORD );
 
         /* release buffer memory */
         delete [] lc_chunk;

@@ -71,7 +71,7 @@
     header - function prototypes
  */
 
-    /*! \brief filtering methods
+    /*! \brief filtering methods (revoked)
      *
      *  This filtering function reads the point cloud provided through the input
      *  stream and exports its filtered version in the output stream.
@@ -102,9 +102,9 @@
      *  \param lc_threshold Neighbour count threshold
      */
 
-    void lc_filter_homogeneous( std::ifstream & lc_istream, std::ofstream & lc_ostream, double const lc_mean, double const lc_factor, int64_t const lc_threshold );
+    le_void_t lc_filter_homogeneous( std::ifstream & lc_istream, std::ofstream & lc_ostream, le_real_t const lc_mean, le_real_t const lc_factor, le_size_t const lc_threshold );
 
-    /*! \brief filtering methods
+    /*! \brief filtering methods (revoked)
      *
      *  This filtering function reads the point cloud provided through the input
      *  stream and exports its filtered version in the output stream.
@@ -130,7 +130,7 @@
      *  \param lc_threshold Neighbour count threshold
      */
 
-    void lc_filter_adaptative( std::ifstream & lc_istream, std::ofstream & lc_ostream, double const lc_factor, int64_t const lc_threshold );
+    le_void_t lc_filter_adaptative( std::ifstream & lc_istream, std::ofstream & lc_ostream, le_real_t const lc_factor, le_size_t const lc_threshold );
 
 /*
     header - inclusion guard

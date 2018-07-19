@@ -35,7 +35,7 @@
     header - internal includes
  */
 
-    # include "common-uf3.hpp"
+    //# include "common-uf3.hpp"
     # include "common-error.hpp"
 
 /*
@@ -69,7 +69,7 @@
     header - function prototypes
  */
 
-    /*! \brief statistical methods
+    /*! \brief statistical methods (revoked)
      *
      *  This function computes and returns the mean value of the elements vertex
      *  distance to their closest element. To achieve this computation in a

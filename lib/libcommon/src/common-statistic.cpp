@@ -24,25 +24,25 @@
     source - statistical methods
  */
 
-    double lc_statistic_mdmv( std::ifstream & lc_istream, int64_t const lc_count ) {
+    le_real_t lc_statistic_mdmv( std::ifstream & lc_istream, int64_t const lc_count ) {
 
         /* array mapping variables */
-        lc_uf3p_t * lc_posei( nullptr );
-        lc_uf3p_t * lc_poses( nullptr );
+        le_real_t * lc_posei( nullptr );
+        le_real_t * lc_poses( nullptr );
 
         /* stream size variables */
-        int64_t lc_size( 0 );
+        le_size_t lc_size( 0 );
 
         /* distance variables */
-        double lc_distance( 0.0 );
+        le_real_t lc_distance( 0.0 );
 
         /* buffer variables */
-        char   * lc_sample( nullptr );
-        char   * lc_chunks( nullptr );
-        double * lc_values( nullptr );
+        le_byte_t * lc_sample( nullptr );
+        le_byte_t * lc_chunks( nullptr );
+        le_real_t * lc_values( nullptr );
 
         /* allocate and check buffer memory */
-        if ( ( lc_sample = new ( std::nothrow ) char[lc_count * LE_UV3_RECORD] ) == nullptr ) {
+        if ( ( lc_sample = new ( std::nothrow ) le_byte_t[lc_count * LE_UV3_RECORD] ) == nullptr ) {
 
             /* send message */
             throw( LC_ERROR_MEMORY );
@@ -50,7 +50,7 @@
         }
 
         /* allocate and check buffer memory */
-        if ( ( lc_chunks = new ( std::nothrow ) char[LE_UV3_CHUNK * LE_UV3_RECORD] ) == nullptr ) {
+        if ( ( lc_chunks = new ( std::nothrow ) le_byte_t[LE_UV3_CHUNK * LE_UV3_RECORD] ) == nullptr ) {
 
             /* send message */
             throw( LC_ERROR_MEMORY );
@@ -58,7 +58,7 @@
         }
 
         /* allocate and check buffer memory */
-        if ( ( lc_values = new ( std::nothrow ) double[lc_count] ) == nullptr ) {
+        if ( ( lc_values = new ( std::nothrow ) le_real_t[lc_count] ) == nullptr ) {
 
             /* send message */
             throw( LC_ERROR_MEMORY );
@@ -66,7 +66,7 @@
         }
 
         /* initialise values array */
-        for ( int64_t lc_parse( 0 ); lc_parse < lc_count; lc_parse ++ ) {
+        for ( le_size_t lc_parse( 0 ); lc_parse < lc_count; lc_parse ++ ) {
 
             /* assign initial value */
             lc_values[lc_parse] = std::numeric_limits<double>::max();
@@ -86,13 +86,13 @@
         lc_istream.seekg( 0, std::ios::beg );
 
         /* create sample array */
-        for ( int64_t lc_parse( 0 ); lc_parse < lc_count; lc_parse ++ ) {
+        for ( le_size_t lc_parse( 0 ); lc_parse < lc_count; lc_parse ++ ) {
 
             /* assign stream position */
             lc_istream.seekg( lc_parse * ( ( ( lc_size / LE_UV3_RECORD ) / lc_count ) * LE_UV3_RECORD ) );
 
             /* read sample values */
-            lc_istream.read( lc_sample + ( lc_parse * LE_UV3_RECORD ), LE_UV3_RECORD );
+            lc_istream.read( ( char * ) ( lc_sample + ( lc_parse * LE_UV3_RECORD ) ), LE_UV3_RECORD );
 
         }
 
@@ -106,16 +106,16 @@
         do {
 
             /* read input stream chunk */
-            lc_istream.read( lc_chunks, LE_UV3_CHUNK * LE_UV3_RECORD );
+            lc_istream.read( ( char * ) lc_chunks, LE_UV3_CHUNK * LE_UV3_RECORD );
 
             /* parsing input stream chunk */
-            for ( int64_t lc_parse( 0 ), lc_limit( lc_istream.gcount() ); lc_parse < lc_limit; lc_parse += LE_UV3_RECORD ) {
+            for ( le_size_t lc_parse( 0 ), lc_limit( lc_istream.gcount() ); lc_parse < lc_limit; lc_parse += LE_UV3_RECORD ) {
 
                 /* compute and assign array mapping */
                 lc_posei = ( le_real_t * ) ( lc_chunks + lc_parse );
 
                 /* parsing sample array */
-                for ( int64_t lc_index( 0 ); lc_index < lc_count; lc_index ++ ) {
+                for ( le_size_t lc_index( 0 ); lc_index < lc_count; lc_index ++ ) {
 
                     /* compute and assign array mapping */
                     lc_poses = ( le_real_t * ) ( lc_sample + ( lc_index * LE_UV3_RECORD ) );
@@ -145,7 +145,7 @@
         lc_distance = 0.0;
 
         /* compute statistical mean value */
-        for ( int64_t lc_parse( 0 ); lc_parse < lc_count; lc_parse ++ ) {
+        for ( le_size_t lc_parse( 0 ); lc_parse < lc_count; lc_parse ++ ) {
 
             /* accumulate distances */
             lc_distance += sqrt( lc_values[lc_parse] );

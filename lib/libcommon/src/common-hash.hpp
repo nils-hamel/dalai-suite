@@ -68,7 +68,7 @@
     header - function prototypes
  */
 
-    /*! \brief hashing methods
+    /*! \brief hashing methods (revoked)
      *
      *  This function imports the point cloud provided by the input stream and
      *  hashes it in the output directory. The hashing consists in cutting the
@@ -92,7 +92,7 @@
      *  \param lc_mean    Minimum distance mean value
      */
 
-    void lc_hash( std::ifstream & lc_istream, char const * const lc_opath, double const lc_param, double const lc_mean );
+    le_void_t lc_hash( std::ifstream & lc_istream, le_char_t const * const lc_opath, le_real_t const lc_param, le_real_t const lc_mean );
 
 /*
     header - inclusion guard

@@ -18,61 +18,40 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   common-include.hpp
+    /*! \file   common-temp.hpp
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  dalai-suite - common library - inclusion module
-     */
-
-    /*! \mainpage dalai-suite
-     *
-     *  \section _1 dalai-suite
-     *
-     *  The _dalai-suite_ is dedicated to the gathering and processing of
-     *  geographical 3-dimensional information. It allows to considers the most
-     *  common file formats and to convert them in a standardised and simple
-     *  format.
-     *
-     *  This standardised format allows to use the suite tools for color
-     *  edition, model cleaning and model hashing. In addition, the standard
-     *  format is also expected by the _eratosthene-suite_ implementing the EPFL
-     *  CDH DHLAB indexation server and its geographical 3-dimensional data
-     *  injection tools.
-     *
-     *  \section _2 Copyright and License
-     *
-     *  **dalai-suite** - Nils Hamel <br >
-     *  Copyright (c) 2016-2018 DHLAB, EPFL
-     *
-     *  This program is licensed under the terms of the GNU GPLv3.
+     *  dalai-suite - common library - temporary
      */
 
 /*
     header - inclusion guard
  */
 
-    # ifndef __LC_INCLUDE__
-    # define __LC_INCLUDE__
+    # ifndef __LC_TEMP__
+    # define __LC_TEMP__
 
 /*
     header - internal includes
  */
 
-    # include "common-args.hpp"
     # include "common-error.hpp"
-    # include "common-filter.hpp"
-    # include "common-hash.hpp"
-    # include "common-statistic.hpp"
-    # include "common-temp.hpp"
-    # include "common-uf3.hpp"
 
 /*
     header - external includes
  */
 
+    # include <iostream>
+    # include <cstdlib>
+    # include <unistd.h>
+
 /*
     header - preprocessor definitions
  */
+
+    /* define mode */
+    # define LC_TEMP_CREATE ( 0 )
+    # define LC_TEMP_DELETE ( 1 )
 
 /*
     header - preprocessor macros
@@ -89,6 +68,10 @@
 /*
     header - function prototypes
  */
+
+    /* *** */
+
+    void lc_temp_directory( char const * const dl_root, char * const dl_path, int const dl_mode );
 
 /*
     header - inclusion guard
