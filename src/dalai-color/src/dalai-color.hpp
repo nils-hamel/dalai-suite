@@ -73,7 +73,7 @@
  */
 
     /* define chunk size */
-    # define DL_CHUNK ( 2396745 )
+    //# define DL_CHUNK ( 2396745 )
 
 /*
     header - preprocessor macros
@@ -91,7 +91,7 @@
     header - function prototypes
  */
 
-    /*! \brief color mapping methods
+    /*! \brief color mapping methods (revoked)
      *
      *  This function assigns a color to the provided color vector based on the
      *  provided height value. It starts by clamping the height value using the
@@ -105,9 +105,9 @@
      *  \param dl_hedge  Height clamping range upper boundary
      */
 
-    void dl_color( double dl_height, uint8_t * const dl_data, double const dl_ledge, double const dl_hedge );
+    le_void_t dl_color( le_real_t dl_height, le_data_t * const dl_data, le_real_t const dl_ledge, le_real_t const dl_hedge );
 
-    /*! \brief main methods
+    /*! \brief main methods (revoked)
      *
      *  The main function reads the elements provided through the uv3 input file
      *  and overrides their color using a colormap based on element height. The

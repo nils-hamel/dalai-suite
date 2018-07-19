@@ -24,7 +24,7 @@
     source - color mapping methods
  */
 
-    void dl_color( double dl_height, uint8_t * const dl_data, double const dl_ledge, double const dl_hedge ) {
+    le_void_t dl_color( le_real_t dl_height, le_data_t * const dl_data, le_real_t const dl_ledge, le_real_t const dl_hedge ) {
 
         /* height pre-normalisation */
         dl_height = ( dl_height - dl_ledge ) / ( dl_hedge - dl_ledge );
@@ -32,8 +32,8 @@
         /* height periodic range clamping */
         dl_height = dl_height - floor( dl_height );
 
-        /* height range mirroring */
-        dl_height = dl_height > 0.5 ? 1.0 - dl_height : dl_height;
+        /* height range miroring */
+        dl_height = ( dl_height > 0.5 ) ? 1.0 - dl_height : dl_height;
 
         /* height normalisation */
         dl_height = ( 0.3 + 0.7 * dl_height * 2 ) * 3.14;
@@ -51,19 +51,29 @@
 
     int main( int argc, char ** argv ) {
 
-        /* color mapping variable */
-        double dl_ledge( lc_read_double( argc, argv, "--minimum", "-m",  0.0 ) );
-        double dl_hedge( lc_read_double( argc, argv, "--maximum", "-x", 50.0 ) );
+        /* colormap boundary variable */
+        le_real_t dl_ledge( lc_read_double( argc, argv, "--minimum", "-m",  0.0 ) );
 
-        /* stream variable */
-        std::ifstream dl_istream;
-        std::ofstream dl_ostream;
+        /* colormap boundary variable */
+        le_real_t dl_hedge( lc_read_double( argc, argv, "--maximum", "-x", 50.0 ) );
+
+        /* reading variable */
+        le_size_t dl_read( 1 );
 
         /* stream buffer variable */
         le_byte_t * dl_buffer( nullptr );
 
-        /* stream buffer variable */
-        le_byte_t * dl_bound( nullptr );
+        /* buffer pointer variable */
+        le_real_t * dl_uv3p( nullptr );
+
+        /* buffer pointer variable */
+        le_data_t * dl_uv3d( nullptr );
+
+        /* stream variable */
+        std::ifstream dl_istream;
+
+        /* stream variable */
+        std::ofstream dl_ostream;
 
     /* error management */
     try {
@@ -91,34 +101,42 @@
         }
 
         /* allocate and check memory */
-        if ( ( dl_buffer = new ( std::nothrow ) le_byte_t[DL_CHUNK * LE_UV3_RECORD] ) == nullptr ) {
+        if ( ( dl_buffer = new ( std::nothrow ) le_byte_t[LE_UV3_CHUNK * LE_UV3_RECORD] ) == nullptr ) {
 
             /* send message */
             return( LC_ERROR_MEMORY );
 
         }
 
-        do {
+        /* stream reading */
+        while ( dl_read != 0 ) {
 
-            /* read input stream */
-            dl_istream.read( ( char * ) dl_buffer, DL_CHUNK * LE_UV3_RECORD );
+            /* read stream chunk */
+            dl_istream.read( ( char * ) dl_buffer, LE_UV3_CHUNK * LE_UV3_RECORD );
 
-            /* compute buffer boundary */
-            dl_bound = dl_buffer + dl_istream.gcount();
+            /* check read bytes */
+            if ( ( dl_read = dl_istream.gcount() ) != 0 ) {
 
-            /* parsing buffer elements */
-            for ( le_byte_t * dl_parse = dl_buffer; dl_parse < dl_bound; dl_parse += LE_UV3_RECORD ) {
+                /* parsing stream chunk */
+                for ( le_size_t dl_parse( 0 ); dl_parse < dl_read; dl_parse += LE_UV3_RECORD ) {
 
-                /* compute element color */
-                dl_color( ( ( le_real_t * ) dl_parse )[2], ( le_data_t * ) ( dl_parse + LE_UV3_POSE + LE_UV3_TYPE ), dl_ledge, dl_hedge );
+                    /* compute buffer pointer */
+                    dl_uv3p = ( le_real_t * ) ( dl_buffer + dl_parse );
+
+                    /* compute buffer pointer */
+                    dl_uv3d = ( le_data_t * ) ( dl_uv3p + 3 );
+
+                    /* assign element color */
+                    dl_color( dl_uv3p[2], dl_uv3d + 1, dl_ledge, dl_hedge );
+
+                }
+
+                /* write stream chunk */
+                dl_ostream.write( ( char * ) dl_buffer, dl_read );
 
             }
 
-            /* write output stream */
-            dl_ostream.write( ( char * ) dl_buffer, dl_istream.gcount() );
-
-        /* reading stream chunks */
-        } while ( dl_istream.gcount() > 0 );
+        }
 
         /* release buffer memory */
         delete[] dl_buffer;
