@@ -64,7 +64,6 @@
 
     # include <iostream>
     # include <fstream>
-    # include <cstdint>
     # include <common-include.hpp>
     # include <eratosthene-include.h>
 
@@ -210,7 +209,7 @@
     header - function prototypes
  */
 
-    /*! \brief main function
+    /*! \brief main function (revoked)
      *
      *  The main function reads the provided ply file content and converts it
      *  into a universal format 3 (uf3) file :

@@ -26,23 +26,22 @@
 
     int main( int argc, char ** argv ) {
 
-        /* stream variables */
-        std::ifstream dl_istream;
-        std::ofstream dl_ostream;
-
-        /* i/o variables */
-        le_size_t dl_read( 0 );
-
         /* stream buffer variables */
         le_byte_t * dl_buffer( nullptr );
 
-        /* buffer pointer variables */
-        le_real_t * dl_pose( nullptr );
-
-        /* shift constant variables */
+        /* shift variable */
         le_real_t dl_xshift( lc_read_double( argc, argv, "--x", "-x", 0.0 ) );
         le_real_t dl_yshift( lc_read_double( argc, argv, "--y", "-y", 0.0 ) );
         le_real_t dl_zshift( lc_read_double( argc, argv, "--z", "-z", 0.0 ) );
+
+        /* reading variable */
+        le_size_t dl_read( 1 );
+
+        /* stream variable */
+        std::ifstream dl_istream;
+
+        /* stream variable */
+        std::ofstream dl_ostream;
 
     /* error management */
     try {
@@ -69,7 +68,7 @@
 
         }
 
-        /* allocate memory */
+        /* allocate buffer memory */
         if ( ( dl_buffer = new ( std::nothrow ) le_byte_t[LE_UV3_CHUNK * LE_UV3_RECORD] ) == nullptr ) {
 
             /* send message */
@@ -78,24 +77,21 @@
         }
 
         /* stream reading */
-        do {
+        while ( dl_read != 0 ) {
 
             /* read stream chunk */
             dl_istream.read( ( char * ) dl_buffer, LE_UV3_CHUNK * LE_UV3_RECORD );
 
-            /* check chunk reading */
+            /* check read bytes */
             if ( ( dl_read = dl_istream.gcount() ) > 0 ) {
 
                 /* parsing chunk */
-                for ( long long dl_parse( 0 ); dl_parse < dl_read; dl_parse += LE_UV3_RECORD ) {
-
-                    /* create buffer pointer */
-                    dl_pose = ( le_real_t * ) ( dl_buffer + dl_parse );
+                for ( le_size_t dl_parse( 0 ); dl_parse < dl_read; dl_parse += LE_UV3_RECORD ) {
 
                     /* apply shift on coordinates */
-                    dl_pose[0] += dl_xshift;
-                    dl_pose[1] += dl_yshift;
-                    dl_pose[2] += dl_zshift;
+                    ( ( le_real_t * ) ( dl_buffer + dl_parse ) )[0] += dl_xshift;
+                    ( ( le_real_t * ) ( dl_buffer + dl_parse ) )[1] += dl_yshift;
+                    ( ( le_real_t * ) ( dl_buffer + dl_parse ) )[2] += dl_zshift;
 
                 }
 
@@ -104,8 +100,7 @@
 
             }
 
-        /* reading condition */
-        } while ( dl_read > 0 );
+        }
 
         /* delete stream buffer */
         delete[] dl_buffer;

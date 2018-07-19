@@ -938,7 +938,7 @@
     /* error management */
     try {
 
-        /* stream variable */
+        /* ply-object variable */
         dl_ply_t dl_istream( ( le_char_t * ) lc_read_string( argc, argv, "--ply", "-i" ) );
 
         /* create stream */
@@ -952,7 +952,7 @@
 
         }
 
-        /* stream conversion */
+        /* ply-object conversion */
         dl_istream.dl_ply_convert( dl_ostream );
 
         /* delete stream */

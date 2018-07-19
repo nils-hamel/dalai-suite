@@ -87,7 +87,7 @@
     header - function prototypes
  */
 
-    /*! \brief main methods
+    /*! \brief main methods (revoked)
      *
      *  The main function reads the content of the provided input uv3 file and
      *  applies the provided shift to the respective dimensions :
