@@ -24,23 +24,29 @@
     source - address methods
  */
 
-    void dl_cat_address( le_address_t const * const dl_addr ) {
+    le_void_t dl_cat_address( le_real_t * const dl_pose, le_byte_t const dl_length ) {
 
-        /* string variable */
-        char dl_string[_LE_USE_DEPTH + 1] =  { 0 };
+        /* address structure variable */
+        le_address_t dl_address = LE_ADDRESS_C_SIZE( dl_length );
 
-        /* address size variable */
-        int dl_size = le_address_get_size( dl_addr );
+        /* address string variable */
+        le_char_t dl_string[_LE_USE_DEPTH + 1];
 
-        /* convert address to string */
-        for ( int dl_parse( 0 ); dl_parse < dl_size; dl_parse ++ ) {
+        /* convert position to address */
+        le_address_set_pose( & dl_address, dl_pose );
 
-            /* assign digit */
-            dl_string[dl_parse] = le_address_get_digit( dl_addr, dl_parse ) + 48;
+        /* compose address string */
+        for ( le_size_t dl_parse( 0 ); dl_parse < dl_length; dl_parse ++ ) {
+
+            /* digit to char conversion */
+            dl_string[dl_parse] = le_address_get_digit( & dl_address, dl_parse ) + 48;
 
         }
 
-        /* display address index */
+        /* add termination character */
+        dl_string[dl_length] = 0;
+
+        /* display address string */
         printf( "%s ", dl_string );
 
     }
@@ -51,23 +57,20 @@
 
     int main( int argc, char ** argv ) {
 
-        /* stream record pointer variable */
-        le_real_t * dl_pose( nullptr );
-
-        /* stream record pointer variable */
-        le_byte_t * dl_type( nullptr );
-
-        /* stream record pointer variable */
-        le_data_t * dl_data( nullptr );
-
         /* stream buffer variable */
         le_byte_t dl_buffer[LE_UV3_RECORD];
 
-        /* format switch and parameter variable */
+        /* buffer pointer variable */
+        le_real_t * dl_uv3p( nullptr );
+
+        /* buffer pointer variable */
+        le_data_t * dl_uv3d( nullptr );
+
+        /* display format variable */
         le_byte_t dl_index( lc_read_unsigned( argc, argv, "--index", "-x", 0 ) );
 
-        /* address variable */
-        le_address_t dl_address = LE_ADDRESS_C_SIZE( dl_index );
+        /* reading variable */
+        le_size_t dl_read( 1 );
 
         /* stream variables */
         std::ifstream dl_stream;
@@ -86,46 +89,40 @@
 
         }
 
-        /* create record pointer */
-        dl_pose = ( le_real_t * ) ( dl_buffer );
+        /* compute buffer pointer */
+        dl_uv3p = ( le_real_t * ) ( dl_buffer );
 
-        /* create record pointer */
-        dl_type = ( le_byte_t * ) ( dl_buffer + LE_UV3_POSE );
+        /* compute buffer pointer */
+        dl_uv3d = ( le_data_t * ) ( dl_uv3p + 3 );
 
-        /* create record pointers */
-        dl_data = ( le_data_t * ) ( dl_buffer + LE_UV3_POSE + LE_UV3_TYPE );
+        /* stream reading */
+        while ( dl_read != 0 ) {
 
-        /* stream reading loop */
-        do {
-
-            /* read stream chunk */
+            /* read stream record */
             dl_stream.read( ( char * ) dl_buffer, LE_UV3_RECORD );
 
-            /* check reading */
-            if ( dl_stream.gcount() == LE_UV3_RECORD ) {
+            /* check read record */
+            if ( ( dl_read = dl_stream.gcount() ) == LE_UV3_RECORD ) {
 
-                /* check format switch */
-                if ( dl_index != 0 ) {
+                /* check display format */
+                if ( dl_index == 0 ) {
 
-                    /* convert record to address */
-                    le_address_set_pose( & dl_address, dl_pose );
-
-                    /* display address index */
-                    dl_cat_address( & dl_address );
+                    /* display geographic coordinates */
+                    printf( "%e %e %e ", dl_uv3p[0], dl_uv3p[1], dl_uv3p[2] );
 
                 } else {
 
-                    /* display position in geographic coordinates */
-                    printf( "%e %e %e ", dl_pose[0], dl_pose[1], dl_pose[2] );
+                    /* display geographic index */
+                    dl_cat_address( dl_uv3p, dl_index );
 
                 }
 
-                /* display data */
-                printf( "%02x %02x %02x %02x\n", dl_type[0], dl_data[0], dl_data[1], dl_data[2] );
+                /* display record data */
+                printf( "%02x %02x %02x %02x\n", dl_uv3d[0], dl_uv3d[0], dl_uv3d[1], dl_uv3d[2] );
 
             }
 
-        } while ( dl_stream.gcount() > 0 );
+        }
 
         /* delete stream */
         dl_stream.close();

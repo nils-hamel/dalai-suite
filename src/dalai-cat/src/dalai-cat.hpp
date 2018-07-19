@@ -87,7 +87,7 @@
     header - function prototypes
  */
 
-    /*! \brief address methods
+    /*! \brief address methods (revoked)
      *
      *  This function is used to display an address structure spatial index as
      *  a sequence of digits in base eight on the standard output. The provided
@@ -97,9 +97,9 @@
      *  \param dl_addr Address structure
      */
 
-    void dl_cat_address( le_address_t const * const dl_addr );
+    le_void_t dl_cat_address( le_real_t * const dl_pose, le_byte_t const dl_length );
 
-    /*! \brief main methods
+    /*! \brief main methods (revoked)
      *
      *  The main function reads the primitives stored in the provided uv3 file 
      *  and displays its content on the standard output :
