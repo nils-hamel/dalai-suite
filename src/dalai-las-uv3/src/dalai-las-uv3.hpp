@@ -64,7 +64,6 @@
 
     # include <iostream>
     # include <fstream>
-    # include <cstdint>
     # include <liblas/liblas.hpp>
     # include <common-include.hpp>
     # include <eratosthene-include.h>
@@ -112,7 +111,7 @@
     header - function prototypes
  */
 
-    /*! \brief main function
+    /*! \brief main function (revoked)
      *
      *  The main function converts the provided las (asprs) file and converts
      *  it into a universal vector 3 (uv3) format file :

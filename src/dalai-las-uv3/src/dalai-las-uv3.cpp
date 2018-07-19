@@ -26,23 +26,24 @@
 
     int main( int argc, char ** argv ) {
 
-        /* stream buffer variables */
+        /* buffer variable */
         le_byte_t dl_buffer[LE_UV3_RECORD] = { 0 };
 
-        /* buffer mapping variables */
-        le_real_t * dl_pose( ( le_real_t * ) ( dl_buffer ) );
-        le_byte_t * dl_type( ( le_byte_t * ) ( dl_buffer + LE_UV3_POSE ) ); 
-        le_data_t * dl_data( ( le_data_t * ) ( dl_buffer + LE_UV3_POSE + LE_UV3_TYPE ) );
+        /* buffer pointer variable */
+        le_real_t * dl_uv3p( nullptr );
+        le_data_t * dl_uv3d( nullptr );
 
-        /* color availability variables */
+        /* color mapping variable */
+        char dl_colormap[19][3] = DL_COLORMAP;
+
+        /* mode variable */
         bool dl_color( false );
 
-        /* stream variables */
+        /* stream variable */
         std::ifstream dl_istream;
-        std::ofstream dl_ostream;
 
-        /* classification colormap variables */
-        char dl_colormap[19][3] = DL_COLORMAP;
+        /* stream variable */
+        std::ofstream dl_ostream;
 
     /* error management */
      try {
@@ -59,7 +60,7 @@
         }
 
         /* create output stream */
-        dl_ostream.open( lc_read_string( argc, argv, "--uf3", "-o" ), std::ios::out | std::ios::binary );
+        dl_ostream.open( lc_read_string( argc, argv, "--uv3", "-o" ), std::ios::out | std::ios::binary );
 
         /* check output stream */
         if ( dl_ostream.is_open() == false ) {
@@ -80,58 +81,61 @@
 
         }
 
-        /* check if classification colormap is forced */
+        /* check forced classification */
         if ( lc_read_flag( argc, argv, "--classification", "-c" ) == false ) {
 
             /* retrieve input file format */
-            int dl_format( dl_las.GetHeader().GetDataFormatId() );
+            le_enum_t dl_format( dl_las.GetHeader().GetDataFormatId() );
 
             /* check color availability */
             if ( ( dl_format == 2 ) || ( dl_format == 3 ) || ( dl_format == 5 ) ) {
 
-                /* reset color availability */
+                /* update mode */
                 dl_color = true;
 
             }
 
         }
 
-        /* initialise recrod type */
-        * ( dl_type ) = LE_UV3_POINT;
+        /* compute buffer pointer */
+        dl_uv3p = ( le_real_t * ) ( dl_buffer );
+
+        /* compute buffer pointer */
+        dl_uv3d = ( le_data_t * ) ( dl_uv3p + 3 );
+
+        /* assign primitive type */
+        ( * dl_uv3d ) = LE_UV3_POINT;
 
         /* parsing input stream */
         while ( dl_las.ReadNextPoint() == true ) {
 
             /* retrieve point coordinates */
-            dl_pose[0] = dl_las.GetPoint().GetX();
-            dl_pose[1] = dl_las.GetPoint().GetY();
-            dl_pose[2] = dl_las.GetPoint().GetZ();
+            dl_uv3p[0] = dl_las.GetPoint().GetX();
+            dl_uv3p[1] = dl_las.GetPoint().GetY();
+            dl_uv3p[2] = dl_las.GetPoint().GetZ();
 
             /* vertex filtering - avoiding nan */
-            if ( dl_pose[0] != dl_pose[0] ) continue;
-            if ( dl_pose[1] != dl_pose[1] ) continue;
-            if ( dl_pose[2] != dl_pose[2] ) continue;
+            if ( dl_uv3p[0] != dl_uv3p[0] ) continue;
+            if ( dl_uv3p[1] != dl_uv3p[1] ) continue;
+            if ( dl_uv3p[2] != dl_uv3p[2] ) continue;
 
-            /* check colorimetry mode */
+            /* check mode */
             if ( dl_color == true ) {
 
                 /* retrieve point color components */
-                dl_data[0] = dl_las.GetPoint().GetColor().GetRed();
-                dl_data[1] = dl_las.GetPoint().GetColor().GetGreen();
-                dl_data[2] = dl_las.GetPoint().GetColor().GetBlue();
+                dl_uv3d[1] = dl_las.GetPoint().GetColor().GetRed();
+                dl_uv3d[2] = dl_las.GetPoint().GetColor().GetGreen();
+                dl_uv3d[3] = dl_las.GetPoint().GetColor().GetBlue();
 
             } else {
 
                 /* retrieve point classification */
-                int dl_class( dl_las.GetPoint().GetClassification().GetClass() );
-
-                /* check classification index */
-                if ( dl_class > 18 ) dl_class = 0;
+                le_enum_t dl_class( dl_las.GetPoint().GetClassification().GetClass() % 19 );
 
                 /* assign classification colormap element */
-                dl_data[0] = dl_colormap[dl_class][0];
-                dl_data[1] = dl_colormap[dl_class][1];
-                dl_data[2] = dl_colormap[dl_class][2];
+                dl_uv3d[1] = dl_colormap[dl_class][0];
+                dl_uv3d[2] = dl_colormap[dl_class][1];
+                dl_uv3d[3] = dl_colormap[dl_class][2];
 
             }
 
