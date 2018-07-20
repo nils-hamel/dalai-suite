@@ -93,7 +93,7 @@
     header - structures
  */
 
-    /*! \class dl_vision_t
+    /*! \class dl_vision_t ( revoked )
      *  \brief Graphical interface class
      *
      *  This class holds the information and methods required to operate the
@@ -177,7 +177,7 @@
 
     public:
 
-        /*! \brief constructor methods
+        /*! \brief constructor methods ( revoked )
          *
          *  The constructor method sets the interface graphical context using
          *  sdl. After sdl initialisation, it creates the interface windows and
@@ -186,7 +186,7 @@
 
         dl_vision_t();
 
-        /*! \brief destructor methods
+        /*! \brief destructor methods ( revoked )
          *
          *  The destructor method simply deletes the interface window and the
          *  opengl graphical context. It finally uninitialise sdl.
@@ -196,7 +196,7 @@
 
     public:
 
-        /*! \brief accessor methods
+        /*! \brief accessor methods ( revoked )
          *
          *  This function converts the provided mouse click coordinates into the
          *  coordinates of a 3d point that belong to the model and corresponding
@@ -218,7 +218,7 @@
 
     public:
 
-        /*! \brief mutator methods
+        /*! \brief mutator methods ( revoked )
          *
          *  This function sets the opengl viewport and projection matrix based
          *  on the interface screen sizes.
@@ -231,7 +231,7 @@
 
         void vs_set_projection( dl_model_t & dl_model );
 
-        /*! \brief mutator methods
+        /*! \brief mutator methods ( revoked )
          *
          *  This function sets the opengl initial point of view. It resets the
          *  view angles to zero and resets the view translation using the model
@@ -245,7 +245,7 @@
 
     public:
 
-        /*! \brief execution methods
+        /*! \brief execution methods ( revoked )
          *
          *  This function holds the interface execution loop. The execution loop
          *  is responsible of maintaining the software execution.
@@ -260,7 +260,7 @@
 
     private:
 
-        /*! \brief event methods
+        /*! \brief event methods ( revoked )
          *
          *  This function is responsible of the management of the user interface
          *  events coming from the keyboard.
@@ -271,7 +271,7 @@
 
         void vs_keydown( SDL_KeyboardEvent dl_event, dl_model_t & dl_model );
 
-        /*! \brief event methods
+        /*! \brief event methods ( revoked )
          *
          *  This function is responsible of the management of the user interface
          *  events coming from the mouse click.
@@ -282,7 +282,7 @@
 
         void vs_button( SDL_MouseButtonEvent dl_event, dl_model_t & dl_model );
 
-        /*! \brief event methods
+        /*! \brief event methods ( revoked )
          *
          *  This function is responsible of the management of the user interface
          *  events coming from the mouse motion.
@@ -293,7 +293,7 @@
 
         void vs_motion( SDL_MouseMotionEvent dl_event, dl_model_t & dl_model );
 
-        /*! \brief event methods
+        /*! \brief event methods ( revoked )
          *
          *  This function is responsible of the management of the user interface
          *  events coming from the mouse wheel.
@@ -310,7 +310,7 @@
     header - function prototypes
  */
 
-    /*! \brief main function
+    /*! \brief main function ( revoked )
      *
      *  The main function creates the graphical user interface, model class
      *  instances and starts execution loop :

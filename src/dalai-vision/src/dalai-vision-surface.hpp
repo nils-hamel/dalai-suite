@@ -69,7 +69,7 @@
     header - structures
  */
 
-    /*! \class dl_surface_t
+    /*! \class dl_surface_t ( revoked )
      *  \brief Surface class
      *
      *  This class holds the definition of a mathematical plane. In addition to
@@ -158,7 +158,7 @@
 
     public:
 
-        /*! \brief constructor methods
+        /*! \brief constructor methods ( revoked )
          *
          *  The constructor simply initialises the class members. In addition,
          *  it also initialise the estimation points array.
@@ -166,7 +166,7 @@
 
         dl_surface_t( void );
 
-        /*! \brief destructor methods
+        /*! \brief destructor methods ( revoked )
          *
          *  The desctructor simply releases the memory allocated to handle the
          *  plane estimation points.
@@ -176,7 +176,7 @@
 
     public:
 
-        /*! \brief accessor methods
+        /*! \brief accessor methods ( revoked )
          *
          *  This function allows to retrieve the plane equation parameter. The
          *  normal vector components are placed in the first three components of
@@ -189,7 +189,7 @@
 
     public:
 
-        /*! \brief mutator methods
+        /*! \brief mutator methods ( revoked )
          *
          *  This function allows to push a new estimation point to the class
          *  stack. As the new point is pushed, the function asks the class to
@@ -208,7 +208,7 @@
 
         void sf_set_point_push( double const dl_x, double const dl_y, double const dl_z, double const dl_limit );
 
-        /*! \brief mutator methods
+        /*! \brief mutator methods ( revoked )
          *
          *  This function is used to automatically choose the point of the model
          *  that are good candidates for the estimation of the plane. It then
@@ -234,7 +234,7 @@
 
         void sf_set_point_auto( char const * const dl_data, long long const dl_size, double const dl_limit );
 
-        /*! \brief mutator methods
+        /*! \brief mutator methods ( revoked )
          *
          *  This function clears the surface estimation points array.
          */
@@ -243,7 +243,7 @@
 
     private:
 
-        /*! \brief mutator methods
+        /*! \brief mutator methods ( revoked )
          *
          *  This function considers a potential pushed estimation point and
          *  checks in the plane estimation points array if the pushed point is
@@ -270,7 +270,7 @@
 
     public:
 
-        /*! \brief mutator methods
+        /*! \brief mutator methods ( revoked )
          *
          *  This function allows to specify the color of the plane.
          *
@@ -283,7 +283,7 @@
 
     private:
 
-        /*! \brief mutator methods
+        /*! \brief mutator methods ( revoked )
          *
          *  This function is called to compute the plane parameters based on the
          *  estimation points of the surface.
@@ -299,7 +299,7 @@
 
         void sf_set_equation( void );
 
-        /*! \brief mutator methods
+        /*! \brief mutator methods ( revoked )
          *
          *  This function is used to handle the surface estimation points array
          *  memory. It is typically called as an estimation point is pushed on
@@ -309,7 +309,7 @@
 
         void sf_set_memory( void );
 
-        /*! \brief mutator methods
+        /*! \brief mutator methods ( revoked )
          *
          *  This function simply release the memory used to store the plane
          *  estimation points.
@@ -319,7 +319,7 @@
 
     public:
 
-        /*! \brief render methods
+        /*! \brief render methods ( revoked )
          *
          *  This function renders, through opengl api, the plane hold by the
          *  class. It represents the plane using a simple gl_quad built using
@@ -335,7 +335,7 @@
 
         void sf_ren_surface( double const dl_w );
 
-        /*! \brief render methods
+        /*! \brief render methods ( revoked )
          *
          *  This function is used to render, through opengl api, the estimation
          *  points of the plane. It simply renders the points using the plane

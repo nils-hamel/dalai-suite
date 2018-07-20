@@ -304,7 +304,6 @@
             for ( long long int dl_index( 0 ); dl_index < DL_MODEL_MDMVC; dl_index ++ ) {
 
                 /* compute array mapping */
-                //dl_poseb = ( double * ) ( ml_data + dl_index * ( ( ml_size / 27 ) / DL_MODEL_MDMVC ) * 27 );
                 dl_poseb = ( double * ) ( ml_data + dl_index * ( ( ml_size / LE_UV3_RECORD ) / DL_MODEL_MDMVC ) * LE_UV3_RECORD );
 
                 /* compute distance */
@@ -380,27 +379,20 @@
         glEnableClientState( GL_VERTEX_ARRAY );
         glEnableClientState( GL_COLOR_ARRAY  );
 
-        /* configure opengl arrays */
-        //glVertexPointer( 3, DL_MODEL_V_TYPE, DL_MODEL_STRIPE, ml_data + DL_MODEL_V_BASE );
-        //glColorPointer ( 3, DL_MODEL_C_TYPE, DL_MODEL_STRIPE, ml_data + DL_MODEL_C_BASE );
-
         /* reference to vertex array */
         glVertexPointer( 3, GL_DOUBLE, LE_UV3_RECORD, ml_data );
 
         /* reference to color array */
         glColorPointer ( 3, GL_UNSIGNED_BYTE, LE_UV3_RECORD, ml_data + LE_UV3_POSE + LE_UV3_TYPE );
 
-        /* display opengl arrays content - points */
-        //glDrawArrays( GL_POINTS, 0, ml_size / 27 );
-        //glDrawArrays( GL_POINTS, 0, ml_size / LE_UV3_RECORD );
-
+        /* display graphical primitive */
         glDrawElements( GL_POINTS, ml_gsize[0], GL_UNSIGNED_INT, ml_gdata[0] );
 
+        /* display graphical primitive */
         glDrawElements( GL_LINES, ml_gsize[1], GL_UNSIGNED_INT, ml_gdata[1] );
 
+        /* display graphical primitive */
         glDrawElements( GL_TRIANGLES, ml_gsize[2], GL_UNSIGNED_INT, ml_gdata[2] );        
-
-        //glDrawElements( GL_TRIANGLES, ml_tsize, GL_UNSIGNED_INT, ml_tprim );
 
     }
 

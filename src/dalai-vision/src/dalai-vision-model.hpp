@@ -59,17 +59,6 @@
     /* define array mean estimation count */
     # define DL_MODEL_MDMVC  ( 32 )
 
-    /* define opengl arrays types */
-    //# define DL_MODEL_V_TYPE ( GL_DOUBLE )
-    //# define DL_MODEL_C_TYPE ( GL_UNSIGNED_BYTE )
-
-    /* define opengl arrays base pointer */
-    //# define DL_MODEL_V_BASE ( 0 )
-    //# define DL_MODEL_C_BASE ( sizeof( double ) * 3 )
-
-    /* define opengl arrays stripe */
-    //# define DL_MODEL_STRIPE ( ( sizeof( double ) + sizeof( char ) ) * 3 )
-
 /*
     header - preprocessor macros
  */
@@ -82,7 +71,7 @@
     header - structures
  */
 
-    /*! \class dl_model_t
+    /*! \class dl_model_t ( revoked )
      *  \brief Model class
      *
      *  This class is used to stored the data of the 3d model manipulated by the
@@ -142,11 +131,6 @@
         long long    ml_size;
         char *       ml_data;
 
-        //int          ml_lsize;
-        //int          ml_tsize;
-        //GLuint *     ml_lprim;
-        //GLuint *     ml_tprim;
-
         GLuint       ml_gsize[3];
         GLuint *     ml_gdata[3];
         
@@ -172,7 +156,7 @@
 
     public:
 
-        /*! \brief constructor methods
+        /*! \brief constructor methods ( revoked )
          *
          *  The constructor methods starts by initialising the class members. It
          *  then uses the provided path to open and load the model.
@@ -186,7 +170,7 @@
 
         dl_model_t( char * ml_model );
 
-        /*! \brief destructor methods
+        /*! \brief destructor methods ( revoked )
          *
          *  The destructor method simply unallocate the memory used to store the
          *  model data and destruct the class instances associated to the model
@@ -197,7 +181,7 @@
 
     public:
 
-        /*! \brief accessor methods
+        /*! \brief accessor methods ( revoked )
          *
          *  This function simply returns the model minimum distance mean value.
          *
@@ -206,7 +190,7 @@
 
         double ml_get_mdmv( void );
 
-        /*! \brief accessor methods
+        /*! \brief accessor methods ( revoked )
          *
          *  This function returns the largest diagonal of the box containing the
          *  whole model.
@@ -216,7 +200,7 @@
 
         double ml_get_span( void );
 
-        /*! \brief accessor methods
+        /*! \brief accessor methods ( revoked )
          *
          *  This function computes and displays in the error output the three
          *  coordinates of the point at the intersection of the three surfaces
@@ -227,7 +211,7 @@
 
     public:
 
-        /*! \brief mutator methods
+        /*! \brief mutator methods ( revoked )
          *
          *  This function allows to reset the model pseudo-center. The model
          *  pseudo-center is interpreted as the center of rotation by the
@@ -240,7 +224,7 @@
 
         void ml_set_center( double const dl_x, double const dl_y, double const dl_z );
 
-        /*! \brief mutator methods
+        /*! \brief mutator methods ( revoked )
          *
          *  This function allows the set the index of the model highlighted
          *  surface. The highlighted surface is the surface on which edition
@@ -251,7 +235,7 @@
 
         void ml_set_surface( long long const dl_active );
 
-        /*! \brief mutator methods
+        /*! \brief mutator methods ( revoked )
          *
          *  This function allows to switch the rendering state of the model
          *  surfaces.
@@ -259,7 +243,7 @@
 
         void ml_set_surface_switch( void );
 
-        /*! \brief mutator methods
+        /*! \brief mutator methods ( revoked )
          *
          *  This function allows to set the size of the points used to render
          *  the class model. The provided size is interpreted in pixels.
@@ -269,7 +253,7 @@
 
         void ml_set_pointsize( long long const dl_pointsize );
 
-        /*! \brief mutator methods
+        /*! \brief mutator methods ( revoked )
          *
          *  This function pushes the model pseudo-center to the stack of
          *  estimation points of the highlighted surface.
@@ -281,7 +265,7 @@
 
         void ml_set_point_push( void );
 
-        /*! \brief mutator methods
+        /*! \brief mutator methods ( revoked )
          *
          *  This function triggers the automatic selection of the estimation
          *  points of the highlighted surface.
@@ -289,7 +273,7 @@
 
         void ml_set_point_auto( void );
 
-        /*! \brief mutator methods
+        /*! \brief mutator methods ( revoked )
          *
          *  This function triggers the clearing of the stack of estimation
          *  points of the highlighted surface.
@@ -299,7 +283,7 @@
 
     private:
 
-        /*! \brief mutator methods
+        /*! \brief mutator methods ( revoked )
          *
          *  This function performs the analysis of the model imported in the
          *  class. It is usually used after model importation.
@@ -313,7 +297,7 @@
 
     public:
 
-        /*! \brief rendering methods
+        /*! \brief rendering methods ( revoked )
          *
          *  This function allows to render the model elements through the opengl
          *  api using simple points.
@@ -324,7 +308,7 @@
 
         void ml_ren_model( void );
 
-        /*! \brief rendering methods
+        /*! \brief rendering methods ( revoked )
          *
          *  This function invoke the rendering of the model surfaces and their
          *  associated estimation points by calling their respective rendering
@@ -333,7 +317,7 @@
 
         void ml_ren_surface( void );
 
-        /*! \brief rendering methods
+        /*! \brief rendering methods ( revoked )
          *
          *  This function renders, using opengl api, the model frame axis. It
          *  considers the model minimum distance mean value for the rendering

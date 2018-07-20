@@ -171,7 +171,6 @@
         glLoadIdentity();
 
         /* compute matrix coefficients */
-        //gluPerspective( 45.0, double( vs_width ) / double( vs_height ), dl_model.ml_get_mdmv() * 10.0, dl_model.ml_get_span() * 2.0 );
         gluPerspective( 45.0, double( vs_width ) / double( vs_height ), dl_model.ml_get_span() * 0.01, dl_model.ml_get_span() * 10.0 );
 
         /* push projection matrix */
