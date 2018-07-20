@@ -24,7 +24,7 @@
     source - temporary methods
  */
 
-    le_void_t lc_temp_directory( le_char_t const * const lc_root, le_char_t * const lc_path, le_enum_t const lc_mode ) {
+    void lc_temp_directory( char const * const lc_root, char * const lc_path, int const lc_mode ) {
 
         /* check mode */
         if ( lc_mode == LC_TEMP_CREATE ) {

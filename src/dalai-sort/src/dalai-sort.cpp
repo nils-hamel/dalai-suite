@@ -430,13 +430,13 @@
         if ( dl_size > ( le_size_t ) DL_SORT_CHUNK ) {
 
             /* create temporary directory */
-            lc_temp_directory( ( le_char_t * ) lc_read_string( argc, argv, "--temporary", "-t" ), dl_tpath, LC_TEMP_CREATE );
+            lc_temp_directory( lc_read_string( argc, argv, "--temporary", "-t" ), ( char * ) dl_tpath, LC_TEMP_CREATE );
 
             /* disk-based sorting process */
             dl_sort_disk( dl_ipath, dl_opath, dl_size, dl_depth, dl_tpath );
 
             /* delete temporary directory */
-            lc_temp_directory( nullptr, dl_tpath, LC_TEMP_DELETE );
+            lc_temp_directory( nullptr, ( char * ) dl_tpath, LC_TEMP_DELETE );
 
         } else {
 
