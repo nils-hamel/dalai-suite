@@ -26,40 +26,34 @@
 
     int main( int argc, char ** argv ) {
 
-        /* stream variable */
-        std::fstream dl_istream;
-        std::fstream dl_ostream;
-
         /* buffer variable */
         le_byte_t * dl_ibuffer( nullptr );
+
+        /* buffer variable */
         le_byte_t * dl_obuffer( nullptr );
 
+        /* parsing variable */
+        le_size_t dl_parse( 0 );
+
+        /* parsing variable */
+        le_size_t dl_index( 0 );
+
         /* reading variable */
-        le_size_t dl_read( 0 );
+        le_size_t dl_read( 1 );
+
+        /* stream variable */
+        std::fstream dl_istream;
+
+        /* stream variable */
+        std::fstream dl_ostream;
 
     /* error management */
     try {
 
-        /* allocate buffer memory */
-        if ( ( dl_ibuffer = new ( std::nothrow ) le_byte_t[DL_CHUNK * DL_UF3_RECORD] ) == nullptr ) {
-
-            /* send message */
-            throw( LC_ERROR_MEMORY );
-
-        }
-
-        /* allocate buffer memory */
-        if ( ( dl_obuffer = new ( std::nothrow ) le_byte_t[DL_CHUNK * LE_UV3_RECORD] ) == nullptr ) {
-
-            /* send message */
-            throw( LC_ERROR_MEMORY );
-
-        }
-
-        /* create stream */
+        /* create input stream */
         dl_istream.open( lc_read_string( argc, argv, "--uf3", "-i" ), std::ios::in | std::ios::binary );
 
-        /* check stream */
+        /* check input stream */
         if ( dl_istream.is_open() == false ) {
 
             /* send message */
@@ -67,10 +61,10 @@
 
         }
 
-        /* create stream */
+        /* create output stream */
         dl_ostream.open( lc_read_string( argc, argv, "--uv3", "-o" ), std::ios::out | std::ios::binary );
 
-        /* check stream */
+        /* check output stream */
         if ( dl_ostream.is_open() == false ) {
 
             /* send message */
@@ -78,28 +72,54 @@
 
         }
 
-        /* reading loop */
-        do {
+        /* allocate buffer memory */
+        if ( ( dl_ibuffer = new ( std::nothrow ) le_byte_t[LE_UV3_CHUNK * DL_UF3_RECORD] ) == nullptr ) {
+
+            /* send message */
+            throw( LC_ERROR_MEMORY );
+
+        }
+
+        /* allocate buffer memory */
+        if ( ( dl_obuffer = new ( std::nothrow ) le_byte_t[LE_UV3_CHUNK * LE_UV3_RECORD] ) == nullptr ) {
+
+            /* send message */
+            throw( LC_ERROR_MEMORY );
+
+        }
+
+        /* stream conversion */
+        while ( dl_read != 0 ) {
 
             /* read stream chunk */
-            dl_istream.read( ( char * ) dl_ibuffer, DL_CHUNK * DL_UF3_RECORD );
+            dl_istream.read( ( char * ) dl_ibuffer, LE_UV3_CHUNK * DL_UF3_RECORD );
 
             /* check stream reading */
             if ( ( dl_read = dl_istream.gcount() ) > 0 ) {
 
-                /* record conversion */
-                for ( le_size_t dl_parse( 0 ), dl_index( 0 ); dl_parse < dl_read; dl_parse += DL_UF3_RECORD, dl_index += LE_UV3_RECORD ) {
+                /* reset index */
+                dl_parse = 0, dl_index = 0;
 
-                    /* convert record */
+                /* parsing stream chunk */
+                while ( dl_parse < dl_read ) {
+
+                    /* assign primitive coordinates */
                     std::memcpy( dl_obuffer + dl_index, dl_ibuffer + dl_parse, LE_UV3_POSE );
 
-                    /* convert record */
-                    dl_obuffer[dl_index + LE_UV3_POSE] = LE_UV3_POINT;
+                    /* update index */
+                    dl_parse += DL_UF3_POSE, dl_index += LE_UV3_POSE;
 
-                    /* conver record */
-                    dl_obuffer[dl_index + LE_UV3_POSE + 1] = dl_ibuffer[dl_parse + DL_UF3_POSE];
-                    dl_obuffer[dl_index + LE_UV3_POSE + 2] = dl_ibuffer[dl_parse + DL_UF3_POSE + 1];
-                    dl_obuffer[dl_index + LE_UV3_POSE + 3] = dl_ibuffer[dl_parse + DL_UF3_POSE + 2];
+                    /* assign primitive type */
+                    ( * ( dl_obuffer + dl_index ) ) = LE_UV3_POINT;
+
+                    /* update index */
+                    dl_index += LE_UV3_TYPE;
+
+                    /* assign primitive data */
+                    std::memcpy( dl_obuffer + dl_index, dl_ibuffer + dl_parse, LE_UV3_DATA );
+
+                    /* update index */
+                    dl_parse += DL_UF3_DATA, dl_index += LE_UV3_DATA;
 
                 }
 
@@ -108,20 +128,19 @@
 
             }
 
-        /* reading loop condition */
-        } while ( dl_read > 0 );
-
-        /* delete stream */
-        dl_ostream.close();
-
-        /* delete stream */
-        dl_istream.close();
+        }
 
         /* release buffer memory */
         delete [] dl_obuffer;
 
         /* release buffer memory */
         delete [] dl_ibuffer;
+
+        /* delete output stream */
+        dl_ostream.close();
+
+        /* delete input stream */
+        dl_istream.close();
 
     } catch ( int dl_code ) {
 

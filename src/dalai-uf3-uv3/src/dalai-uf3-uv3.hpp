@@ -78,9 +78,6 @@
     /* define uf3 record */
     # define DL_UF3_RECORD ( DL_UF3_POSE + DL_UF3_DATA )
 
-    /* define chunk size */
-    # define DL_CHUNK      ( 2396745 )
-
 /*
     header - preprocessor macros
  */
@@ -97,7 +94,7 @@
     header - function prototypes
  */
 
-    /*! \brief main function
+    /*! \brief main function ( revoked )
      *
      *  The main function reads the provided uf3 file and converts it into a uv3
      *  file :
