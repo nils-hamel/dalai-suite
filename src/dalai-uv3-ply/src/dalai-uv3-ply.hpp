@@ -114,7 +114,7 @@
 
     le_void_t dl_uv3_ply_face( std::fstream & dl_istream, std::fstream & dl_ostream );
 
-    /*! \brief main methods
+    /*! \brief main methods ( revoked )
      *
      *  The main function reads the provided universal format file and converts
      *  it into a ply file :

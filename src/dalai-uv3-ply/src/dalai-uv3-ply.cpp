@@ -65,6 +65,8 @@
 
         /* count variable */
         le_size_t dl_lcount( 0 );
+
+        /* count variable */
         le_size_t dl_tcount( 0 );
 
         /* allocate buffer memory */
@@ -126,6 +128,8 @@
 
         /* buffer variable */
         le_byte_t * dl_ibuffer( nullptr );
+
+        /* buffer variable */
         le_byte_t * dl_obuffer( nullptr );
 
         /* reading variable */
@@ -217,6 +221,8 @@
 
         /* buffer variable */
         le_byte_t dl_lbuffer[DL_PLY_LINE];
+
+        /* buffer variable */
         le_byte_t dl_tbuffer[DL_PLY_FACE];
 
         /* primitive module variable */
@@ -320,19 +326,23 @@
 
         /* stream variable */
         std::fstream dl_istream;
+
+        /* stream variable */
         std::fstream dl_ostream;
 
         /* primitive variable */
         le_size_t dl_vertex( 0 );
-        le_size_t dl_face  ( 0 );
+
+        /* primitive variable */
+        le_size_t dl_face( 0 );
 
     /* error management */
     try {
 
-        /* create stream */
+        /* create input stream */
         dl_istream.open( lc_read_string( argc, argv, "--uv3", "-i" ), std::ios::in | std::ios::ate | std::ios::binary );
 
-        /* check stream */
+        /* check input stream */
         if ( dl_istream.is_open() == false ) {
 
             /* send message */
@@ -348,10 +358,10 @@
 
         }
 
-        /* create stream */
+        /* create output stream */
         dl_ostream.open( lc_read_string( argc, argv, "--ply", "-o" ), std::ios::out | std::ios::binary );
 
-        /* check stream */
+        /* check output stream */
         if ( dl_ostream.is_open() == false ) {
 
             /* send message */
@@ -389,10 +399,10 @@
 
         }
 
-        /* delete stream */
+        /* delete output stream */
         dl_ostream.close();
 
-        /* delete stream */
+        /* delete input stream */
         dl_istream.close();
 
     /* error management */
