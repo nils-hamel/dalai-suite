@@ -32,7 +32,6 @@
         , py_offset( 0 )
 
         , py_vsize( 0 )
-        , py_fsize( 0 )
 
     {
 
@@ -67,7 +66,7 @@
 
         }
 
-        /* stream header analysis */
+        /* ply-header analysis */
         dl_ply_header();
 
     }
@@ -85,7 +84,7 @@
 
     le_enum_t dl_ply_t::dl_ply_type_read( std::string & dl_word ) {
 
-        /* switch on literal type */
+        /* switch on litteral type */
         if ( ( dl_word == "float" ) || ( dl_word == "float32" ) ) {
 
             /* return type */
@@ -169,10 +168,10 @@
 
     le_void_t dl_ply_t::dl_ply_header() {
 
-        /* header mode variable */
+        /* mode variable */
         le_enum_t dl_mode( DL_MODE_PLY );
 
-        /* header primitive variable */
+        /* primitive variable */
         le_enum_t dl_prim( DL_PRIM_NONE );
 
         /* type variable */
@@ -181,10 +180,10 @@
         /* type variable */
         le_enum_t dl_list( DL_TYPE_NONE );
 
-        /* header flag variable */
+        /* flag variable */
         bool dl_flag( true );
 
-        /* word variable */
+        /* token variable */
         std::string dl_word;
 
         /* header analysis */
@@ -198,7 +197,7 @@
 
                 case ( DL_MODE_NONE ) : {
 
-                    /* header end */
+                    /* switch on token */
                     if ( dl_word == "end_header" ) {
 
                         /* push vertex offset */
@@ -261,7 +260,7 @@
 
                 case ( DL_MODE_ELEMENT ) : {
 
-                    /* switch on element */
+                    /* switch on token - element */
                     if ( dl_word == "vertex" ) {
 
                         /* read count */
@@ -292,7 +291,7 @@
 
                 case ( DL_MODE_PROPERTY ) : {
 
-                    /* switch on primitive */
+                    /* switch on token - primitive */
                     if ( dl_prim == DL_PRIM_VERTEX ) {
 
                         /* type interpretation */
@@ -429,9 +428,6 @@
 
         /* assign offset */
         py_fdata[DL_FACE_VERTEX] = dl_ply_type_length( dl_list );
-
-        /* update record size */
-        py_fsize = dl_ply_type_length( dl_type ) * 3;
 
     }
 
@@ -651,6 +647,14 @@
                     dl_uv3p[1] = dl_ply_vertex_float( dl_ibuffer, dl_index, DL_VERTEX_Y );
                     dl_uv3p[2] = dl_ply_vertex_float( dl_ibuffer, dl_index, DL_VERTEX_Z );
 
+                    /* vertex filtering - avoiding nan */
+                    if ( dl_uv3p[0] != dl_uv3p[0] ) continue;
+                    if ( dl_uv3p[1] != dl_uv3p[1] ) continue;
+                    if ( dl_uv3p[2] != dl_uv3p[2] ) continue;
+
+                    /* validate record */
+                    dl_export += LE_UV3_RECORD;
+
                     /* assign primitive type */
                     dl_uv3d[0] = LE_UV3_POINT;
 
@@ -658,14 +662,6 @@
                     dl_uv3d[1] = dl_ply_vertex_integer( dl_ibuffer, dl_index, DL_VERTEX_R );
                     dl_uv3d[2] = dl_ply_vertex_integer( dl_ibuffer, dl_index, DL_VERTEX_G );
                     dl_uv3d[3] = dl_ply_vertex_integer( dl_ibuffer, dl_index, DL_VERTEX_B );
-
-                    /* check vertex consistency */
-                    if ( ( dl_uv3p[0] == dl_uv3p[0] ) && ( dl_uv3p[1] == dl_uv3p[1] ) && ( dl_uv3p[2] == dl_uv3p[2] ) ) {
-
-                        /* validate record */
-                        dl_export += LE_UV3_RECORD;
-
-                    }
 
                 }
 
@@ -747,50 +743,24 @@
                 /* read vertex index */
                 dl_vindex = dl_ply_io_integer( py_ftype[DL_FACE_VERTEX] );
 
-                /* check vertex count */
-                if ( dl_vcount == 2 ) {
+                /* read vertex */
+                dl_ply_io_vertex( dl_vindex, dl_ibuffer );
 
-                    /* read vertex */
-                    dl_ply_io_vertex( dl_vindex, dl_ibuffer );
+                /* assign position coordinates */
+                dl_uv3p[0] = dl_ply_vertex_float( dl_ibuffer, 0, DL_VERTEX_X );
+                dl_uv3p[1] = dl_ply_vertex_float( dl_ibuffer, 0, DL_VERTEX_Y );
+                dl_uv3p[2] = dl_ply_vertex_float( dl_ibuffer, 0, DL_VERTEX_Z );
 
-                    /* assign position coordinates */
-                    dl_uv3p[0] = dl_ply_vertex_float( dl_ibuffer, 0, DL_VERTEX_X );
-                    dl_uv3p[1] = dl_ply_vertex_float( dl_ibuffer, 0, DL_VERTEX_Y );
-                    dl_uv3p[2] = dl_ply_vertex_float( dl_ibuffer, 0, DL_VERTEX_Z );
+                /* assign primitive type */
+                dl_uv3d[0] = dl_vcount;
 
-                    /* update primitive type */
-                    dl_uv3d[0] = LE_UV3_LINE;
+                /* assign primitive color */
+                dl_uv3d[1] = dl_ply_vertex_integer( dl_ibuffer, 0, DL_VERTEX_R );
+                dl_uv3d[2] = dl_ply_vertex_integer( dl_ibuffer, 0, DL_VERTEX_G );
+                dl_uv3d[3] = dl_ply_vertex_integer( dl_ibuffer, 0, DL_VERTEX_B );
 
-                    /* assign primitive color */
-                    dl_uv3d[1] = dl_ply_vertex_integer( dl_ibuffer, 0, DL_VERTEX_R );
-                    dl_uv3d[2] = dl_ply_vertex_integer( dl_ibuffer, 0, DL_VERTEX_G );
-                    dl_uv3d[3] = dl_ply_vertex_integer( dl_ibuffer, 0, DL_VERTEX_B );
-
-                    /* export element */
-                    dl_stream.write( ( char * ) dl_obuffer, LE_UV3_RECORD );
-
-                } else if ( dl_vcount == 3 ) {
-
-                    /* read vertex */
-                    dl_ply_io_vertex( dl_vindex, dl_ibuffer );
-
-                    /* assign position coordinates */
-                    dl_uv3p[0] = dl_ply_vertex_float( dl_ibuffer, 0, DL_VERTEX_X );
-                    dl_uv3p[1] = dl_ply_vertex_float( dl_ibuffer, 0, DL_VERTEX_Y );
-                    dl_uv3p[2] = dl_ply_vertex_float( dl_ibuffer, 0, DL_VERTEX_Z );
-
-                    /* update primitive type */
-                    dl_uv3d[0] = LE_UV3_TRIANGLE;
-
-                    /* assign primitive color */
-                    dl_uv3d[1] = dl_ply_vertex_integer( dl_ibuffer, 0, DL_VERTEX_R );
-                    dl_uv3d[2] = dl_ply_vertex_integer( dl_ibuffer, 0, DL_VERTEX_G );
-                    dl_uv3d[3] = dl_ply_vertex_integer( dl_ibuffer, 0, DL_VERTEX_B );
-
-                    /* export element */
-                    dl_stream.write( ( char * ) dl_obuffer, LE_UV3_RECORD );
-
-                }
+                /* export record to stream */
+                dl_stream.write( ( char * ) dl_obuffer, LE_UV3_RECORD );
 
             }
 

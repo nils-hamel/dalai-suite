@@ -131,7 +131,6 @@
             le_size_t py_offset;
 
             le_size_t py_vsize;
-            le_size_t py_fsize;
 
             le_size_t py_vdata[6];
             le_size_t py_fdata[2];
