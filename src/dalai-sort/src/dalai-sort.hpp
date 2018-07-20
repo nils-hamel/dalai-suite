@@ -64,7 +64,7 @@
     header - external includes
  */
 
-    # include <cstdio>
+    # include <iostream>
     # include <fstream>
     # include <sys/stat.h>
     # include <common-include.hpp>
@@ -94,7 +94,7 @@
     header - function prototypes
  */
 
-    /*! \brief common methods
+    /*! \brief common methods (revoked)
      *
      *  This function allows to obtain the size, in bytes, of the file pointed
      *  by the provided path. If the function fails or if the file does not
@@ -107,7 +107,7 @@
 
     le_size_t dl_sort_filesize( le_char_t const * const dl_path );
 
-    /*! \brief common methods
+    /*! \brief common methods (revoked)
      *
      *  This function performs file copy. The first provided path has to point
      *  to the source file while the second path has to point to the destination
@@ -119,7 +119,7 @@
 
     le_void_t dl_sort_copy( le_char_t const * const dl_ipath, le_char_t const * const dl_opath );
 
-    /*! \brief dispatch methods
+    /*! \brief dispatch methods (revoked)
      *
      *  This function reads the provided file and segments it in smaller parts.
      *  Each parts of the file is sorted before to be exported. The function
@@ -138,7 +138,7 @@
 
     le_size_t dl_sort_dispatch( le_char_t const * const dl_path, le_size_t const dl_size, le_byte_t const dl_depth, le_char_t const * const dl_temp );
 
-    /*! \brief sorting methods
+    /*! \brief sorting methods (revoked)
      *
      *  This function performs merge sort of the provided file using a single
      *  memory buffer. The sorted content is exported in the provided output
@@ -152,7 +152,7 @@
 
     void dl_sort_memory( le_char_t const * const dl_ipath, le_char_t const * const dl_opath, le_size_t const dl_size, le_byte_t const dl_depth );
 
-    /*! \brief sorting methods
+    /*! \brief sorting methods (revoked)
      *
      *  This function performs a merge sort of the provided file using disk as
      *  intermediate storage. This function is used as the size of the file to
@@ -171,7 +171,7 @@
 
     void dl_sort_disk( le_char_t const * const dl_ipath, le_char_t const * const dl_opath, le_size_t const dl_size, le_byte_t const dl_depth, le_char_t const * const dl_temp );
 
-    /*! \brief main methods
+    /*! \brief main methods (revoked)
      *
      *  This software allows to perform a sorting of the provided uf3 file in
      *  order to perform eratosthene server pre-injection optimisation :

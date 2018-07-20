@@ -49,16 +49,19 @@
  */
 
     /* define chunk size */
-    //# define DL_SORT_CHUNK  ( LE_ARRAY_UF3 * 9942053 )
     # define DL_SORT_CHUNK  ( LE_UV3_RECORD * 9942053 )
 
     /* define buffer size */
-    //# define DL_SORT_BUFFER ( LE_ARRAY_UF3 * 4971026 )
     # define DL_SORT_BUFFER ( LE_UV3_RECORD * 4971026 )
 
 /*
     header - preprocessor macros
  */
+
+    /* define coordinates normalisation */
+    # define DL_SORT_X(p)   ( ( (p)[0] - LE_ADDRESS_MIN_L ) * LE_ADDRESS_IRN_L )
+    # define DL_SORT_Y(p)   ( ( (p)[1] - LE_ADDRESS_MIN_A ) * LE_ADDRESS_IRN_A )
+    # define DL_SORT_Z(p)   ( ( (p)[2] - LE_ADDRESS_MIN_H ) * LE_ADDRESS_IRN_H )
 
 /*
     header - type definition
@@ -72,7 +75,7 @@
     header - function prototypes
  */
 
-    /*! \brief comparison methods
+    /*! \brief comparison methods (revoked)
      *
      *  This function implements a index-based comparison algorithm of the
      *  provided two earth-attached 3D points. The successive digits of the
@@ -94,7 +97,7 @@
 
     bool dl_sort_algorithm( le_real_t const * const dl_fpose, le_real_t const * const dl_spose, le_byte_t const dl_depth );
 
-    /*! \brief sorting methods
+    /*! \brief sorting methods ( revoked )
      *
      *  This function implements a memory based merge sort algorithm for uf3
      *  records list.
@@ -114,7 +117,7 @@
 
     le_byte_t * dl_sort_algorithm_memory( le_byte_t * const dl_buffer, le_size_t const dl_size, le_byte_t const dl_depth );
 
-    /*! \brief sorting methods
+    /*! \brief sorting methods ( revoked )
      *
      *  This function performs one step of the merge-sort algorithm by merging
      *  the two provided input file into one single and sorted output file.
@@ -127,7 +130,7 @@
      *  \param dl_depth Sort comparison index maximum depth
      */
 
-    void dl_sort_algorithm_disk( le_char_t const * const dl_fpath, le_size_t const dl_flength, le_char_t const * const dl_spath, le_size_t const dl_slength, le_char_t const * const dl_opath, le_byte_t const dl_depth );
+    le_void_t dl_sort_algorithm_disk( le_char_t const * const dl_fpath, le_size_t const dl_flength, le_char_t const * const dl_spath, le_size_t const dl_slength, le_char_t const * const dl_opath, le_byte_t const dl_depth );
 
 /*
     header - inclusion guard

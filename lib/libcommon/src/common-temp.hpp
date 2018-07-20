@@ -44,6 +44,7 @@
     # include <iostream>
     # include <cstdlib>
     # include <unistd.h>
+    # include <eratosthene-include.h>
 
 /*
     header - preprocessor definitions
@@ -71,7 +72,7 @@
 
     /* *** */
 
-    void lc_temp_directory( char const * const dl_root, char * const dl_path, int const dl_mode );
+    le_void_t lc_temp_directory( le_char_t const * const lc_root, le_char_t * const lc_path, le_enum_t const lc_mode );
 
 /*
     header - inclusion guard

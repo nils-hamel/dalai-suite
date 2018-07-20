@@ -26,77 +26,67 @@
 
     bool dl_sort_algorithm( le_real_t const * const dl_fpose, le_real_t const * const dl_spose, le_byte_t const dl_depth ) {
 
-        /* position variable */
-        le_real_t dl_fp[3] = {
+        /* coordinates variable */
+        le_real_t dl_fnormal[3] = { DL_SORT_X( dl_fpose ), DL_SORT_Y( dl_fpose ), DL_SORT_Z( dl_fpose ) };
 
-        ( dl_fpose[0] - LE_ADDRESS_MIN_L ) * LE_ADDRESS_IRN_L,
-        ( dl_fpose[1] - LE_ADDRESS_MIN_A ) * LE_ADDRESS_IRN_A,
-        ( dl_fpose[2] - LE_ADDRESS_MIN_H ) * LE_ADDRESS_IRN_H,
-
-        };
-
-        /* position variable */
-        le_real_t dl_sp[3] = {
-
-        ( dl_spose[0] - LE_ADDRESS_MIN_L ) * LE_ADDRESS_IRN_L,
-        ( dl_spose[1] - LE_ADDRESS_MIN_A ) * LE_ADDRESS_IRN_A,
-        ( dl_spose[2] - LE_ADDRESS_MIN_H ) * LE_ADDRESS_IRN_H,
-
-        };
+        /* coordinates variable */
+        le_real_t dl_snormal[3] = { DL_SORT_X( dl_spose ), DL_SORT_Y( dl_spose ), DL_SORT_Z( dl_spose ) };
 
         /* digit variable */
-        le_byte_t dl_fd( 0 );
-        le_byte_t dl_sd( 0 );
+        le_byte_t dl_fdigit( 0 );
+
+        /* digit variable */
+        le_byte_t dl_sdigit( 0 );
 
         /* comparison process */
         for ( le_size_t dl_parse( 0 ); dl_parse < dl_depth; dl_parse ++ ) {
 
             /* check digit value */
-            if ( ( dl_fp[0] *= 2.0 ) >= 1.0 ) {
+            if ( ( dl_fnormal[0] *= 2.0 ) >= 1.0 ) {
 
                 /* assign digit component */
-                dl_fd = 0x01;
+                dl_fdigit = 0x01;
 
                 /* update dimension value */
-                dl_fp[0] -= 1.0;
+                dl_fnormal[0] -= 1.0;
 
             /* reset digit */
-            } else { dl_fd = 0x00; }
+            } else { dl_fdigit = 0x00; }
 
             /* check digit value */
-            if ( ( dl_sp[0] *= 2.0 ) >= 1.0 ) {
+            if ( ( dl_snormal[0] *= 2.0 ) >= 1.0 ) {
 
                 /* assign digit component */
-                dl_sd = 0x01;
+                dl_sdigit = 0x01;
 
                 /* update dimension value */
-                dl_sp[0] -= 1.0;
+                dl_snormal[0] -= 1.0;
 
             /* reset digit */
-            } else { dl_sd = 0x00; }
+            } else { dl_sdigit = 0x00; }
 
             /* asynchronous dimension */
             if ( dl_parse >= LE_ADDRESS_DEPTH_P ) {
 
                 /* check digit value */
-                if ( ( dl_fp[1] *= 2.0 ) >= 1.0 ) {
+                if ( ( dl_fnormal[1] *= 2.0 ) >= 1.0 ) {
 
                     /* assign digit component */
-                    dl_fd |= 0x02;
+                    dl_fdigit |= 0x02;
 
                     /* update dimension value */
-                    dl_fp[1] -= 1.0;
+                    dl_fnormal[1] -= 1.0;
 
                 }
 
                 /* check digit value */
-                if ( ( dl_sp[1] *= 2.0 ) >= 1.0 ) {
+                if ( ( dl_snormal[1] *= 2.0 ) >= 1.0 ) {
 
                     /* assign digit component */
-                    dl_sd |= 0x02;
+                    dl_sdigit |= 0x02;
 
                     /* update dimension value */
-                    dl_sp[1] -= 1.0;
+                    dl_snormal[1] -= 1.0;
 
                 }
 
@@ -104,24 +94,24 @@
                 if ( dl_parse >= LE_ADDRESS_DEPTH_A ) {
 
                     /* check digit value */
-                    if ( ( dl_fp[2] *= 2.0 ) >= 1.0 ) {
+                    if ( ( dl_fnormal[2] *= 2.0 ) >= 1.0 ) {
 
                         /* assign digit component */
-                        dl_fd |= 0x04;
+                        dl_fdigit |= 0x04;
 
                         /* update dimension value */
-                        dl_fp[2] -= 1.0;
+                        dl_fnormal[2] -= 1.0;
 
                     }
 
                     /* check digit value */
-                    if ( ( dl_sp[2] *= 2.0 ) >= 1.0 ) {
+                    if ( ( dl_snormal[2] *= 2.0 ) >= 1.0 ) {
 
                         /* assign digit component */
-                        dl_sd |= 0x04;
+                        dl_sdigit |= 0x04;
 
                         /* update dimension value */
-                        dl_sp[2] -= 1.0;
+                        dl_snormal[2] -= 1.0;
 
                     }
 
@@ -130,20 +120,15 @@
             }
 
             /* compare digit */
-            if ( dl_fd > dl_sd ) {
+            if ( dl_fdigit > dl_sdigit ) {
 
                 /* send result */
                 return( true );
 
-            } else {
+            } else if ( dl_fdigit < dl_sdigit ) {
 
-                /* compare digit */
-                if ( dl_fd < dl_sd ) {
-
-                    /* send result */
-                    return( false );
-
-                }
+                /* send result */
+                return( false );
 
             }
 
@@ -160,16 +145,18 @@
 
     le_byte_t * dl_sort_algorithm_memory( le_byte_t * const dl_buffer, le_size_t const dl_size, le_byte_t const dl_depth ) {
 
+        /* buffer variable */
+        le_byte_t * dl_pair[2] = { dl_buffer, nullptr };
+
         /* switch variable */
         le_size_t dl_origin( 0 );
         le_size_t dl_target( 1 );
 
-        /* buffer variable */
-        le_byte_t * dl_pair[2] = { dl_buffer, nullptr };
-
         /* range variable */
         le_size_t dl_fhead( 0 );
         le_size_t dl_fedge( 0 );
+
+        /* range variable */
         le_size_t dl_shead( 0 );
         le_size_t dl_sedge( 0 );
 
@@ -199,6 +186,8 @@
                 /* compute range */
                 dl_fhead = dl_index;
                 dl_fedge = dl_fhead + dl_step;
+
+                /* compute range */
                 dl_shead = dl_fedge;
                 dl_sedge = dl_shead + dl_step;
 
@@ -294,7 +283,7 @@
     source - merge methods
  */
 
-    void dl_sort_algorithm_disk( le_char_t const * const dl_fpath, le_size_t const dl_flength, le_char_t const * const dl_spath, le_size_t const dl_slength, le_char_t const * const dl_opath, le_byte_t const dl_depth ) {
+    le_void_t dl_sort_algorithm_disk( le_char_t const * const dl_fpath, le_size_t const dl_flength, le_char_t const * const dl_spath, le_size_t const dl_slength, le_char_t const * const dl_opath, le_byte_t const dl_depth ) {
 
         /* buffer variable */
         le_byte_t * dl_fbuffer( nullptr );

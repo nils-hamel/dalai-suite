@@ -26,7 +26,7 @@
 
     le_size_t dl_sort_filesize( le_char_t const * const dl_path ) {
 
-        /* statistics structure */
+        /* statistics variable */
         struct stat dl_stat = { 0 };
 
         /* retrieve statistics */
@@ -86,8 +86,8 @@
 
         }
 
-        /* copy loop */
-        do {
+        /* stream copy */
+        while ( dl_read != 0 ) {
 
             /* read buffer */
             dl_istream.read( ( char * ) dl_buffer, DL_SORT_BUFFER );
@@ -98,7 +98,7 @@
             /*  write buffer */
             dl_ostream.write( ( char * ) dl_buffer, dl_read );
 
-        } while ( dl_read > 0 );
+        }
 
         /* delete output stream */
         dl_ostream.close();
@@ -264,7 +264,7 @@
 
     }
 
-    void dl_sort_disk( le_char_t const * const dl_ipath, le_char_t const * const dl_opath, le_size_t const dl_size, le_byte_t const dl_depth, le_char_t const * const dl_temp ) {
+    void dl_sort_disk( le_char_t const * const dl_ipath, le_char_t const * const dl_opath, le_size_t const dl_size, le_byte_t const dl_depth, le_char_t const * const dl_tpath ) {
 
         /* path variable */
         le_char_t dl_ffile[_LE_USE_PATH] = { 0 };
@@ -288,7 +288,7 @@
         le_size_t dl_slength;
         
         /* dispatch stream chunks */
-        dl_segment = dl_sort_dispatch( dl_ipath, dl_size, dl_depth, dl_temp );
+        dl_segment = dl_sort_dispatch( dl_ipath, dl_size, dl_depth, dl_tpath );
 
         /* stream chunks merge */
         while ( dl_segment > 1 ) {
@@ -300,10 +300,10 @@
             while ( dl_parse < dl_segment ) {
 
                 /* compose chunk path */
-                sprintf( ( char * ) dl_ffile, DL_SORT_ORIGIN, dl_temp, dl_parse );
+                sprintf( ( char * ) dl_ffile, DL_SORT_ORIGIN, dl_tpath, dl_parse );
 
                 /* compose chunk path */
-                sprintf( ( char * ) dl_ofile, DL_SORT_TARGET, dl_temp, dl_parse >> 1 );
+                sprintf( ( char * ) dl_ofile, DL_SORT_TARGET, dl_tpath, dl_parse >> 1 );
 
                 /* check remaining odd-chunk */
                 if ( ( dl_parse + 1 ) == dl_segment ) {
@@ -314,7 +314,7 @@
                 } else {
 
                     /* compose chunk path */
-                    sprintf( ( char * ) dl_sfile, DL_SORT_ORIGIN, dl_temp, dl_parse + 1 );
+                    sprintf( ( char * ) dl_sfile, DL_SORT_ORIGIN, dl_tpath, dl_parse + 1 );
 
                     /* retrieve chunk size */
                     dl_flength = dl_sort_filesize( dl_ffile );
@@ -348,10 +348,10 @@
             while ( dl_parse < dl_segment ) {
 
                 /* compose chunk path */
-                sprintf( ( char * ) dl_ffile, DL_SORT_TARGET, dl_temp, dl_parse );
+                sprintf( ( char * ) dl_ffile, DL_SORT_TARGET, dl_tpath, dl_parse );
 
                 /* compose chunk path */
-                sprintf( ( char * ) dl_ofile, DL_SORT_ORIGIN, dl_temp, dl_parse );
+                sprintf( ( char * ) dl_ofile, DL_SORT_ORIGIN, dl_tpath, dl_parse );
 
                 /* target chunk to origin chunk */
                 rename( ( char * ) dl_ffile, ( char * ) dl_ofile );
@@ -371,13 +371,13 @@
 
         }
 
-        /* compose final chunk path */
-        sprintf( ( char * ) dl_ofile, DL_SORT_ORIGIN, dl_temp, _LE_SIZE_L( 0 ) );
+        /* compose remaining chunk path */
+        sprintf( ( char * ) dl_ofile, DL_SORT_ORIGIN, dl_tpath, _LE_SIZE_L( 0 ) );
 
-        /* copy final chunk to output file */
+        /* move remaining chunk */
         if ( rename( ( char * ) dl_ofile, ( char * ) dl_opath ) != 0 ) {
 
-            /* formal copy */
+            /* formal copy - remote file system */
             dl_sort_copy( dl_ofile, dl_opath );
 
             /* remove source */
@@ -386,7 +386,6 @@
         }
 
     }
-
 /*
     source - main methods
  */
@@ -400,15 +399,15 @@
         le_char_t * dl_opath( ( le_char_t * ) lc_read_string( argc, argv, "--output", "-o" ) );
 
         /* path variable */
-        le_char_t * dl_tpath( ( le_char_t * ) lc_read_string( argc, argv, "--temporary", "-t" ) );
-
-        /* index length variable */
-        le_byte_t dl_depth( lc_read_unsigned( argc, argv, "--depth", "-d", 0 ) );
+        le_char_t dl_tpath[_LE_USE_PATH] = { 0 };
 
         /* stream size variable */
         le_size_t dl_size( 0 );
 
-    /* error bloc */
+        /* index variable */
+        le_byte_t dl_depth( lc_read_unsigned( argc, argv, "--depth", "-d", 0 ) );
+
+    /* error management */
     try {
 
         /* check consistency */
@@ -430,16 +429,14 @@
         /* select sorting algorithm */
         if ( dl_size > ( le_size_t ) DL_SORT_CHUNK ) {
 
-            /* check consistency */
-            if ( le_get_exist( dl_tpath ) == _LE_FALSE ) {
-
-                /* send message */
-                throw( LC_ERROR_IO_ACCESS );
-
-            }
+            /* create temporary directory */
+            lc_temp_directory( ( le_char_t * ) lc_read_string( argc, argv, "--temporary", "-t" ), dl_tpath, LC_TEMP_CREATE );
 
             /* disk-based sorting process */
             dl_sort_disk( dl_ipath, dl_opath, dl_size, dl_depth, dl_tpath );
+
+            /* delete temporary directory */
+            lc_temp_directory( nullptr, dl_tpath, LC_TEMP_DELETE );
 
         } else {
 
@@ -448,7 +445,7 @@
 
         }
 
-    /* error bloc */
+    /* error management */
     } catch ( int dl_code ) {
 
         /* error management */

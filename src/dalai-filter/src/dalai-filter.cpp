@@ -150,7 +150,7 @@
         }
 
         /* create temporary storage */
-        lc_temp_directory( lc_read_string( argc, argv, "--temporary", "-y" ), ( char * ) dl_path, LC_TEMP_CREATE );
+        lc_temp_directory( ( le_char_t * ) lc_read_string( argc, argv, "--temporary", "-y" ), dl_path, LC_TEMP_CREATE );
 
         /* compute minimum distance mean value */
         dl_mean = lc_statistic_mdmv( dl_istream, dl_count );
@@ -162,7 +162,7 @@
         dl_filter( dl_ostream, dl_path, dl_mean, dl_factor, dl_thres, dl_mode );
 
         /* delete temporary storage */
-        lc_temp_directory( NULL, ( char * ) dl_path, LC_TEMP_DELETE );
+        lc_temp_directory( nullptr, dl_path, LC_TEMP_DELETE );
 
         /* delete output stream */
         dl_ostream.close();

@@ -24,25 +24,25 @@
     source - temporary methods
  */
 
-    void lc_temp_directory( char const * const dl_root, char * const dl_path, int const dl_mode ) {
+    le_void_t lc_temp_directory( le_char_t const * const lc_root, le_char_t * const lc_path, le_enum_t const lc_mode ) {
 
         /* check mode */
-        if ( dl_mode == LC_TEMP_CREATE ) {
+        if ( lc_mode == LC_TEMP_CREATE ) {
 
-            if ( dl_root == nullptr ) {
+            if ( lc_root == nullptr ) {
 
                 /* compose temporary path */
-                sprintf( dl_path, "/tmp/temp-XXXXXX" );
+                sprintf( ( char * ) lc_path, "/tmp/temp-XXXXXX" );
 
             } else {
 
                 /* compose temporary path */
-                sprintf( dl_path, "%s/temp-XXXXXX", dl_root );
+                sprintf( ( char * ) lc_path, "%s/temp-XXXXXX", lc_root );
 
             }
 
             /* create temporary directory */
-            if ( mkdtemp( dl_path ) == nullptr ) {
+            if ( mkdtemp( ( char * ) lc_path ) == nullptr ) {
 
                 /* send message */
                 throw( LC_ERROR_IO_ACCESS );
@@ -52,7 +52,7 @@
         } else {
 
             /* delete temporary directory */
-            if ( rmdir( dl_path ) != 0 ) {
+            if ( rmdir( ( char * ) lc_path ) != 0 ) {
 
                 /* send message */
                 throw( LC_ERROR_IO_REMOVE );
