@@ -234,7 +234,7 @@
             lc_pose1 = ( le_real_t * ) ( lc_chunk + lc_parse );
 
             /* parsing input stream elements */
-            for ( le_size_t lc_index( lc_parse + LE_UV3_RECORD ); lc_index < lc_size; lc_index += LC_UF3_RECLEN ) {
+            for ( le_size_t lc_index( lc_parse + LE_UV3_RECORD ); lc_index < lc_size; lc_index += LE_UV3_RECORD ) {
 
                 /* compute and assign array mapping */
                 lc_pose2 = ( le_real_t  * ) ( lc_chunk + lc_index );
