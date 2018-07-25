@@ -87,33 +87,32 @@
     header - function prototypes
  */
 
-    /*! \brief address methods (revoked)
+    /*! \brief address methods
      *
-     *  This function is used to display an address structure spatial index as
-     *  a sequence of digits in base eight on the standard output. The provided
-     *  address structure is expected to contain a valid index consistent with
-     *  its size.
+     *  This function converts the provided position vector into an eratosthene
+     *  address structure before to display the spatial index of the computed
+     *  address. The provided length gives the number of digit to consider.
      *
-     *  \param dl_addr Address structure
+     *  \param dl_pose Position vector
+     *  \param dl_length Address spatial index length
      */
 
     le_void_t dl_cat_address( le_real_t * const dl_pose, le_byte_t const dl_length );
 
-    /*! \brief main methods (revoked)
+    /*! \brief main methods
      *
      *  The main function reads the primitives stored in the provided uv3 file 
-     *  and displays its content on the standard output :
+     *  and displays them on the standard output :
      *
-     *      ./dalai-cat --uv3/-i [uv3 input file] --index/-x [size]
+     *      ./dalai-cat --uv3/-i [uv3 input file] --index/-x [index size]
      *
-     *  The main function opens the provided file and reads its element one by
-     *  one. For each element, the main function displays a line on the standard
-     *  output containing the element coordinates, type and color.
+     *  The main function reads the provided file and import the primitives one
+     *  by one before to display them on the standard output. The primitives
+     *  vertex coordinates, type and color are written on the terminal.
      *
-     *  If the '--index' parameter is provided to a non-zero value, the function
-     *  displays the elements coordinates in terms of eratosthene index instead
-     *  of geographical coordinates. The elements provided in the uv3 file are
-     *  then expected to be provided in the WGS84 ellipsoidal frame.
+     *  If the provided '--index' is non-zero, the vertex coordinates of each
+     *  primitive is replaced by the eratosthene address spatial index using
+     *  the value as index length.
      *
      *  \param  argc Standard parameter
      *  \param  argv Standard parameter

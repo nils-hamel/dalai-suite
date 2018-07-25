@@ -118,7 +118,7 @@
                 }
 
                 /* display record data */
-                printf( "%02x %02x %02x %02x\n", dl_uv3d[0], dl_uv3d[0], dl_uv3d[1], dl_uv3d[2] );
+                printf( "%02x %02x %02x %02x\n", dl_uv3d[0], dl_uv3d[1], dl_uv3d[2], dl_uv3d[3] );
 
             }
 
