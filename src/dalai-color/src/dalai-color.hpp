@@ -72,9 +72,6 @@
     header - preprocessor definitions
  */
 
-    /* define chunk size */
-    //# define DL_CHUNK ( 2396745 )
-
 /*
     header - preprocessor macros
  */
@@ -91,7 +88,7 @@
     header - function prototypes
  */
 
-    /*! \brief color mapping methods (revoked)
+    /*! \brief color mapping methods
      *
      *  This function assigns a color to the provided color vector based on the
      *  provided height value. It starts by clamping the height value using the
@@ -100,27 +97,30 @@
      *  colormap.
      *
      *  \param dl_height Point height
-     *  \param dl_data   Point color array pointer (unsigned 8-bits, RGB)
+     *  \param dl_data   Point color array
      *  \param dl_ledge  Height clamping range lower boundary
      *  \param dl_hedge  Height clamping range upper boundary
      */
 
     le_void_t dl_color( le_real_t dl_height, le_data_t * const dl_data, le_real_t const dl_ledge, le_real_t const dl_hedge );
 
-    /*! \brief main methods (revoked)
+    /*! \brief main methods
      *
-     *  The main function reads the elements provided through the uv3 input file
-     *  and overrides their color using a colormap based on element height. The
-     *  corrected element are exported in the output uv3 file : 
+     *  The main function reads the vertex of the primitives of the provided uv3
+     *  file and overrides their color through a mapping based on the vertex
+     *  height :
      *
      *      ./dalai-color --input/-i [input file]
      *                    --output/-o [output file]
-     *                    --minimum/-m [colormap low boundary]
-     *                    --maximum/-x [colormap high boundary]
+     *                    --minimum/-m [height low boundary]
+     *                    --maximum/-x [height high boundary]
      *
-     *  The element height is understood as the value of their third coordinate
-     *  assumed to corresponds to natural model altitude. If the third component
-     *  is outside of the provided range, a cyclic condition is considered.
+     *  The resulting colored uv3 primitives are exported in the provided output
+     *  stream.
+     * 
+     *  The vertex height is understood as the value stored by their third
+     *  coordinates. If the third component is outside of the provided range, a
+     *  cyclic condition is considered.
      *
      *  \param  argc Standard parameter
      *  \param  argv Standard parameter
