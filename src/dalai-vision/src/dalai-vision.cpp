@@ -24,104 +24,105 @@
     source - constructor/destructor methods
  */
 
-    dl_vision_t::dl_vision_t()
+    dl_vision_t::dl_vision_t( le_real_t const dl_span )
 
         : vs_window( NULL )
         , vs_context( 0 )
-
+        , vs_execute( true )
         , vs_width( 0 )
         , vs_height( 0 )
-        , vs_near( 0.001 )
-        , vs_far( 100.0 )
-
-        , vs_state( true )
-
-        , vs_angle_x( 0.0 )
-        , vs_angle_y( 0.0 )
-        , vs_angle_z( 0.0 )
-        , vs_trans_x( 0.0 )
-        , vs_trans_y( 0.0 )
-        , vs_trans_z( 0.0 )
-
-        , vs_mouse_x( 0 )
-        , vs_mouse_y( 0 )
+        , vs_init_x( 0 )
+        , vs_init_y( 0 )
+        , vs_dist_z( -dl_span )
 
     {
 
-        /* diplay mode variables */
+        /* display mode variable */
         SDL_DisplayMode dl_display;
 
-        /* initialise sdl */
+        /* initialise and check video */
         if ( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
 
-            /* throw exception */
+            /* send message */
             throw( LC_ERROR_CONTEXT );
 
         }
 
-        /* retrieve current display mode */
+        /* retrieve display mode */
         if ( SDL_GetCurrentDisplayMode( 0, & dl_display ) < 0 ) {
 
-            /* throw exception */
+            /* send message */
             throw( LC_ERROR_CONTEXT );
+
+        } else {
+
+            /* push screen resolution */
+            vs_width  = dl_display.w;
+            vs_height = dl_display.h;
 
         }
 
-        /* retreive display resolution */
-        vs_width  = dl_display.w;
-        vs_height = dl_display.h;
-
-        /* enable double-buffering */
+        /* double buffer */
         SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 
-        /* define frame buffer components size */
+        /* frame buffer size */
         SDL_GL_SetAttribute( SDL_GL_RED_SIZE  , 8 );
         SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8 );
         SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE , 8 );
         SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 8 );
 
-        /* define depth buffer size */
+        /* depth buffer size */
         SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24 );
 
-        /* create sdl window */
-        if ( ( vs_window = SDL_CreateWindow( "", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, vs_width, vs_height, SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL ) ) == NULL ) {
+        /* create window */
+        vs_window = SDL_CreateWindow(
+            "dalai-suite - dalai-vision", 
+            SDL_WINDOWPOS_CENTERED, 
+            SDL_WINDOWPOS_CENTERED, 
+            vs_width, 
+            vs_height, 
+            SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL 
+        );
 
-            /* throw exception */
+        /* check window */
+        if ( vs_window == NULL ) {
+
+            /* send message */
             throw( LC_ERROR_CONTEXT );
 
         }
 
-        /* create opengl context */
+        /* create and check context */
         if ( ( vs_context = SDL_GL_CreateContext( vs_window ) ) == NULL ) {
 
-            /* throw exception */
+            /* send message */
             throw( LC_ERROR_CONTEXT );
 
         }
 
-        /* opengl clear color */
+        /* clear color */
         glClearColor( 0.00, 0.02, 0.05, 0.0 );
 
-        /* opengl clear depth */
+        /* clear depth */
         glClearDepth( 1.0 );
 
-        /* opengl states */
+        /* depth test */
         glEnable( GL_DEPTH_TEST );
 
-        /* opengl blending function */
+        /* blend function */
         glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
     }
 
     dl_vision_t::~dl_vision_t() {
 
-        /* delete opengl context */
+        /* delete context */
         SDL_GL_DeleteContext( vs_context );
 
         /* delete window */
         SDL_DestroyWindow( vs_window );
 
-        /* terminate sdl */
+        /* terminate video */
         SDL_Quit();
 
     }
@@ -130,25 +131,17 @@
     source - accessor methods
  */
 
-    bool dl_vision_t::vs_get_click( int const dl_mx, int const dl_my, double * const dl_px, double * const dl_py, double * const dl_pz ) {
+    le_size_t dl_vision_t::vs_get_width( le_void_t ) {
 
-        /* click depth variables */
-        float dl_depth( 0.0 );
+        /* return screen width */
+        return( vs_width );
 
-        /* retrieve click depth */
-        glReadPixels( dl_mx, vs_height - dl_my, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, & dl_depth );
+    }
 
-        /* check depth value */
-        if ( dl_depth < 1.0 ) {
+    le_size_t dl_vision_t::vs_get_height( le_void_t ) {
 
-            /* retrieve model click positon */
-            gluUnProject( dl_mx, vs_height - dl_my, dl_depth, vs_modelview, vs_projection, vs_viewport, dl_px, dl_py, dl_pz );
-
-            /* return status */
-            return( true );
-
-        /* return status */
-        } else { return( false ); }
+        /* return scree height */
+        return( vs_height );
 
     }
 
@@ -156,13 +149,10 @@
     source - mutator methods
  */
 
-    void dl_vision_t::vs_set_projection( dl_model_t & dl_model ) {
+    le_void_t dl_vision_t::vs_set_projection( dl_model_t & dl_model ) {
 
         /* opengl viewport */
         glViewport( 0.0, 0.0, vs_width, vs_height );
-
-        /* push viewport vector */
-        glGetIntegerv( GL_VIEWPORT, vs_viewport );
 
         /* opengl matrix mode */
         glMatrixMode( GL_PROJECTION );
@@ -173,22 +163,64 @@
         /* compute matrix coefficients */
         gluPerspective( 45.0, double( vs_width ) / double( vs_height ), dl_model.ml_get_span() * 0.01, dl_model.ml_get_span() * 10.0 );
 
-        /* push projection matrix */
-        glGetDoublev( GL_PROJECTION_MATRIX, vs_projection );
-
     }
 
-    void dl_vision_t::vs_set_viewpoint( dl_model_t & dl_model ) {
+    le_void_t dl_vision_t::vs_set_center( le_size_t const dl_click_x, le_size_t const dl_click_y, dl_arcball_t & dl_arcball, dl_model_t & dl_model ) {
 
-        /* reset rotation */
-        vs_angle_x = 0.0;
-        vs_angle_y = 0.0;
-        vs_angle_z = 0.0;
+        /* modelview variable */
+        GLdouble dl_modelview[16];
 
-        /* reset translation */
-        vs_trans_x = 0.0;
-        vs_trans_y = 0.0;
-        vs_trans_z = -dl_model.ml_get_span();
+        /* projection variable */
+        GLdouble dl_projection[16];
+
+        /* viewport variable */
+        GLint dl_viewport[4];
+
+        /* position variable */
+        double dl_px( 0.0 );
+        double dl_py( 0.0 );
+        double dl_pz( 0.0 );
+
+        /* depth variable */
+        float dl_depth( 0.0 );
+
+        /* retrieve click depth */
+        glReadPixels( dl_click_x, vs_height - dl_click_y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, & dl_depth );
+
+        /* check depth value */
+        if ( dl_depth < 1.0 ) {
+
+            /* retrieve viewport vector */
+            glGetIntegerv( GL_VIEWPORT, dl_viewport );
+
+            /* retrieve projection matrix */
+            glGetDoublev( GL_PROJECTION_MATRIX, dl_projection );
+
+            /* matrix mode */
+            glMatrixMode( GL_MODELVIEW );
+
+            /* matrix to identity */
+            glLoadIdentity();
+
+            /* view translations */
+            glTranslatef( 0, 0, vs_dist_z );
+
+            /* arcball rotation */
+            dl_arcball.ab_get_rotate();
+
+            /* model translation */
+            dl_model.ml_get_translation();
+
+            /* retreive modelview matrix */
+            glGetDoublev( GL_MODELVIEW_MATRIX, dl_modelview );
+
+            /* compute click 3-position */
+            gluUnProject( dl_click_x, vs_height - dl_click_y, dl_depth, dl_modelview, dl_projection, dl_viewport, & dl_px, & dl_py, & dl_pz );
+
+            /* assign modelview center */
+            dl_model.ml_set_center( dl_px, dl_py, dl_pz );
+            
+        }
 
     }
 
@@ -196,10 +228,13 @@
     source - execution methods
  */
 
-    void dl_vision_t::vs_execution( dl_model_t & dl_model ) {
+    le_void_t dl_vision_t::vs_execution( dl_arcball_t & dl_arcball, dl_model_t & dl_model ) {
+
+        /* event variable */
+        SDL_Event dl_event;
 
         /* principale execution loop */
-        while ( vs_state == true ) {
+        while ( vs_execute == true ) {
 
             /* events management */
             while ( SDL_PollEvent( & dl_event ) > 0 ) {
@@ -211,7 +246,7 @@
                     case ( SDL_KEYDOWN ) : {
 
                         /* specialised method */
-                        vs_keydown( dl_event.key, dl_model );
+                        vs_keydown( dl_event.key, dl_arcball, dl_model );
 
                     } break;
 
@@ -219,7 +254,7 @@
                     case ( SDL_MOUSEBUTTONDOWN ) : {
 
                         /* specialised method */
-                        vs_button( dl_event.button, dl_model );
+                        vs_button( dl_event.button, dl_arcball, dl_model );
 
                     } break;
 
@@ -227,7 +262,7 @@
                     case ( SDL_MOUSEMOTION ) : {
 
                         /* specialised method */
-                        vs_motion( dl_event.motion, dl_model );
+                        vs_motion( dl_event.motion, dl_arcball, dl_model );
 
                     } break;
 
@@ -235,7 +270,7 @@
                     case ( SDL_MOUSEWHEEL ) : {
 
                         /* specialised method */
-                        vs_wheel( dl_event.wheel, dl_model );
+                        vs_wheel( dl_event.wheel, dl_arcball, dl_model );
 
                     } break;
 
@@ -243,64 +278,29 @@
 
             }
 
-            /* opengl buffer clear */
+            /* clear color and depth buffer */
             glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-            /* opengl matrix mode */
+            /* matrix mode */
             glMatrixMode( GL_MODELVIEW );
 
-            /* reset matrix coefficients */
+            /* matrix to identity */
             glLoadIdentity();
 
-            /* push matrix */
-            glPushMatrix();
+            /* view translation */
+            glTranslatef( 0, 0, vs_dist_z );
 
-                /* view translations */
-                glTranslatef( vs_trans_x, vs_trans_y, vs_trans_z );
+            /* arcball rotation */
+            dl_arcball.ab_get_rotate();
 
-                /* view rotations */
-                glRotatef( vs_angle_x, 1.0, 0.0, 0.0 );
-                glRotatef( vs_angle_y, 0.0, 1.0, 0.0 );
-                glRotatef( vs_angle_z, 0.0, 0.0, 1.0 );
+            /* render frame */
+            dl_model.ml_ren_frame();
 
-                /* push matrix */
-                glPushMatrix();
+            /* model translation */
+            dl_model.ml_get_translation();
 
-                    /* display frame */
-                    dl_model.ml_ren_frame();
-
-                /* pop matrix */
-                glPopMatrix();
-
-                /* push matrix */
-                glPushMatrix();
-
-                    /* push matrix */
-                    glPushMatrix();
-
-                        /* diplay model */
-                        dl_model.ml_ren_model();
-
-                        /* retrieve modelview matrix */
-                        glGetDoublev( GL_MODELVIEW_MATRIX, vs_modelview );
-
-                    /* pop matrix */
-                    glPopMatrix();
-
-                    /* push matrix */
-                    glPushMatrix();
-
-                        /* display surface */
-                        dl_model.ml_ren_surface();
-
-                    /* pop matrix */
-                    glPopMatrix();
-
-                /* pop matrix */
-                glPopMatrix();
-
-            /* pop matrix */
-            glPopMatrix();
+            /* render model */
+            dl_model.ml_ren_model();
 
             /* swap buffers */
             SDL_GL_SwapWindow( vs_window );
@@ -313,7 +313,7 @@
     source - event methods
  */
 
-    void dl_vision_t::vs_keydown( SDL_KeyboardEvent dl_event, dl_model_t & dl_model ) {
+    le_void_t dl_vision_t::vs_keydown( SDL_KeyboardEvent dl_event, dl_arcball_t & dl_arcball, dl_model_t & dl_model ) {
 
         /* switch on keycode */
         switch ( dl_event.keysym.sym ) {
@@ -322,7 +322,7 @@
             case ( SDLK_ESCAPE ) : {
 
                 /* update state */
-                vs_state = false;
+                vs_execute = false;
 
             } break;
 
@@ -331,36 +331,32 @@
             case ( SDLK_3 ) :
             case ( SDLK_4 ) : {
 
-                /* update model point size */
-                dl_model.ml_set_pointsize( dl_event.keysym.sym - SDLK_1 + 1 );
+                /* display point size */
+                glPointSize( dl_event.keysym.sym - SDLK_1 + 1 );
 
-            } break;
-
-            case ( SDLK_r ) : {
-
-                /* reset viewpoint */
-                vs_set_viewpoint( dl_model );
+                /* display line width */
+                glLineWidth( dl_event.keysym.sym - SDLK_1 + 1 );
 
             } break;
 
             case ( SDLK_TAB ) : {
 
                 /* switch display flag */
-                dl_model.ml_set_surface_switch();
+                dl_model.ml_set_switch();
 
             } break;
 
             case ( SDLK_RETURN ) : {
 
                 /* compute and display intersection */
-                dl_model.ml_get_intersect();
+                dl_model.ml_get_intersection();
 
             } break;
 
             case ( SDLK_BACKSPACE ) : {
 
                 /* clear points */
-                dl_model.ml_set_point_clear();
+                dl_model.ml_set_clear();
 
             } break;
 
@@ -388,7 +384,42 @@
             case ( SDLK_a ) : {
 
                 /* surface point auto-push */
-                dl_model.ml_set_point_auto();
+                dl_model.ml_set_auto( -1 );
+
+            } break;
+
+            case ( SDLK_s ) : {
+
+                /* surface point auto-push */
+                dl_model.ml_set_auto( 0 );
+
+            } break;
+
+            case ( SDLK_d ) : {
+
+                /* surface point auto-push */
+                dl_model.ml_set_auto( +1 );
+
+            } break;
+
+            case ( SDLK_p ) : {
+
+                /* update polygon mode */
+                glPolygonMode( GL_FRONT_AND_BACK, GL_POINT );
+
+            } break;
+
+            case ( SDLK_o ) : {
+
+                /* update polygon mode */
+                glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+
+            } break;
+
+            case ( SDLK_i ) : {
+
+                /* update polygon mode */
+                glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 
             } break;
 
@@ -396,100 +427,79 @@
 
     }
 
-    void dl_vision_t::vs_button( SDL_MouseButtonEvent dl_event, dl_model_t & dl_model ) {
+    le_void_t dl_vision_t::vs_button( SDL_MouseButtonEvent dl_event, dl_arcball_t & dl_arcball, dl_model_t & dl_model ) {
 
-        /* click components variables */
-        double dl_mx( 0.0 );
-        double dl_my( 0.0 );
-        double dl_mz( 0.0 );
-
-        /* push mouse position at click */
-        vs_mouse_x = dl_event.x;
-        vs_mouse_y = dl_event.y;
+        /* push click position */
+        vs_init_x = dl_event.x;
+        vs_init_y = dl_event.y;
 
         /* switch on button */
-        if ( dl_event.button == SDL_BUTTON_LEFT ) {
+        switch ( dl_event.button ) {
 
-            /* switch on click type */
-            if ( dl_event.clicks == 2 ) {
+            case ( SDL_BUTTON_LEFT ) : {
 
-                /* compute and check click components */
-                if ( vs_get_click( dl_event.x, dl_event.y, & dl_mx, & dl_my, & dl_mz ) == true ) {
+                /* check click type */
+                if ( dl_event.clicks == 2 ) {
 
                     /* update model center */
-                    dl_model.ml_set_center( dl_mx, dl_my, dl_mz );
+                    vs_set_center( vs_init_x, vs_init_y, dl_arcball, dl_model );
 
                 }
 
-            }
+            } break;
 
-        } else if ( dl_event.button == SDL_BUTTON_MIDDLE ) {
+            case ( SDL_BUTTON_MIDDLE ) : {
 
-            /* switch on click type */
-            if ( dl_event.clicks == 1 ) {
+                /* check click type */
+                if ( dl_event.clicks == 1 ) {
 
-                /* push model center to surface */
-                dl_model.ml_set_point_push();
+                    /* push model center */
+                    dl_model.ml_set_push();
 
-            }
+                }
 
-        }
+            } break;
+
+        };
 
     }
 
-    void dl_vision_t::vs_motion( SDL_MouseMotionEvent dl_event, dl_model_t & dl_model ) {
+    le_void_t dl_vision_t::vs_motion( SDL_MouseMotionEvent dl_event, dl_arcball_t & dl_arcball, dl_model_t & dl_model ) {
 
-        /* inertia variables */
-        float dl_inertia( 1.0 );
-
-        /* analyse keyboard modifiers */
-        if ( ( SDL_GetModState() & KMOD_CTRL  ) != 0 ) dl_inertia *= 5;
-        if ( ( SDL_GetModState() & KMOD_SHIFT ) != 0 ) dl_inertia /= 5;
-
-        /* switch on button */
+        /* check mouse state */
         if ( ( dl_event.state & SDL_BUTTON_LMASK ) != 0 ) {
 
-            /* update inertia value */
-            dl_inertia *= DL_INERTIA_ANGLE;
+            /* update arcball rotation */
+            dl_arcball.ab_set_update( vs_init_x, vs_init_y, dl_event.x, dl_event.y );
 
-            /* update view angle */
-            vs_angle_x += dl_inertia * float( int( dl_event.y ) - vs_mouse_y );
-            vs_angle_z += dl_inertia * float( int( dl_event.x ) - vs_mouse_x ) * ( vs_modelview[10] < 0 ? -1.0 : +1.0 );
-
-        } else if ( ( dl_event.state & SDL_BUTTON_RMASK ) != 0 ) {
-
-            /* update inertia value */
-            dl_inertia *= DL_INERTIA_TRANS * dl_model.ml_get_mdmv();
-
-            /* update model translation */
-            vs_trans_x += dl_inertia * DL_INERTIA_TRANS * float( int( dl_event.x ) - vs_mouse_x );
-            vs_trans_y -= dl_inertia * DL_INERTIA_TRANS * float( int( dl_event.y ) - vs_mouse_y );
+            /* push motion position */
+            vs_init_x = dl_event.x;
+            vs_init_y = dl_event.y;
 
         }
 
     }
 
-    void dl_vision_t::vs_wheel( SDL_MouseWheelEvent dl_event, dl_model_t & dl_model ) {
+    le_void_t dl_vision_t::vs_wheel( SDL_MouseWheelEvent dl_event, dl_arcball_t & dl_arcball, dl_model_t & dl_model ) {
 
-        /* inertia variables */
-        float dl_inertia( dl_model.ml_get_mdmv() * DL_INERTIA_WZOOM );
+        /* inertia variable */
+        le_real_t dl_inertia( dl_model.ml_get_span() * 0.02 );
 
-        /* analyse keyboard modifiers */
-        if ( ( SDL_GetModState() & KMOD_CTRL  ) != 0 ) dl_inertia *= 5;
-        if ( ( SDL_GetModState() & KMOD_SHIFT ) != 0 ) dl_inertia /= 5;
+        /* check modifier */
+        if ( SDL_GetModState() & KMOD_CTRL ) {
 
-        /* switch on wheel direction */
-        if ( dl_event.y > 0 ) {
+            /* inertia correction */
+            dl_inertia *= 8;
 
-            /* update model translation */
-            vs_trans_z += dl_inertia;
+        } else if ( SDL_GetModState() & KMOD_SHIFT ) {
 
-        } else if ( dl_event.y < 0 ) {
-
-            /* update model translation */
-            vs_trans_z -= dl_inertia;
+            /* inertia correction */
+            dl_inertia /= 8;
 
         }
+
+        /* update model distance */
+        vs_dist_z += ( ( dl_event.y > 0 ) ? 1.0 : -1.0 ) * dl_inertia;
 
     }
 
@@ -502,20 +512,20 @@
     /* error management */
     try {
 
-        /* vision class variables */
-        dl_vision_t dl_vision;
+        /* model variable */
+        dl_model_t dl_model( ( le_char_t * ) lc_read_string( argc, argv, "--uv3", "-i" ) );
 
-        /* model class variables */
-        dl_model_t dl_model( lc_read_string( argc, argv, "--model", "-m" ) );
+        /* vision variable */
+        dl_vision_t dl_vision( dl_model.ml_get_span() );
+
+        /* arcball variable */
+        dl_arcball_t dl_arcball( dl_vision.vs_get_width(), dl_vision.vs_get_height() );
 
         /* set projection matrix */
         dl_vision.vs_set_projection( dl_model );
 
-        /* set initial viewpoint */
-        dl_vision.vs_set_viewpoint( dl_model );
-
         /* principale execution loop */
-        dl_vision.vs_execution( dl_model );
+        dl_vision.vs_execution( dl_arcball, dl_model );
 
     } catch ( int dl_code ) {
 

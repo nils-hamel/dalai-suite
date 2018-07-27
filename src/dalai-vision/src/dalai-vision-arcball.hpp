@@ -1,5 +1,5 @@
 /*
- *  dalai-suite - common library
+ *  dalai-suite - vision
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
  *      Copyright (c) 2016-2018 DHLAB, EPFL
@@ -18,18 +18,18 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   common-error.hpp
+    /*! \file   dalai-vision-arcball.hpp
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  dalai-suite - common library - error module
+     *  dalai-suite - vision - arcball module
      */
 
 /*
     header - inclusion guard
  */
 
-    # ifndef __LC_ERROR__
-    # define __LC_ERROR__
+    # ifndef __DL_VISION_ARCBALL__
+    # define __DL_VISION_ARCBALL__
 
 /*
     header - internal includes
@@ -39,23 +39,14 @@
     header - external includes
  */
 
-    # include <iostream>
+    # include <cstring>
+    # include <GL/gl.h>
+    # include <common-include.hpp>
+    # include <eratosthene-include.h>
 
 /*
     header - preprocessor definitions
  */
-
-    /* define errors code */
-    # define LC_ERROR_NONE      ( 0 )
-    # define LC_ERROR_MEMORY    ( 1 )
-    # define LC_ERROR_IO_ACCESS ( 2 )
-    # define LC_ERROR_IO_READ   ( 3 )
-    # define LC_ERROR_IO_WRITE  ( 4 )
-    # define LC_ERROR_IO_REMOVE ( 5 )
-    # define LC_ERROR_FORMAT    ( 6 )
-    # define LC_ERROR_CONTEXT   ( 7 )
-    # define LC_ERROR_DOMAIN    ( 8 )
-    # define LC_ERROR_RANDOM    ( 9 )
 
 /*
     header - preprocessor macros
@@ -69,20 +60,46 @@
     header - structures
  */
 
+    class dl_arcball_t {
+
+    private:
+
+        le_size_t ab_width;
+        le_size_t ab_height;
+        le_real_t ab_size;
+        le_real_t ab_view[16];
+
+    public:
+
+        /* *** */
+
+        dl_arcball_t( le_size_t const dl_width, le_size_t dl_height ) ;
+
+        /* *** */
+
+        le_void_t ab_get_rotate( le_void_t );
+
+    private:
+
+        /* *** */
+
+        le_void_t ab_set_identity( le_void_t );
+
+        /* *** */
+
+        le_void_t ab_set_multiply( le_real_t * dl_matrix );
+
+    public:
+
+        /* *** */
+
+        le_void_t ab_set_update( le_size_t const dl_init_x, le_size_t const dl_init_y, le_size_t const dl_step_x, le_size_t const dl_step_y );
+
+    };
+
 /*
     header - function prototypes
  */
-
-    /*! \brief error methods
-     *
-     *  This function analysis the provided error code and displays the related
-     *  error message on the error output (cerr). If the provided error code is
-     *  not recognised, the function does nothing.
-     *
-     *  \param lc_code Error code
-     */
-
-    void lc_error( int lc_code );
 
 /*
     header - inclusion guard

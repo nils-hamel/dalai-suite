@@ -96,6 +96,14 @@
 
             } break;
 
+            /* error message */
+            case ( LC_ERROR_RANDOM ) : {
+
+                /* display message */
+                std::cerr << "standard random range";
+
+            } break;
+
         };
 
         /* display format */

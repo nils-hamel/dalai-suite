@@ -18,44 +18,55 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   common-error.hpp
+    /*! \file   common-geometry.hpp
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  dalai-suite - common library - error module
+     *  dalai-suite - common library - geometry module
+     */
+
+    /*! \mainpage dalai-suite
+     *
+     *  \section _1 dalai-suite
+     *
+     *  The _dalai-suite_ is dedicated to the gathering and processing of
+     *  geographical 3-dimensional information. It allows to considers the most
+     *  common file formats and to convert them in a standardised and simple
+     *  format.
+     *
+     *  This standardised format allows to use the suite tools for color
+     *  edition, model cleaning and model hashing. In addition, the standard
+     *  format is also expected by the _eratosthene-suite_ implementing the EPFL
+     *  CDH DHLAB indexation server and its geographical 3-dimensional data
+     *  injection tools.
+     *
+     *  \section _2 Copyright and License
+     *
+     *  **dalai-suite** - Nils Hamel <br >
+     *  Copyright (c) 2016-2018 DHLAB, EPFL
+     *
+     *  This program is licensed under the terms of the GNU GPLv3.
      */
 
 /*
     header - inclusion guard
  */
 
-    # ifndef __LC_ERROR__
-    # define __LC_ERROR__
+    # ifndef __LC_GEOMETRY__
+    # define __LC_GEOMETRY__
 
 /*
     header - internal includes
  */
 
+    # include <eratosthene-include.h>
+
 /*
     header - external includes
  */
 
-    # include <iostream>
-
 /*
     header - preprocessor definitions
  */
-
-    /* define errors code */
-    # define LC_ERROR_NONE      ( 0 )
-    # define LC_ERROR_MEMORY    ( 1 )
-    # define LC_ERROR_IO_ACCESS ( 2 )
-    # define LC_ERROR_IO_READ   ( 3 )
-    # define LC_ERROR_IO_WRITE  ( 4 )
-    # define LC_ERROR_IO_REMOVE ( 5 )
-    # define LC_ERROR_FORMAT    ( 6 )
-    # define LC_ERROR_CONTEXT   ( 7 )
-    # define LC_ERROR_DOMAIN    ( 8 )
-    # define LC_ERROR_RANDOM    ( 9 )
 
 /*
     header - preprocessor macros
@@ -73,16 +84,9 @@
     header - function prototypes
  */
 
-    /*! \brief error methods
-     *
-     *  This function analysis the provided error code and displays the related
-     *  error message on the error output (cerr). If the provided error code is
-     *  not recognised, the function does nothing.
-     *
-     *  \param lc_code Error code
-     */
+    /* *** */
 
-    void lc_error( int lc_code );
+    le_real_t lc_geometry_squaredist( le_real_t * dl_vec_a, le_real_t * dl_vec_b );
 
 /*
     header - inclusion guard

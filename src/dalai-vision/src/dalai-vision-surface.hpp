@@ -40,9 +40,6 @@
  */
 
     # include <iostream>
-    # include <fstream>
-    # include <cstdlib>
-    # include <limits>
     # include <cmath>
     # include <GL/gl.h>
     # include <GL/glu.h>
@@ -54,8 +51,11 @@
     header - preprocessor definitions
  */
 
-    /* define memory allocation steps */
-    # define DL_SURFACE_STEP ( 8192 )
+    /* define memory segment */
+    # define DL_SURFACE_STEP ( 6561 )
+
+    /* define estimation minimum */
+    # define DL_SURFACE_MIN  ( 12 )
 
 /*
     header - preprocessor macros
@@ -132,29 +132,26 @@
     class dl_surface_t {
 
     private:
-        double    sf_cx;
-        double    sf_cy;
-        double    sf_cz;
-
-        double    sf_px;
-        double    sf_py;
-        double    sf_pz;
-        double    sf_pc;
-
-        double    sf_ux;
-        double    sf_uy;
-        double    sf_uz;
-        double    sf_vx;
-        double    sf_vy;
-        double    sf_vz;
-
-        float     sf_cr;
-        float     sf_cg;
-        float     sf_cb;
-
-        long long sf_size;
-        long long sf_virt;
-        double *  sf_data;
+        le_real_t   sf_cx;
+        le_real_t   sf_cy;
+        le_real_t   sf_cz;
+        le_real_t   sf_px;
+        le_real_t   sf_py;
+        le_real_t   sf_pz;
+        le_real_t   sf_pc;
+        le_real_t   sf_ux;
+        le_real_t   sf_uy;
+        le_real_t   sf_uz;
+        le_real_t   sf_vx;
+        le_real_t   sf_vy;
+        le_real_t   sf_vz;
+        le_real_t   sf_radius;
+        le_real_t   sf_r;
+        le_real_t   sf_g;
+        le_real_t   sf_b;
+        le_size_t   sf_size;
+        le_size_t   sf_virt;
+        le_real_t * sf_data;
 
     public:
 
@@ -176,16 +173,9 @@
 
     public:
 
-        /*! \brief accessor methods ( revoked )
-         *
-         *  This function allows to retrieve the plane equation parameter. The
-         *  normal vector components are placed in the first three components of
-         *  the provided array when the constant is placed in the fourth one.
-         *
-         *  \param dl_equation Array receiving the plane equation parameters
-         */
+        /* *** */
 
-        void sf_get_equation( double dl_equation[4] );
+        le_void_t sf_get_intersection( dl_surface_t & dl_s2, dl_surface_t & dl_s3 );
 
     public:
 
@@ -206,7 +196,7 @@
          *  \param dl_limit Estimation point minimal separation
          */
 
-        void sf_set_point_push( double const dl_x, double const dl_y, double const dl_z, double const dl_limit );
+        le_void_t sf_set_point_push( le_real_t const dl_x, le_real_t const dl_y, le_real_t const dl_z, le_real_t const dl_tolerence );
 
         /*! \brief mutator methods ( revoked )
          *
@@ -232,14 +222,7 @@
          *  \param dl_limit Distance threshold for the selection of the points
          */
 
-        void sf_set_point_auto( char const * const dl_data, long long const dl_size, double const dl_limit );
-
-        /*! \brief mutator methods ( revoked )
-         *
-         *  This function clears the surface estimation points array.
-         */
-
-        void sf_set_point_clear( void );
+        le_void_t sf_set_point_auto( le_byte_t const * const dl_data, le_size_t const dl_size, le_real_t const dl_tolerence, le_real_t const dl_grow );
 
     private:
 
@@ -266,9 +249,16 @@
          *  \return Returns true if a point has been removed, false otherwise.
          */
 
-        bool sf_set_point_remove( double const dl_x, double const dl_y, double const dl_z, double const dl_limit );
+        bool sf_set_point_remove( le_real_t const dl_x, le_real_t const dl_y, le_real_t const dl_z, le_real_t dl_tolerence );
 
     public:
+
+        /*! \brief mutator methods ( revoked )
+         *
+         *  This function clears the surface estimation points array.
+         */
+
+        le_void_t sf_set_point_clear( le_void_t );
 
         /*! \brief mutator methods ( revoked )
          *
@@ -279,7 +269,7 @@
          *  \param dl_cb Color blue component
          */
 
-        void sf_set_color( float const dl_cr, float const dl_cg, float const dl_cb );
+        le_void_t sf_set_color( le_real_t const dl_r, le_real_t const dl_g, le_real_t const dl_b );
 
     private:
 
@@ -297,7 +287,7 @@
          *  of the computed plane.
          */
 
-        void sf_set_equation( void );
+        le_void_t sf_set_equation( le_void_t );
 
         /*! \brief mutator methods ( revoked )
          *
@@ -307,7 +297,7 @@
          *  point and reallocate the memory when necessary.
          */
 
-        void sf_set_memory( void );
+        le_void_t sf_set_memory( le_size_t const dl_add );
 
         /*! \brief mutator methods ( revoked )
          *
@@ -315,34 +305,21 @@
          *  estimation points.
          */
 
-        void sf_set_release( void );
+        le_void_t sf_set_release( le_void_t );
+
+        /* *** */
+
+        le_void_t sf_set_pointsize( le_real_t const dl_factor );
 
     public:
 
-        /*! \brief render methods ( revoked )
-         *
-         *  This function renders, through opengl api, the plane hold by the
-         *  class. It represents the plane using a simple gl_quad built using
-         *  the estimation points centroid and the two orthonormal vectors hold
-         *  by the class. The surface color is used as the gl_quad color in
-         *  addition to transparency (blending).
-         *
-         *  The \b dl_w value is used as a multiplier of the unit vectors used
-         *  to compute the summits of the plane gl_quand representation.
-         *
-         *  \param dl_w Size of the plane representation
-         */
+        /* *** */
 
-        void sf_ren_surface( double const dl_w );
+        le_void_t sf_ren_surface( le_void_t );
 
-        /*! \brief render methods ( revoked )
-         *
-         *  This function is used to render, through opengl api, the estimation
-         *  points of the plane. It simply renders the points using the plane
-         *  color.
-         */
+        /* *** */
 
-        void sf_ren_point( void );
+        le_void_t sf_ren_blend( le_void_t );
 
     };
 

@@ -24,7 +24,7 @@
     source - constructor/destructor methods
  */
 
-    dl_surface_t:: dl_surface_t( void )
+    dl_surface_t::dl_surface_t( void )
 
         : sf_cx( 0.0 )
         , sf_cy( 0.0 )
@@ -42,24 +42,21 @@
         , sf_vy( 0.0 )
         , sf_vz( 0.0 )
 
-        , sf_cr( 0.0 )
-        , sf_cg( 0.0 )
-        , sf_cb( 0.0 )
+        , sf_radius( 0.0 )
+
+        , sf_r( 0.0 )
+        , sf_g( 0.0 )
+        , sf_b( 0.0 )
 
         , sf_size( 0 )
         , sf_virt( 0 )
         , sf_data( nullptr )
 
-    {
-
-        /* set memory buffer */
-        sf_set_memory();
-
-    }
+    { }
 
     dl_surface_t::~dl_surface_t( void ) {
 
-        /* release memory buffer */
+        /* release memory */
         sf_set_release();
 
     }
@@ -68,13 +65,43 @@
     source - accessor methods
  */
 
-    void dl_surface_t::sf_get_equation( double dl_equation[4] ) {
+    le_void_t dl_surface_t::sf_get_intersection( dl_surface_t & dl_s2, dl_surface_t & dl_s3 ) {
 
-        /* assign surface equation parameters */
-        dl_equation[0] = sf_px;
-        dl_equation[1] = sf_py;
-        dl_equation[2] = sf_pz;
-        dl_equation[3] = sf_pc;
+        /* check consistency */
+        if ( ( this->sf_size >= DL_SURFACE_MIN ) && ( dl_s2.sf_size >= DL_SURFACE_MIN ) && ( dl_s3.sf_size >= DL_SURFACE_MIN ) ) {
+
+            /* intersection variable */
+            le_real_t dl_xint( 0.0 );
+            le_real_t dl_yint( 0.0 );
+            le_real_t dl_zint( 0.0 );
+
+            /* determinant variable */
+            le_real_t dl_det( 0.0 );
+
+            /* compute surfaces determinant */
+            dl_det  += this->sf_px * ( dl_s2.sf_py * dl_s3.sf_pz - dl_s2.sf_pz * dl_s3.sf_py );
+            dl_det  -= this->sf_py * ( dl_s2.sf_px * dl_s3.sf_pz - dl_s2.sf_pz * dl_s3.sf_px );
+            dl_det  += this->sf_pz * ( dl_s2.sf_px * dl_s3.sf_py - dl_s2.sf_py * dl_s3.sf_px );
+
+            /* compute intersection */
+            dl_xint -= this->sf_pc * ( dl_s2.sf_py * dl_s3.sf_pz - dl_s2.sf_pz * dl_s3.sf_py );
+            dl_xint += this->sf_py * ( dl_s2.sf_pc * dl_s3.sf_pz - dl_s2.sf_pz * dl_s3.sf_pc );
+            dl_xint -= this->sf_pz * ( dl_s2.sf_pc * dl_s3.sf_py - dl_s2.sf_py * dl_s3.sf_pc );
+
+            /* compute intersection */
+            dl_yint -= this->sf_px * ( dl_s2.sf_pc * dl_s3.sf_pz - dl_s2.sf_pz * dl_s3.sf_pc );
+            dl_yint += this->sf_pc * ( dl_s2.sf_px * dl_s3.sf_pz - dl_s2.sf_pz * dl_s3.sf_px );
+            dl_yint -= this->sf_pz * ( dl_s2.sf_px * dl_s3.sf_pc - dl_s2.sf_pc * dl_s3.sf_px );
+
+            /* compute intersection */
+            dl_zint -= this->sf_px * ( dl_s2.sf_py * dl_s3.sf_pc - dl_s2.sf_pc * dl_s3.sf_py );
+            dl_zint += this->sf_py * ( dl_s2.sf_px * dl_s3.sf_pc - dl_s2.sf_pc * dl_s3.sf_px );
+            dl_zint -= this->sf_pc * ( dl_s2.sf_px * dl_s3.sf_py - dl_s2.sf_py * dl_s3.sf_px );
+
+            /* display intersection */
+            std::cerr << dl_xint / dl_det << " " << dl_yint / dl_det << " " << dl_zint / dl_det << std::endl;
+
+        }
 
     }
 
@@ -82,138 +109,117 @@
     source - mutator methods
  */
 
-    void dl_surface_t::sf_set_point_push( double const dl_x, double const dl_y, double const dl_z, double const dl_limit ) {
+    le_void_t dl_surface_t::sf_set_point_push( le_real_t const dl_x, le_real_t const dl_y, le_real_t const dl_z, le_real_t const dl_tolerence ) {
 
-        /* point removal procedure - abort on remove */
-        if ( sf_set_point_remove( dl_x, dl_y, dl_z, dl_limit ) != true ) {
+        /* check removal procedure */
+        if ( sf_set_point_remove( dl_x, dl_y, dl_z, dl_tolerence ) == false ) {
 
-            /* check buffer memory state */
-            if ( ( sf_size + 3 ) >= sf_virt ) {
+            /* memory management */
+            sf_set_memory( 3 );
 
-                /* update buffer memory */
-                sf_set_memory();
+            /* push point */
+            sf_data[sf_size - 3] = dl_x;
+            sf_data[sf_size - 2] = dl_y;
+            sf_data[sf_size - 1] = dl_z;
+
+            /* update equation */
+            sf_set_equation();
+
+        }
+
+    }
+
+    le_void_t dl_surface_t::sf_set_point_auto( le_byte_t const * const dl_data, le_size_t const dl_size, le_real_t const dl_tolerence, le_real_t const dl_grow ) {
+
+        /* buffer pointer variable */
+        le_real_t * dl_uv3p( nullptr );
+
+        /* distance variable */
+        le_real_t dl_distance( 0.0 );
+
+        /* check estimation constraint */
+        if ( sf_size < DL_SURFACE_MIN ) {
+
+            /* abort computation */
+            return;
+
+        }
+
+        /* empty stack */
+        sf_size = 0;
+
+        /* parsing model */
+        for ( le_size_t dl_parse( 0 ); dl_parse < dl_size; dl_parse += LE_UV3_RECORD ) {
+
+            /* compute buffer pointer */
+            dl_uv3p = ( le_real_t * ) ( dl_data + dl_parse );
+
+            /* apply proximity condition */
+            if ( std::fabs( sf_px * dl_uv3p[0] + sf_py * dl_uv3p[1] + sf_pz * dl_uv3p[2] + sf_pc ) <= dl_tolerence ) {
+
+                /* compute distance to centroid */
+                dl_distance  = ( dl_uv3p[0] - sf_cx ) * ( dl_uv3p[0] - sf_cx );
+                dl_distance += ( dl_uv3p[1] - sf_cy ) * ( dl_uv3p[1] - sf_cy );
+                dl_distance += ( dl_uv3p[2] - sf_cz ) * ( dl_uv3p[2] - sf_cz );
+
+                /* apply proximity condition */
+                if ( std::sqrt( dl_distance ) <= ( sf_radius + dl_grow ) ) {
+
+                    /* memory management */
+                    sf_set_memory( 3 );
+
+                    /* push element */
+                    sf_data[sf_size - 3] = dl_uv3p[0];
+                    sf_data[sf_size - 2] = dl_uv3p[1];
+                    sf_data[sf_size - 1] = dl_uv3p[2];
+
+                }
 
             }
 
-            /* push point on buffer */
-            sf_data[sf_size ++] = dl_x;
-            sf_data[sf_size ++] = dl_y;
-            sf_data[sf_size ++] = dl_z;
-
         }
 
-        /* recompute surface equation */
+        /* update equation */
         sf_set_equation();
 
     }
 
-    void dl_surface_t::sf_set_point_auto( char const * const dl_data, long long const dl_size, double const dl_limit ) {
+    bool dl_surface_t::sf_set_point_remove( le_real_t const dl_x, le_real_t const dl_y, le_real_t const dl_z, le_real_t dl_tolerence ) {
 
-        /* planimetric range variables */
-        double dl_range( 0.0 );
+        /* distance variable */
+        le_real_t dl_distance( 0.0 );
 
-        /* distance variables */
-        double dl_distance( 0.0 );
-
-        /* optimisation variables */
-        double dl_norm( sqrt( sf_px * sf_px + sf_py * sf_py + sf_pz * sf_pz ) );
-
-        /* array mapping variables */
-        double * dl_pose( nullptr );
+        /* compute squared tolerence */
+        dl_tolerence *= dl_tolerence;
 
         /* parsing surface elements */
-        for ( long long dl_parse( 0 ); dl_parse < sf_size; dl_parse += 3 ) {
+        for ( le_size_t dl_parse( 0 ); dl_parse < sf_size; dl_parse += 3 ) {
 
-            /* compute distance to surface centroid */
-            dl_distance  = ( sf_data[dl_parse + 0] - sf_cx ) * ( sf_data[dl_parse + 0] - sf_cx );
-            dl_distance += ( sf_data[dl_parse + 1] - sf_cy ) * ( sf_data[dl_parse + 1] - sf_cy );
-            dl_distance += ( sf_data[dl_parse + 2] - sf_cz ) * ( sf_data[dl_parse + 2] - sf_cz );
-
-            /* search for largest distance */
-            if ( dl_distance > dl_range ) dl_range = dl_distance;
-
-        }
-
-        /* reset surface buffer size */
-        sf_size = 0;
-
-        /* parsing model elements */
-        //for( long long dl_parse( 0 ); dl_parse < dl_size; dl_parse += 27 ) {
-        for ( long long dl_parse( 0 ); dl_parse < dl_size; dl_parse += LE_UV3_RECORD ) {
-
-            /* compute and assign array mapping */
-            dl_pose = ( double * ) ( dl_data + dl_parse );
-
-            /* compute distance to surface centroid */
-            dl_distance  = ( dl_pose[0] - sf_cx ) * ( dl_pose[0] - sf_cx );
-            dl_distance += ( dl_pose[1] - sf_cy ) * ( dl_pose[1] - sf_cy );
-            dl_distance += ( dl_pose[2] - sf_cz ) * ( dl_pose[2] - sf_cz );
-
-            /* check distance to surface centroid */
-            if ( dl_distance > dl_range ) continue;
-
-            /* compute orthogonal distance to surface */
-            dl_distance = fabs( sf_px * dl_pose[0] + sf_py * dl_pose[1] + sf_pz * dl_pose[2] + sf_pc ) / dl_norm;
-
-            /* check orthogonal distance to surface */
-            if ( dl_distance > dl_limit ) continue;
-
-            /* check buffer memory state */
-            if ( ( sf_size + 3 ) >= sf_virt ) sf_set_memory();
-
-            /* push element on buffer */
-            sf_data[sf_size ++] = dl_pose[0];
-            sf_data[sf_size ++] = dl_pose[1];
-            sf_data[sf_size ++] = dl_pose[2];
-
-        }
-
-        /* recompute surface equation */
-        sf_set_equation();
-
-    }
-
-    void dl_surface_t::sf_set_point_clear( void ) {
-
-        /* reset surface buffer size */
-        sf_size = 0;
-
-    }
-
-    bool dl_surface_t::sf_set_point_remove( double const dl_x, double const dl_y, double const dl_z, double const dl_limit ) {
-
-        /* distance variables */
-        double dl_distance( 0.0 );
-
-        /* optimisation variables */
-        double dl_condition( dl_limit * dl_limit );
-
-        /* parsing surface elements */
-        for ( long long dl_parse( 0 ); dl_parse < sf_size; dl_parse += 3 ) {
-
-            /* compute distance to pushed element */
+            /* compute point-point distance */
             dl_distance  = ( sf_data[dl_parse + 0] - dl_x ) * ( sf_data[dl_parse + 0] - dl_x );
             dl_distance += ( sf_data[dl_parse + 1] - dl_y ) * ( sf_data[dl_parse + 1] - dl_y );
             dl_distance += ( sf_data[dl_parse + 2] - dl_z ) * ( sf_data[dl_parse + 2] - dl_z );
 
-            /* check distance to pushed element */
-            if ( dl_distance > dl_condition ) continue;
+            /* apply condition */
+            if ( dl_distance <= dl_tolerence ) {
 
-            /* shift surface elements */
-            for ( long long dl_index( dl_parse + 3 ); dl_index < sf_size; dl_index += 3 ) {
+                /* stack element shift */
+                for ( le_size_t dl_index( dl_parse + 3 ); dl_index < sf_size; dl_index += 3 ) {
 
-                /* shift element */
-                sf_data[dl_index - 3] = sf_data[dl_index + 0];
-                sf_data[dl_index - 2] = sf_data[dl_index + 1];
-                sf_data[dl_index - 1] = sf_data[dl_index + 2];
+                    /* shift element */
+                    sf_data[dl_index - 3] = sf_data[dl_index + 0];
+                    sf_data[dl_index - 2] = sf_data[dl_index + 1];
+                    sf_data[dl_index - 1] = sf_data[dl_index + 2];
+
+                }
+
+                /* update stack size */
+                sf_size -= 3;
+
+                /* return answer */
+                return( true );
 
             }
-
-            /* update surface buffer size */
-            sf_size -= 3;
-
-            /* return status */
-            return( true );
 
         }
 
@@ -222,32 +228,50 @@
 
     }
 
-    void dl_surface_t::sf_set_color( float const dl_cr, float const dl_cg, float const dl_cb ) {
+    le_void_t dl_surface_t::sf_set_point_clear( le_void_t ) {
 
-        /* assign surface color */
-        sf_cr = dl_cr;
-        sf_cg = dl_cg;
-        sf_cb = dl_cb;
+        /* empty stack */
+        sf_size = 0;
 
     }
 
-    void dl_surface_t::sf_set_equation( void ) {
+    le_void_t dl_surface_t::sf_set_color( le_real_t const dl_r, le_real_t const dl_g, le_real_t const dl_b ) {
+
+        /* assign surface color */
+        sf_r = dl_r;
+        sf_g = dl_g;
+        sf_b = dl_b;
+
+    }
+
+    le_void_t dl_surface_t::sf_set_equation( le_void_t ) {
 
         /* matrix variables */
         Eigen::MatrixXd dl_matrix( 3, sf_size / 3 );
 
-        /* check consistency - abort computation */
-        if ( sf_size < 12 ) return;
+        /* parsing variable */
+        le_size_t dl_index( 0 );
+
+        /* distance variable */
+        le_real_t dl_radius( 0.0 );
+
+        /* check estimation constraint */
+        if ( sf_size < DL_SURFACE_MIN ) {
+
+            /* abort computation */
+            return;
+
+        }
 
         /* reset surface centroid */
         sf_cx = 0.0;
         sf_cy = 0.0;
         sf_cz = 0.0;
 
-        /* compute surface centroid */
-        for ( long long dl_parse( 0 ); dl_parse < sf_size; dl_parse += 3 ) {
+        /* surface point accumulation */
+        for ( le_size_t dl_parse( 0 ); dl_parse < sf_size; dl_parse += 3 ) {
 
-            /* accumulate elements coordinates */
+            /* accumulate coordinates */
             sf_cx += sf_data[dl_parse + 0];
             sf_cy += sf_data[dl_parse + 1];
             sf_cz += sf_data[dl_parse + 2];
@@ -259,29 +283,49 @@
         sf_cy /= double( sf_size / 3 );
         sf_cz /= double( sf_size / 3 );
 
+        /* reset surface radius */
+        sf_radius = 0.0;
+
         /* initialise matrix elements */
-        for ( long long dl_parse( 0 ); dl_parse < sf_size; dl_parse += 3 ) {
+        for ( le_size_t dl_parse( 0 ); dl_parse < sf_size; dl_parse += 3 ) {
+
+            /* compute matrix index */
+            dl_index = dl_parse / 3;
 
             /* initialise elements */
-            dl_matrix(0,dl_parse / 3) = sf_data[dl_parse + 0] - sf_cx;
-            dl_matrix(1,dl_parse / 3) = sf_data[dl_parse + 1] - sf_cy;
-            dl_matrix(2,dl_parse / 3) = sf_data[dl_parse + 2] - sf_cz;
+            dl_matrix(0,dl_index) = sf_data[dl_parse + 0] - sf_cx;
+            dl_matrix(1,dl_index) = sf_data[dl_parse + 1] - sf_cy;
+            dl_matrix(2,dl_index) = sf_data[dl_parse + 2] - sf_cz;
+
+            /* compute distance to centroid */
+            dl_radius = std::sqrt( 
+
+                dl_matrix(0,dl_index) * dl_matrix(0,dl_index) + 
+                dl_matrix(1,dl_index) * dl_matrix(1,dl_index) + 
+                dl_matrix(2,dl_index) * dl_matrix(2,dl_index) 
+
+            );
+
+            /* maximum radius detection */
+            sf_radius = ( dl_radius > sf_radius ) ? dl_radius : sf_radius;
 
         }
 
-        /* compute matrix svd decomposition */
+        /* compute svd decomposition */
         Eigen::JacobiSVD <Eigen::MatrixXd> dl_svd( dl_matrix, Eigen::ComputeFullU );
 
-        /* assign computed surface normal */
+        /* assign surface normal */
         sf_px = dl_svd.matrixU()(0,2);
         sf_py = dl_svd.matrixU()(1,2);
         sf_pz = dl_svd.matrixU()(2,2);
 
-        /* compute surface last component */
+        /* compute surface constant */
         sf_pc = - sf_px * sf_cx - sf_py * sf_cy - sf_pz * sf_cz;
 
+        /* perpare norm */
+        sf_ux = std::sqrt( + sf_px * sf_px + sf_py * sf_py );
+
         /* compute surface vector */
-        sf_ux = + sf_px * sf_px + sf_py * sf_py;
         sf_uy = - sf_px / sf_ux;
         sf_ux = + sf_py / sf_ux;
         sf_uz = + 0.0;
@@ -293,38 +337,55 @@
 
     }
 
-    void dl_surface_t::sf_set_memory( void ) {
+    le_void_t dl_surface_t::sf_set_memory( le_size_t const dl_add ) {
 
-        /* memory swap variables */
-        double * dl_swap( nullptr );
+        /* swap variable */
+        le_real_t * dl_swap( nullptr );
 
-        /* re-allocate and check buffer memory */
-        if ( ( dl_swap = ( double * ) realloc( sf_data, ( sf_virt + DL_SURFACE_STEP ) * sizeof( double ) ) ) == nullptr ) {
+        /* check requierment */
+        if ( ( sf_size += dl_add ) > sf_virt ) {
 
-            /* send message */
-            throw( LC_ERROR_MEMORY );
+            /* update virtual size */
+            sf_virt += DL_SURFACE_STEP;
+
+            /* buffer memory re-allocation */
+            if ( ( dl_swap = ( ( le_real_t * ) realloc( sf_data, sf_virt * sizeof( le_real_t ) ) ) ) == nullptr ) {
+
+                /* send message */
+                throw( LC_ERROR_MEMORY );
+
+            }
+
+            /* update pointer */
+            sf_data = dl_swap;
 
         }
 
-        /* update virtual size */
-        sf_virt += DL_SURFACE_STEP;
-
-        /* assign memory pointer */
-        sf_data = dl_swap;
-
     }
 
-    void dl_surface_t::sf_set_release( void ) {
+    le_void_t dl_surface_t::sf_set_release( le_void_t ) {
 
-        /* reset surface buffer size and virtual size */
-        sf_size = 0;
-        sf_virt = 0;
+        /* reset stack size */
+        sf_size = ( sf_virt = 0 );
 
         /* release buffer memory */
         free( sf_data );
 
-        /* invalidate buffer pointer */
+        /* pointer invalidation */
         sf_data = nullptr;
+
+    }
+
+    le_void_t dl_surface_t::sf_set_pointsize( le_real_t const dl_factor ) {
+
+        /* parameter variable */
+        GLint dl_pointsize( 0 );
+
+        /* retrieve point size */
+        glGetIntegerv( GL_POINT_SIZE, & dl_pointsize );
+
+        /* update point size */
+        glPointSize( dl_pointsize * dl_factor );
 
     }
 
@@ -332,42 +393,102 @@
     source - rendering methods
  */
 
-    void dl_surface_t::sf_ren_surface( double const dl_w ) {
+    le_void_t dl_surface_t::sf_ren_surface( le_void_t ) {
 
-        /* check consistency - abort rendering */
-        if ( sf_size < 12 ) return;
+        /* angle variable */
+        le_real_t dl_cos( 0.0 );
+        le_real_t dl_sin( 0.0 );
 
-        /* assign surface color */
-        glColor4f( sf_cr, sf_cg, sf_cb, 0.25 );
+        /* assign color */
+        glColor4f( sf_r, sf_g, sf_b, 0.6 );
 
-        /* opengl primitives */
-        glBegin( GL_QUADS );
-
-            glVertex3f( sf_cx + ( + sf_ux + sf_vx ) * dl_w, sf_cy + ( + sf_uy + sf_vy ) * dl_w, sf_cz + ( + sf_uz + sf_vz ) * dl_w );
-            glVertex3f( sf_cx + ( - sf_ux + sf_vx ) * dl_w, sf_cy + ( - sf_uy + sf_vy ) * dl_w, sf_cz + ( - sf_uz + sf_vz ) * dl_w );
-            glVertex3f( sf_cx + ( - sf_ux - sf_vx ) * dl_w, sf_cy + ( - sf_uy - sf_vy ) * dl_w, sf_cz + ( - sf_uz - sf_vz ) * dl_w );
-            glVertex3f( sf_cx + ( + sf_ux - sf_vx ) * dl_w, sf_cy + ( + sf_uy - sf_vy ) * dl_w, sf_cz + ( + sf_uz - sf_vz ) * dl_w );
-
-        /* opengl primitives */
-        glEnd();
-
-    }
-
-    void dl_surface_t::sf_ren_point( void ) {
-
-        /* assign surface color */
-        glColor3f( sf_cr, sf_cg, sf_cb );
-
-        /* update opengl array state */
+        /* update array state */
         glEnableClientState ( GL_VERTEX_ARRAY );
         glDisableClientState( GL_COLOR_ARRAY  );
 
-        /* update opengl array pointer */
+        /* update array pointer */
         glVertexPointer( 3, GL_DOUBLE, 0, sf_data );
 
-        /* display opengl primitive arrays */
+        /* update point size */
+        sf_set_pointsize( 2.0 );
+
+        /* display surface points */
         glDrawArrays( GL_POINTS, 0, sf_size / 3 );
+
+        /* update point size */
+        sf_set_pointsize( 0.5 );
+
+        /* check surface estimation */
+        if ( sf_size >= DL_SURFACE_MIN ) {
+
+            /* primitive bloc */
+            glBegin( GL_LINE_LOOP );
+
+            /* parsing angle */
+            for ( le_real_t dl_parse( 0.0 ); dl_parse < LE_2P; dl_parse += ( LE_2P / 90.0 ) ) {
+
+                /* compute angle */
+                dl_cos = std::cos( dl_parse );
+                dl_sin = std::sin( dl_parse );
+
+                /* primitive vertex */
+                glVertex3f( 
+
+                    sf_cx + ( sf_ux * dl_cos + sf_vx * dl_sin ) * sf_radius * 5.0,
+                    sf_cy + ( sf_uy * dl_cos + sf_vy * dl_sin ) * sf_radius * 5.0,
+                    sf_cz + ( sf_uz * dl_cos + sf_vz * dl_sin ) * sf_radius * 5.0
+
+                );
+
+            }
+
+            /* primitive bloc */
+            glEnd();
+
+        }
 
     }
 
+    le_void_t dl_surface_t::sf_ren_blend( le_void_t ) {
+
+        /* angle variable */
+        le_real_t dl_cos( 0.0 );
+        le_real_t dl_sin( 0.0 );
+
+        /* assign color */
+        glColor4f( sf_r, sf_g, sf_b, 0.6 );
+
+        /* check surface estimation */
+        if ( sf_size >= DL_SURFACE_MIN ) {
+
+            /* update blending state */
+            glEnable( GL_BLEND );
+
+            /* primitive bloc */
+            glBegin( GL_TRIANGLE_FAN );
+
+            /* parsing angle */
+            for ( le_real_t dl_parse( 0.0 ); dl_parse < LE_2P; dl_parse += ( LE_2P / 90.0 ) ) {
+
+                /* compute angle */
+                dl_cos = std::cos( dl_parse );
+                dl_sin = std::sin( dl_parse );
+
+                /* primitive vertex */
+                glVertex3f( 
+
+                    sf_cx + ( sf_ux * dl_cos + sf_vx * dl_sin ) * sf_radius * 5.0,
+                    sf_cy + ( sf_uy * dl_cos + sf_vy * dl_sin ) * sf_radius * 5.0,
+                    sf_cz + ( sf_uz * dl_cos + sf_vz * dl_sin ) * sf_radius * 5.0
+
+                );
+
+            }
+
+            /* primitive bloc */
+            glEnd();
+
+        }
+
+    }
 

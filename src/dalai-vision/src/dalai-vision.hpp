@@ -58,6 +58,7 @@
     header - internal includes
  */
 
+    # include "dalai-vision-arcball.hpp"
     # include "dalai-vision-model.hpp"
 
 /*
@@ -66,20 +67,17 @@
 
     # include <iostream>
     # include <cstdlib>
+    # include <cstring>
     # include <cmath>
     # include <GL/gl.h>
     # include <GL/glu.h>
     # include <SDL2/SDL.h>
     # include <common-include.hpp>
+    # include <eratosthene-include.h>
 
 /*
     header - preprocessor definitions
  */
-
-    /* define mouse motion factors */
-    # define DL_INERTIA_ANGLE  ( 0.002 )
-    # define DL_INERTIA_TRANS  ( 0.15 )
-    # define DL_INERTIA_WZOOM  ( 20.0 )
 
 /*
     header - preprocessor macros
@@ -121,7 +119,7 @@
      *  Opengl near plane distance
      *  \var dl_vision_t::vs_far
      *  Opengl far plane distance
-     *  \var dl_vision_t::vs_state
+     *  \var dl_vision_t::vs_execute
      *  Execution loop state
      *  \var dl_vision_t::vs_angle_x
      *  Rotation angle of the point of view along the x-axis
@@ -150,30 +148,15 @@
     class dl_vision_t {
 
     private:
+
         SDL_Window *  vs_window;
         SDL_GLContext vs_context;
-        SDL_Event     dl_event;
-
+        bool          vs_execute;
         int           vs_width;
         int           vs_height;
-        float         vs_near;
-        float         vs_far;
-
-        bool          vs_state;
-
-        float         vs_angle_x;
-        float         vs_angle_y;
-        float         vs_angle_z;
-        float         vs_trans_x;
-        float         vs_trans_y;
-        float         vs_trans_z;
-
-        int           vs_mouse_x;
-        int           vs_mouse_y;
-
-        GLdouble      vs_modelview[16];
-        GLdouble      vs_projection[16];
-        GLint         vs_viewport[4];
+        le_size_t     vs_init_x;
+        le_size_t     vs_init_y;
+        le_real_t     vs_dist_z;
 
     public:
 
@@ -184,7 +167,7 @@
          *  configures the opengl graphical context.
          */
 
-        dl_vision_t();
+        dl_vision_t( le_real_t const dl_model_span );
 
         /*! \brief destructor methods ( revoked )
          *
@@ -196,27 +179,13 @@
 
     public:
 
-        /*! \brief accessor methods ( revoked )
-         *
-         *  This function converts the provided mouse click coordinates into the
-         *  coordinates of a 3d point that belong to the model and corresponding
-         *  to the click position.
-         *
-         *  It returns true as a model point is found under the mouse click,
-         *  false otherwise.
-         *
-         *  \param  dl_mx Mouse click x-position
-         *  \param  dl_my Mouse click y-position
-         *  \param  dl_px Model point x-coordinate
-         *  \param  dl_py Model point y-coordinate
-         *  \param  dl_pz Model point z-coordinate
-         *
-         *  \return Returns true on success, false otherwise
-         */
+        /* *** */
 
-        bool vs_get_click( int const dl_mx, int const dl_my, double * const dl_px, double * const dl_py, double * const dl_pz );
+        le_size_t vs_get_width( le_void_t );
 
-    public:
+        /* *** */
+
+        le_size_t vs_get_height( le_void_t );
 
         /*! \brief mutator methods ( revoked )
          *
@@ -229,19 +198,11 @@
          *  \param dl_model Model class
          */
 
-        void vs_set_projection( dl_model_t & dl_model );
+        le_void_t vs_set_projection( dl_model_t & dl_model );
 
-        /*! \brief mutator methods ( revoked )
-         *
-         *  This function sets the opengl initial point of view. It resets the
-         *  view angles to zero and resets the view translation using the model
-         *  largest diagonal. The initial position of the point of view offers
-         *  an overall view of the model.
-         *
-         *  \param dl_model Model class
-         */
+        /* *** */
 
-        void vs_set_viewpoint( dl_model_t & dl_model );
+        le_void_t vs_set_center( le_size_t const dl_click_x, le_size_t const dl_click_y, dl_arcball_t & dl_arcball, dl_model_t & dl_model );
 
     public:
 
@@ -256,7 +217,7 @@
          *  \param dl_model Model class
          */
 
-        void vs_execution( dl_model_t & dl_model );
+        le_void_t vs_execution( dl_arcball_t & dl_arcball, dl_model_t & dl_model );
 
     private:
 
@@ -269,7 +230,7 @@
          *  \param dl_model Model class
          */
 
-        void vs_keydown( SDL_KeyboardEvent dl_event, dl_model_t & dl_model );
+        le_void_t vs_keydown( SDL_KeyboardEvent dl_event, dl_arcball_t & dl_arcball, dl_model_t & dl_model );
 
         /*! \brief event methods ( revoked )
          *
@@ -280,7 +241,7 @@
          *  \param dl_model Model class
          */
 
-        void vs_button( SDL_MouseButtonEvent dl_event, dl_model_t & dl_model );
+        le_void_t vs_button( SDL_MouseButtonEvent dl_event, dl_arcball_t & dl_arcball, dl_model_t & dl_model );
 
         /*! \brief event methods ( revoked )
          *
@@ -291,7 +252,7 @@
          *  \param dl_model Model class
          */
 
-        void vs_motion( SDL_MouseMotionEvent dl_event, dl_model_t & dl_model );
+        le_void_t vs_motion( SDL_MouseMotionEvent dl_event, dl_arcball_t & dl_arcball, dl_model_t & dl_model );
 
         /*! \brief event methods ( revoked )
          *
@@ -302,7 +263,7 @@
          *  \param dl_model Model class
          */
 
-        void vs_wheel( SDL_MouseWheelEvent dl_event, dl_model_t & dl_model );
+        le_void_t vs_wheel( SDL_MouseWheelEvent dl_event, dl_arcball_t & dl_arcball, dl_model_t & dl_model );
 
     };
 

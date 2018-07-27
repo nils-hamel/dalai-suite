@@ -43,12 +43,11 @@
 
     # include <iostream>
     # include <fstream>
-    # include <limits>
+    # include <cstdlib>
+    # include <ctime>
     # include <cmath>
-    # include <cstdio>
     # include <GL/gl.h>
     # include <GL/glu.h>
-    # include <Eigen/Dense>
     # include <common-include.hpp>
     # include <eratosthene-include.h>
 
@@ -56,8 +55,8 @@
     header - preprocessor definitions
  */
 
-    /* define array mean estimation count */
-    # define DL_MODEL_MDMVC  ( 32 )
+    /* define mdmv estimation sample */
+    # define DL_MODEL_SAMPLE ( 32 )
 
 /*
     header - preprocessor macros
@@ -95,7 +94,7 @@
      *  Model points coordinates and colors array
      *  \var dl_model_t::ml_psize
      *  Model rendering point size
-     *  \var dl_model_t::ml_sflag
+     *  \var dl_model_t::ml_hide
      *  If non zero, triggers the display of the surfaces
      *  \var dl_model_t::ml_pflag
      *  If non zero, triggers the display of the surfaces estimation points
@@ -113,46 +112,34 @@
      *  Model maximum z-coordinate
      *  \var dl_model_t::ml_mdmv
      *  Model minimum distance mean value
-     *  \var dl_model_t::ml_xcen
+     *  \var dl_model_t::ml_x
      *  Model pseudo-center x-coordinate
-     *  \var dl_model_t::ml_ycen
+     *  \var dl_model_t::ml_y
      *  Model pseudo-center y-coordinate
-     *  \var dl_model_t::ml_zcen
+     *  \var dl_model_t::ml_z
      *  Model pseudo-center z-coordinate
-     *  \var dl_model_t::ml_sact
+     *  \var dl_model_t::ml_active
      *  Highlighted surface index
-     *  \var dl_model_t::ml_s
+     *  \var dl_model_t::ml_surface
      *  Model surfaces array
      */
 
     class dl_model_t {
 
     private:
-        long long    ml_size;
-        char *       ml_data;
-
-        GLuint       ml_gsize[3];
-        GLuint *     ml_gdata[3];
-        
-        long long    ml_psize;
-        long long    ml_sflag;
-        long long    ml_pflag;
-
-        double       ml_xmin;
-        double       ml_xmax;
-        double       ml_ymin;
-        double       ml_ymax;
-        double       ml_zmin;
-        double       ml_zmax;
-
-        double       ml_mdmv;
-
-        double       ml_xcen;
-        double       ml_ycen;
-        double       ml_zcen;
-
-        long long    ml_sact;
-        dl_surface_t ml_s[3];
+        le_size_t      ml_size;
+        le_size_t      ml_real;
+        le_byte_t    * ml_data;
+        le_real_t      ml_x;
+        le_real_t      ml_y;
+        le_real_t      ml_z;
+        le_enum_t      ml_hide;
+        le_real_t      ml_mdmv;
+        le_real_t      ml_span;
+        GLuint         ml_count[2];
+        GLuint       * ml_index[2];
+        le_size_t      ml_active;
+        dl_surface_t   ml_surface[3];
 
     public:
 
@@ -168,7 +155,7 @@
          *  \param ml_model Path to the uf3 file containing the model
          */
 
-        dl_model_t( char * ml_model );
+        dl_model_t( le_char_t const * const dl_path );
 
         /*! \brief destructor methods ( revoked )
          *
@@ -183,22 +170,13 @@
 
         /*! \brief accessor methods ( revoked )
          *
-         *  This function simply returns the model minimum distance mean value.
-         *
-         *  \return Returns model minimum distance mean value
-         */
-
-        double ml_get_mdmv( void );
-
-        /*! \brief accessor methods ( revoked )
-         *
          *  This function returns the largest diagonal of the box containing the
          *  whole model.
          *
          *  \return Returns model largest diagonal
          */
 
-        double ml_get_span( void );
+        le_real_t ml_get_span( le_void_t );
 
         /*! \brief accessor methods ( revoked )
          *
@@ -207,7 +185,11 @@
          *  of the model.
          */
 
-        void ml_get_intersect( void );
+        le_void_t ml_get_intersection( le_void_t );
+
+        /* *** */
+
+        le_void_t ml_get_translation( le_void_t );
 
     public:
 
@@ -222,7 +204,7 @@
          *  \param dl_z Pseudo-center z-coordinate
          */
 
-        void ml_set_center( double const dl_x, double const dl_y, double const dl_z );
+        le_void_t ml_set_center( le_real_t const dl_x, le_real_t const dl_y, le_real_t const dl_z );
 
         /*! \brief mutator methods ( revoked )
          *
@@ -233,7 +215,7 @@
          *  \param dl_active Highlighted surface index
          */
 
-        void ml_set_surface( long long const dl_active );
+        le_void_t ml_set_surface( le_size_t const dl_surface );
 
         /*! \brief mutator methods ( revoked )
          *
@@ -241,17 +223,7 @@
          *  surfaces.
          */
 
-        void ml_set_surface_switch( void );
-
-        /*! \brief mutator methods ( revoked )
-         *
-         *  This function allows to set the size of the points used to render
-         *  the class model. The provided size is interpreted in pixels.
-         *
-         *  \param dl_pointsize Size, in pixels, of the rendering points
-         */
-
-        void ml_set_pointsize( long long const dl_pointsize );
+        le_void_t ml_set_switch( le_void_t );
 
         /*! \brief mutator methods ( revoked )
          *
@@ -263,7 +235,7 @@
          *  estimation points.
          */
 
-        void ml_set_point_push( void );
+        le_void_t ml_set_push( le_void_t );
 
         /*! \brief mutator methods ( revoked )
          *
@@ -271,7 +243,7 @@
          *  points of the highlighted surface.
          */
 
-        void ml_set_point_auto( void );
+        le_void_t ml_set_auto( le_size_t const dl_mode );
 
         /*! \brief mutator methods ( revoked )
          *
@@ -279,23 +251,25 @@
          *  points of the highlighted surface.
          */
 
-        void ml_set_point_clear( void );
+        le_void_t ml_set_clear( le_void_t );
 
     private:
 
-        /*! \brief mutator methods ( revoked )
-         *
-         *  This function performs the analysis of the model imported in the
-         *  class. It is usually used after model importation.
-         *
-         *  In addition to the detection of the lowest and largest coordinates
-         *  of the model in each direction, this function also computes an
-         *  estimation of the model minimum distance mean value.
-         */
+        /* *** */
 
-        void ml_set_analysis( void );
+        le_void_t ml_set_analysis( le_void_t );
 
     public:
+
+        /*! \brief rendering methods ( revoked )
+         *
+         *  This function renders, using opengl api, the model frame axis. It
+         *  considers the model minimum distance mean value for the rendering
+         *  of the axis to allow the user to have an idea of this important
+         *  value.
+         */
+
+        le_void_t ml_ren_frame( le_void_t );
 
         /*! \brief rendering methods ( revoked )
          *
@@ -306,26 +280,7 @@
          *  the model.
          */
 
-        void ml_ren_model( void );
-
-        /*! \brief rendering methods ( revoked )
-         *
-         *  This function invoke the rendering of the model surfaces and their
-         *  associated estimation points by calling their respective rendering
-         *  methods. The rendering flags are checked by this function.
-         */
-
-        void ml_ren_surface( void );
-
-        /*! \brief rendering methods ( revoked )
-         *
-         *  This function renders, using opengl api, the model frame axis. It
-         *  considers the model minimum distance mean value for the rendering
-         *  of the axis to allow the user to have an idea of this important
-         *  value.
-         */
-
-        void ml_ren_frame( void );
+        le_void_t ml_ren_model( le_void_t );
 
     };
 
