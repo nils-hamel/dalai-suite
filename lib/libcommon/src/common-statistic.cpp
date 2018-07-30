@@ -24,113 +24,116 @@
     source - statistical methods
  */
 
-    le_real_t lc_statistic_mdmv( std::ifstream & lc_istream, int64_t const lc_count ) {
+    le_real_t lc_statistic_mdmv( std::ifstream & lc_istream, le_size_t const lc_count ) {
 
-        /* array mapping variables */
-        le_real_t * lc_posei( nullptr );
-        le_real_t * lc_poses( nullptr );
+        /* value variable */
+        le_real_t * lc_value( nullptr );
 
-        /* stream size variables */
+        /* buffer variable */  
+        le_byte_t * lc_sample( nullptr );
+
+        /* buffer variable */
+        le_byte_t * lc_buffer( nullptr );
+
+        /* reading variable */
+        le_size_t lc_read( 1 );
+
+        /* size variable */
         le_size_t lc_size( 0 );
 
-        /* distance variables */
+        /* distance variable */
         le_real_t lc_distance( 0.0 );
 
-        /* buffer variables */
-        le_byte_t * lc_sample( nullptr );
-        le_byte_t * lc_chunks( nullptr );
-        le_real_t * lc_values( nullptr );
+        /* buffer pointer variable */
+        le_real_t * lc_uv3p( nullptr );
 
-        /* allocate and check buffer memory */
-        if ( ( lc_sample = new ( std::nothrow ) le_byte_t[lc_count * LE_UV3_RECORD] ) == nullptr ) {
+        /* buffer pointer variable */
+        le_real_t * lc_uv3s( nullptr );
 
-            /* send message */
-            throw( LC_ERROR_MEMORY );
-
-        }
-
-        /* allocate and check buffer memory */
-        if ( ( lc_chunks = new ( std::nothrow ) le_byte_t[LE_UV3_CHUNK * LE_UV3_RECORD] ) == nullptr ) {
-
-            /* send message */
-            throw( LC_ERROR_MEMORY );
-
-        }
-
-        /* allocate and check buffer memory */
-        if ( ( lc_values = new ( std::nothrow ) le_real_t[lc_count] ) == nullptr ) {
-
-            /* send message */
-            throw( LC_ERROR_MEMORY );
-
-        }
-
-        /* initialise values array */
-        for ( le_size_t lc_parse( 0 ); lc_parse < lc_count; lc_parse ++ ) {
-
-            /* assign initial value */
-            lc_values[lc_parse] = std::numeric_limits<double>::max();
-
-        }
-
-        /* clear input stream */
+        /* reset stream */
         lc_istream.clear();
 
-        /* set input stream offset */
+        /* stream offset to end */
         lc_istream.seekg( 0, std::ios::end );
 
         /* retrieve stream size */
         lc_size = lc_istream.tellg();
 
-        /* set input stream offset */
-        lc_istream.seekg( 0, std::ios::beg );
+        /* allocate buffer memory */
+        if ( ( lc_buffer = new ( std::nothrow ) le_byte_t[LE_UV3_RECORD * LE_UV3_CHUNK] ) == nullptr ) {
 
-        /* create sample array */
-        for ( le_size_t lc_parse( 0 ); lc_parse < lc_count; lc_parse ++ ) {
-
-            /* assign stream position */
-            lc_istream.seekg( lc_parse * ( ( ( lc_size / LE_UV3_RECORD ) / lc_count ) * LE_UV3_RECORD ) );
-
-            /* read sample values */
-            lc_istream.read( ( char * ) ( lc_sample + ( lc_parse * LE_UV3_RECORD ) ), LE_UV3_RECORD );
+            /* send message */
+            throw( LC_ERROR_MEMORY );
 
         }
 
-        /* clear input stream */
+        /* allocate buffer memory */
+        if ( ( lc_sample = new ( std::nothrow ) le_byte_t[LE_UV3_RECORD * lc_count] ) == nullptr ) {
+
+            /* send message */
+            throw( LC_ERROR_MEMORY );
+
+        }
+
+        /* allocate buffer memory */
+        if ( ( lc_value = new ( std::nothrow ) le_real_t[lc_count] ) == nullptr ) {
+
+            /* send message */
+            throw( LC_ERROR_MEMORY );
+
+        }
+
+        /* initialise arrays */
+        for ( le_size_t lc_parse( 0 ); lc_parse < lc_count; lc_parse ++ ) {
+
+            /* initialise value array */
+            lc_value[lc_parse] = std::numeric_limits<le_real_t>::max();
+
+            /* select homogeneous stream record */
+            lc_istream.seekg( ( ( lc_size / LE_UV3_RECORD ) / lc_count ) * LE_UV3_RECORD * lc_parse );
+
+            /* import selected stream record */
+            lc_istream.read( ( char * ) ( lc_sample + lc_parse * LE_UV3_RECORD ), LE_UV3_RECORD );
+
+        }
+
+        /* reset stream */
         lc_istream.clear();
 
-        /* set input stream offset */
+        /* stream offset to begining */
         lc_istream.seekg( 0, std::ios::beg );
 
-        /* reading input stream chunks */
-        do {
+        /* stream chunk reading */
+        while ( lc_read > 0 ) {
 
-            /* read input stream chunk */
-            lc_istream.read( ( char * ) lc_chunks, LE_UV3_CHUNK * LE_UV3_RECORD );
+            /* read stream chunk */
+            lc_istream.read( ( char * ) lc_buffer, LE_UV3_RECORD * LE_UV3_CHUNK );
 
-            /* parsing input stream chunk */
-            for ( le_size_t lc_parse( 0 ), lc_limit( lc_istream.gcount() ); lc_parse < lc_limit; lc_parse += LE_UV3_RECORD ) {
+            /* read byte count */
+            lc_read = lc_istream.gcount();
 
-                /* compute and assign array mapping */
-                lc_posei = ( le_real_t * ) ( lc_chunks + lc_parse );
+            /* parsing chunk */
+            for ( le_size_t lc_parse( 0 ); lc_parse < lc_read; lc_parse += LE_UV3_RECORD ) {
+
+                /* create buffer pointer */
+                lc_uv3p = ( le_real_t * ) ( lc_buffer + lc_parse );
 
                 /* parsing sample array */
                 for ( le_size_t lc_index( 0 ); lc_index < lc_count; lc_index ++ ) {
 
-                    /* compute and assign array mapping */
-                    lc_poses = ( le_real_t * ) ( lc_sample + ( lc_index * LE_UV3_RECORD ) );
+                    /* create buffer pointer */
+                    lc_uv3s = ( le_real_t * ) ( lc_sample + lc_index * LE_UV3_RECORD );
 
                     /* compute and check distance */
-                    if ( ( lc_distance =
+                    if ( ( lc_distance = lc_geometry_squaredist( lc_uv3p, lc_uv3s ) ) < lc_value[lc_index] ) {
 
-                        ( lc_posei[0] - lc_poses[0] ) * ( lc_posei[0] - lc_poses[0] ) +
-                        ( lc_posei[1] - lc_poses[1] ) * ( lc_posei[1] - lc_poses[1] ) +
-                        ( lc_posei[2] - lc_poses[2] ) * ( lc_posei[2] - lc_poses[2] )
+                        /* avoid matching element */
+                        if ( lc_distance > 0.0 ) {
 
-                    ) < lc_values[lc_index] ) {
+                            /* update minimal distance */
+                            lc_value[lc_index] = lc_distance;
 
-                        /* avoid identical point */
-                        lc_values[lc_index] = lc_distance > 0.0 ? lc_distance : lc_values[lc_index];
+                        }
 
                     }
 
@@ -138,27 +141,30 @@
 
             }
 
-        /* reading input stream chunks */
-        } while ( lc_istream.gcount() > 0 );
+        }
 
-        /* prepare statistical mean computation */
+        /* reset mean value */
         lc_distance = 0.0;
 
-        /* compute statistical mean value */
+        /* parsing value array */
         for ( le_size_t lc_parse( 0 ); lc_parse < lc_count; lc_parse ++ ) {
 
-            /* accumulate distances */
-            lc_distance += sqrt( lc_values[lc_parse] );
+            /* accumulate minimal distance */
+            lc_distance += std::sqrt( lc_value[lc_parse] );
 
         }
 
         /* release buffer memory */
-        delete [] lc_sample;
-        delete [] lc_chunks;
-        delete [] lc_values;
+        delete [] lc_value;
 
-        /* return minimal distance mean value */
-        return( lc_distance / double( lc_count ) );
+        /* release buffer memory */
+        delete [] lc_sample;
+
+        /* release buffer memory */
+        delete [] lc_buffer;
+
+        /* compute and return minimal distance mean */
+        return( lc_distance / le_real_t( lc_count ) );
 
     }
 

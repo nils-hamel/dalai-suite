@@ -36,16 +36,16 @@
  */
 
     # include "common-error.hpp"
+    # include "common-geometry.hpp"
 
 /*
     header - external includes
  */
 
     # include <fstream>
+    # include <cstdlib>
     # include <limits>
     # include <cmath>
-    # include <cstdint>
-    # include <inttypes.h>
     # include <eratosthene-include.h>
 
 /*
@@ -89,7 +89,7 @@
      *  \return Returns minimum distance mean value
      */
 
-    double lc_statistic_mdmv( std::ifstream & lc_istream, int64_t const lc_count );
+    le_real_t lc_statistic_mdmv( std::ifstream & lc_istream, le_size_t const lc_count );
 
 /*
     header - inclusion guard
