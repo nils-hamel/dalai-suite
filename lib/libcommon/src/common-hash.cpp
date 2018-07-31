@@ -26,80 +26,99 @@
 
     le_void_t lc_hash( std::ifstream & lc_istream, le_char_t const * const lc_opath, le_real_t const lc_param, le_real_t const lc_mean ) {
 
-        /* hashing parameter variables */
-        le_real_t lc_segment( lc_param * lc_mean );
+        /* stream variable */
+        std::ofstream lc_ostream;
 
-        /* hashing index variables */
+        /* path variable */
+        le_char_t lc_file[_LE_USE_PATH];
+
+        /* buffer variable */
+        le_byte_t * lc_buffer( nullptr );
+
+        /* hashing variable */
         le_size_t lc_xhash( 0 );
         le_size_t lc_yhash( 0 );
         le_size_t lc_zhash( 0 );
 
-        /* stream path variables */
-        le_char_t lc_hpath[_LE_USE_PATH];
+        /* reading variable */
+        le_size_t lc_read( 1 );
 
-        /* stream variables */
-        std::ofstream lc_ostream;
+        /* parameter variable */
+        le_real_t lc_segment( lc_param * lc_mean );
 
-        /* buffer variables */
-        le_byte_t * lc_buffer( nullptr );
+        /* buffer pointer variable */
+        le_real_t * lc_uv3p( nullptr );
 
-        /* allocate and check buffer memory */
-        if ( ( lc_buffer = new ( std::nothrow ) le_byte_t[LE_UV3_CHUNK * LE_UV3_RECORD] ) == nullptr ) {
+
+        /* */
+        le_size_t lc_stack( LE_UV3_POINT );
+
+
+        /* allocate buffer memory */
+        if ( ( lc_buffer = new ( std::nothrow ) le_byte_t[LE_UV3_RECORD * LE_UV3_CHUNK] ) == nullptr ) {
 
             /* send message */
             throw( LC_ERROR_MEMORY );
 
         }
 
-        /* clear input stream */
+        /* reset input stream */
         lc_istream.clear();
 
-        /* set input stream offset */
+        /* input stream offset to begining */
         lc_istream.seekg( 0, std::ios::beg );
 
-        /* parsing input stream chunks */
-        do {
+        /* stream chunk reading */
+        while ( lc_read > 0 ) {
 
-            /* read input stream chunk */
-            lc_istream.read( ( char * ) lc_buffer, LE_UV3_CHUNK * LE_UV3_RECORD );
+            /* read stream chunk */
+            lc_istream.read( ( char * ) lc_buffer, LE_UV3_RECORD * LE_UV3_CHUNK );
 
-            /* parsing input stream chunk */
-            for ( le_char_t * lc_parse( lc_buffer ), * lc_limit( lc_buffer + lc_istream.gcount() ); lc_parse < lc_limit; lc_parse += LE_UV3_RECORD ) {
+            /* retrieve read byte count */
+            lc_read = lc_istream.gcount();
 
-                /* check primitive type */
-                if ( * ( lc_parse + LE_UV3_POSE ) == LE_UV3_POINT ) {
+            /* parsing stream chunk */
+            for ( le_size_t lc_parse( 0 ); lc_parse < lc_read; lc_parse += LE_UV3_RECORD ) {
+
+                /* check primitive stack */
+                if ( ( -- lc_stack ) == 0 ) {
+
+                    /* compute buffer pointer */
+                    lc_uv3p = ( le_real_t * ) ( lc_buffer + lc_parse );
 
                     /* compute hash index */
-                    lc_xhash = floor( ( ( le_real_t * ) ( lc_parse ) )[0] / lc_segment );
-                    lc_yhash = floor( ( ( le_real_t * ) ( lc_parse ) )[1] / lc_segment );
-                    lc_zhash = floor( ( ( le_real_t * ) ( lc_parse ) )[2] / lc_segment );
+                    lc_xhash = floor( lc_uv3p[0] / le_real_t( lc_segment ) );
+                    lc_yhash = floor( lc_uv3p[1] / le_real_t( lc_segment ) );
+                    lc_zhash = floor( lc_uv3p[2] / le_real_t( lc_segment ) );
 
-                    /* compute stream path */
-                    sprintf( ( char * ) lc_hpath, "%s/%+" PRId64 "_%+" PRId64 "_%+" PRId64 ".uv3", lc_opath, lc_xhash, lc_yhash, lc_zhash );
+                    /* compose stream path */
+                    sprintf( ( char * ) lc_file, "%s/%+" _LE_SIZE_P "_%+" _LE_SIZE_P "_%+" _LE_SIZE_P ".uv3", lc_opath, lc_xhash, lc_yhash, lc_zhash );
 
-                    /* create output stream */
-                    lc_ostream.open( ( char * ) lc_hpath, std::ios::app | std::ios::out | std::ios::binary );
-
-                    /* check output stream */
-                    if ( lc_ostream.is_open() == false ) {
-
-                        /* send message */
-                        throw( LC_ERROR_IO_WRITE );
-
-                    }
-
-                    /* export chunk element */
-                    lc_ostream.write( ( char * ) lc_parse, LE_UV3_RECORD );
-
-                    /* delete output stream */
-                    lc_ostream.close();
+                    /* update primitive stack */
+                    lc_stack = * ( ( le_byte_t * ) ( lc_uv3p + 3 ) );
 
                 }
 
+                /* create output stream */
+                lc_ostream.open( ( char * ) lc_file, std::ios::out | std::ios::app | std::ios::binary );
+
+                /* check output stream */
+                if ( lc_ostream.is_open() == false ) {
+
+                    /* send message */
+                    throw( LC_ERROR_IO_WRITE );
+
+                }
+
+                /* export record to stream */
+                lc_ostream.write( ( char * ) ( lc_buffer + lc_parse ), LE_UV3_RECORD );
+
+                /* close output stream */
+                lc_ostream.close();
+
             }
 
-        /* parsing input stream chunks */
-        } while ( lc_istream.gcount() > 0 );
+        }
 
         /* release buffer memory */
         delete [] lc_buffer;

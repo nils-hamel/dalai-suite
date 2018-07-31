@@ -36,6 +36,7 @@
  */
 
     # include "common-error.hpp"
+    # include "common-geometry.hpp"
 
 /*
     header - external includes
@@ -101,7 +102,7 @@
      *  \param lc_threshold Neighbour count threshold
      */
 
-    le_void_t lc_filter_homogeneous( std::ifstream & lc_istream, std::ofstream & lc_ostream, le_real_t const lc_mean, le_real_t const lc_factor, le_size_t const lc_threshold );
+    le_void_t lc_filter_homogeneous( le_char_t const * const lc_ipath, std::ofstream & lc_ostream, le_real_t const lc_mean, le_real_t const lc_factor, le_size_t const lc_threshold );
 
     /*! \brief filtering methods (revoked)
      *
@@ -129,7 +130,7 @@
      *  \param lc_threshold Neighbour count threshold
      */
 
-    le_void_t lc_filter_adaptative( std::ifstream & lc_istream, std::ofstream & lc_ostream, le_real_t const lc_factor, le_size_t const lc_threshold );
+    le_void_t lc_filter_adaptative( le_char_t const * const lc_ipath, std::ofstream & lc_ostream, le_real_t const lc_factor, le_size_t const lc_threshold );
 
 /*
     header - inclusion guard

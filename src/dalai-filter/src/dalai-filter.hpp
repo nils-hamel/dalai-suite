@@ -142,7 +142,7 @@
      *  \param dl_adaptative Adaptative filtering switch
      */
 
-    void dl_filter( std::ofstream & dl_ostream, le_char_t const * const dl_ipath, le_real_t const dl_mean, le_real_t const dl_factor, le_size_t const dl_threshold, bool const dl_adaptative );
+    le_void_t dl_filter( std::ofstream & dl_ostream, le_char_t const * const dl_ipath, le_real_t dl_mean, le_real_t const dl_factor, le_size_t const dl_threshold, bool const dl_adaptative );
 
     /*! \brief main function
      *

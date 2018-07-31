@@ -24,7 +24,7 @@
     source - filtering methods
  */
 
-    void dl_filter( std::ofstream & dl_ostream, le_char_t const * const dl_ipath, le_real_t const dl_mean, le_real_t const dl_factor, le_size_t const dl_threshold, bool const dl_adaptative ) {
+    le_void_t dl_filter( std::ofstream & dl_ostream, le_char_t const * const dl_ipath, le_real_t dl_mean, le_real_t const dl_factor, le_size_t const dl_threshold, bool const dl_adaptative ) {
 
         /* input stream variable */
         std::ifstream dl_istream;
@@ -55,32 +55,18 @@
                 /* compose path */
                 sprintf( ( char * ) dl_fpath, "%s/%s", ( char * ) dl_ipath, dl_entity->d_name );
 
-                /* create stream */
-                dl_istream.open( ( char * ) dl_fpath, std::ios::in | std::ios::binary );
-
-                /* check stream */
-                if ( dl_istream.is_open() == false ) {
-
-                    /* send message */
-                    throw( LC_ERROR_IO_ACCESS );
-
-                }
-
-                /* filtering method */
+                /* check filtering method */
                 if ( dl_adaptative == true ) {
 
-                    /* specialised filering method */
-                    lc_filter_adaptative( dl_istream, dl_ostream, dl_factor, dl_threshold );
+                    /* adaptative filtering */
+                    lc_filter_adaptative( dl_fpath, dl_ostream, dl_factor, dl_threshold );
 
                 } else {
 
-                    /* specialised filering method */
-                    lc_filter_homogeneous( dl_istream, dl_ostream, dl_mean, dl_factor, dl_threshold );
+                    /* homogeneous filtering */
+                    lc_filter_homogeneous( dl_fpath, dl_ostream, dl_mean, dl_factor, dl_threshold );
 
                 }
-
-                /* delete stream */
-                dl_istream.close();
 
                 /* remove filtered file */
                 std::remove( ( char * ) dl_fpath );
@@ -107,7 +93,7 @@
         le_size_t dl_count( lc_read_signed( argc, argv, "--count", "-c", 64 ) );
 
         /* filtering threshold variable */
-        le_size_t dl_thres( lc_read_signed( argc, argv, "--threshold", "-t", 2 ) );
+        le_size_t dl_threshold( lc_read_signed( argc, argv, "--threshold", "-t", 2 ) );
 
         /* filtering mode variable */
         bool dl_mode( lc_read_flag( argc, argv, "--adaptative", "-a" ) );
@@ -159,7 +145,7 @@
         lc_hash( dl_istream, dl_path, DL_HASH, dl_mean );
 
         /* filtering process */
-        dl_filter( dl_ostream, dl_path, dl_mean, dl_factor, dl_thres, dl_mode );
+        dl_filter( dl_ostream, dl_path, dl_mean, dl_factor, dl_threshold, dl_mode );
 
         /* delete temporary storage */
         lc_temp_directory( nullptr, ( char * ) dl_path, LC_TEMP_DELETE );
