@@ -127,9 +127,7 @@
 
             le_size_t py_vcount;
             le_size_t py_fcount;
-
             le_size_t py_offset;
-
             le_size_t py_vsize;
 
             le_size_t py_vdata[6];

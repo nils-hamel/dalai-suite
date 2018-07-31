@@ -87,21 +87,21 @@
     header - function prototypes
  */
 
-    /*! \brief main methods (revoked)
+    /*! \brief main methods
      *
-     *  The main function reads the content of the provided input uv3 file and
-     *  applies the provided shift to the respective dimensions :
+     *  The main function reads the content of the provided input uv3 stream and
+     *  applies the provided shift on each respective dimension :
      *
-     *      ./dalai-shift --input/-i [uf3 input file]
-     *                    --output/-o [uf3 output file]
-     *                    --x/-x [x-coordinates shift]
-     *                    --y/-y [y-coordinates shift]
-     *                    --z/-z [z-coordinates shift]
+     *      ./dalai-shift --input/-i [uv3 input file]
+     *                    --output/-o [uv3 output file]
+     *                    --x/-x [x-dimension shift]
+     *                    --y/-y [y-dimension shift]
+     *                    --z/-z [z-dimension shift]
      *
      *  The main function starts by opening both input and output streams before
-     *  to read chunks of the input file. The provided shift values are then
-     *  added to the points coordinates of the read chunk. The processed chunk
-     *  is then exported in the output file.
+     *  to read the input stream chunk by chunk. The provided shift values are
+     *  then added to each record of the chunk. The processed chunk is then
+     *  exported in the output stream.
      *
      *  \param  argc Standard parameter
      *  \param  argv Standard parameter

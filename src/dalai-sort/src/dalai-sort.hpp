@@ -94,55 +94,58 @@
     header - function prototypes
  */
 
-    /*! \brief common methods (revoked)
+    /*! \brief common methods
      *
      *  This function allows to obtain the size, in bytes, of the file pointed
      *  by the provided path. If the function fails or if the file does not
-     *  exist, the function returns zero.
+     *  exists, the function returns zero.
      *
-     *  \param dl_path Path of the file
+     *  \param dl_path File path
      *
      *  \return Return the file size in bytes on success, zero otherwise
      */
 
     le_size_t dl_sort_filesize( le_char_t const * const dl_path );
 
-    /*! \brief common methods (revoked)
+    /*! \brief common methods
      *
-     *  This function performs file copy. The first provided path has to point
-     *  to the source file while the second path has to point to the destination
-     *  file. If the destination file exists, the function rewrites it.
+     *  This function performs a simple file copy. The first provided path has
+     *  to point to the source file while the second path has to point to the
+     *  destination file. If the destination file exists, the function rewrites
+     *  it, without confirmation.
      *
-     *  \param dl_ipath Source path
-     *  \param dl_opath Destination path
+     *  \param dl_ipath Source file path
+     *  \param dl_opath Destination file path
      */
 
     le_void_t dl_sort_copy( le_char_t const * const dl_ipath, le_char_t const * const dl_opath );
 
-    /*! \brief dispatch methods (revoked)
+    /*! \brief dispatch methods
      *
-     *  This function reads the provided file and segments it in smaller parts.
-     *  Each parts of the file is sorted before to be exported. The function
-     *  returns the amount of exported chunk.
+     *  This function reads the provided stream and segments it in smaller sub
+     *  streams. Each parts of the stream is sorted before to be exported using
+     *  a memory-based algorithm. The function returns the amount of sorted and
+     *  exported sub-streams.
      *
-     *  The exported chunk have an identical size, \b DL_SORT_CHUNK, except for
-     *  the last chunk that can be smaller according to the file original size.
+     *  The exported sub-streams have an identical size of \b DL_SORT_CHUNK,
+     *  except for the last one that can be smaller according to the size of the
+     *  input stream.
      *
-     *  \param dl_path  File path
-     *  \param dl_size  File length, in bytes
+     *  \param dl_path  Input file path
+     *  \param dl_size  Input file length, in bytes
      *  \param dl_depth Sort comparison index maximum depth
-     *  \param dl_temp  Directory path of chunk exportation
+     *  \param dl_temp  Exportation directory path
      *
-     *  \return Returns the amount of exported chunk
+     *  \return Returns the amount of exported sub-stream
      */
 
     le_size_t dl_sort_dispatch( le_char_t const * const dl_path, le_size_t const dl_size, le_byte_t const dl_depth, le_char_t const * const dl_temp );
 
-    /*! \brief sorting methods (revoked)
+    /*! \brief sorting methods
      *
-     *  This function performs merge sort of the provided file using a single
-     *  memory buffer. The sorted content is exported in the provided output
-     *  file.
+     *  This function performs a merge sort of the provided input stream using a
+     *  single memory buffer. The sorted content is exported in the provided
+     *  output stream.
      *
      *  \param dl_ipath Input file path
      *  \param dl_opath Output file path
@@ -152,15 +155,15 @@
 
     void dl_sort_memory( le_char_t const * const dl_ipath, le_char_t const * const dl_opath, le_size_t const dl_size, le_byte_t const dl_depth );
 
-    /*! \brief sorting methods (revoked)
+    /*! \brief sorting methods
      *
-     *  This function performs a merge sort of the provided file using disk as
-     *  intermediate storage. This function is used as the size of the file to
-     *  sort is larger than the available memory. The sorted file is exported
-     *  using the provided output path.
+     *  This function performs a merge sort of the provided stream using disk as
+     *  intermediate storage. This function is used as the size of the stream to
+     *  sort is larger than a given amount. The sorted stream is exported using
+     *  the provided output path.
      *
      *  The function uses the provided temporary directory to store the merge
-     *  sort steps intermediates elements.
+     *  sort steps intermediate elements.
      *
      *  \param dl_ipath Input file path
      *  \param dl_opath Output file path
@@ -171,9 +174,9 @@
 
     void dl_sort_disk( le_char_t const * const dl_ipath, le_char_t const * const dl_opath, le_size_t const dl_size, le_byte_t const dl_depth, le_char_t const * const dl_temp );
 
-    /*! \brief main methods (revoked)
+    /*! \brief main methods
      *
-     *  This software allows to perform a sorting of the provided uf3 file in
+     *  This software allows to perform a sorting of the provided uv3 stream in
      *  order to perform eratosthene server pre-injection optimisation :
      *
      *      ./dalai-sort --input/-i [input file path]
@@ -182,20 +185,23 @@
      *                   --temporary/-t [temporary directory path]
      *
      *  The function starts by checking the consistency of the parameter before
-     *  to decide, based on the input file size, if a pure memory process can
+     *  to decide, based on the input stream size, if a pure memory process can
      *  be performed.
      *
-     *  In such case, the function calls sub-routine that loads the file in
+     *  In such case, the function calls sub-routine that loads the stream in
      *  memory before to merge-sort and export it.
      *
-     *  In the case the input file is larger than the imposed limit, the main
+     *  In the case the input stream is larger than the imposed limit, the main
      *  function calls the disk-assisted merge-sort process. In such a case,
      *  the merge sort is performed on chunks of the input file before to be
-     *  merged and exported to the output file. In this case, the temporary
-     *  directory has to be provided.
+     *  merged and exported to the output file. In this case, a temporary
+     *  directory is used. If no temporary directory is provided, the main
+     *  function uses the UNIX '/tmp' directory.
      *
      *  The comparison index depth indicates to the comparison function the
-     *  maximum amount of digits to consider while comparing to element index.
+     *  amount of digits to consider while comparing to element during the merge
+     *  sort process. Usually, this value has to correspond to the amount of
+     *  scale of the server in which the sorted are injected.
      *
      *  \param  argc Standard parameter
      *  \param  argv Standard parameter

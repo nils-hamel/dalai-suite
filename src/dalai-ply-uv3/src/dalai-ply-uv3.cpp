@@ -28,9 +28,7 @@
 
         : py_vcount( 0 )
         , py_fcount( 0 )
-
         , py_offset( 0 )
-
         , py_vsize( 0 )
 
     {
