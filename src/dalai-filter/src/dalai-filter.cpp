@@ -24,7 +24,7 @@
     source - filtering methods
  */
 
-    le_void_t dl_filter( std::ofstream & dl_ostream, le_char_t const * const dl_ipath, le_real_t dl_mean, le_real_t const dl_factor, le_size_t const dl_threshold, bool const dl_adaptative ) {
+    le_void_t dl_filter( std::ofstream & dl_ostream, le_char_t const * const dl_ipath, le_real_t dl_mean, le_real_t const dl_factor, le_size_t const dl_threshold, bool const dl_adaptive ) {
 
         /* input stream variable */
         std::ifstream dl_istream;
@@ -56,9 +56,9 @@
                 sprintf( ( char * ) dl_fpath, "%s/%s", ( char * ) dl_ipath, dl_entity->d_name );
 
                 /* check filtering method */
-                if ( dl_adaptative == true ) {
+                if ( dl_adaptive == true ) {
 
-                    /* adaptative filtering */
+                    /* adaptive filtering */
                     lc_filter_adaptative( dl_fpath, dl_ostream, dl_factor, dl_threshold );
 
                 } else {
@@ -96,7 +96,7 @@
         le_size_t dl_threshold( lc_read_signed( argc, argv, "--threshold", "-t", 2 ) );
 
         /* filtering mode variable */
-        bool dl_mode( lc_read_flag( argc, argv, "--adaptative", "-a" ) );
+        bool dl_mode( lc_read_flag( argc, argv, "--adaptive", "-a" ) );
 
         /* temporary path variable */
         le_char_t dl_path[_LE_USE_PATH];
@@ -110,7 +110,7 @@
         /* stream variable */
         std::ofstream dl_ostream;
 
-    /* error managament */
+    /* error management */
     try {
 
         /* create input stream */
@@ -142,7 +142,7 @@
         dl_mean = lc_statistic_mdmv( dl_istream, dl_count );
 
         /* create hashed storage */
-        lc_hash( dl_istream, dl_path, DL_HASH, dl_mean );
+        lc_hash( dl_istream, dl_path, DL_FILTER_HASH, dl_mean );
 
         /* filtering process */
         dl_filter( dl_ostream, dl_path, dl_mean, dl_factor, dl_threshold, dl_mode );
@@ -156,7 +156,7 @@
         /* delete input stream */
         dl_istream.close();
 
-    /* error managament */
+    /* error management */
     } catch ( int dl_code ) {
 
         /* error management */

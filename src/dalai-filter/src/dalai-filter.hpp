@@ -64,10 +64,7 @@
 
     # include <iostream>
     # include <fstream>
-    # include <cstdlib>
-    # include <cstdint>
-    # include <cinttypes>
-    # include <unistd.h>
+    # include <cstdio>
     # include <dirent.h>
     # include <common-include.hpp>
     # include <eratosthene-include.h>
@@ -76,12 +73,8 @@
     header - preprocessor definitions
  */
 
-    /* define storage modes */
-    # define DL_CREATE ( 0 )
-    # define DL_DELETE ( 1 )
-
     /* define hashing parameter */
-    # define DL_HASH   ( 75.0 )
+    # define DL_FILTER_HASH ( 75.0 )
 
 /*
     header - preprocessor macros
@@ -99,28 +92,10 @@
     header - function prototypes
  */
 
-    /*! \brief storage methods
-     *
-     *  As \b DL_CREATE is provided as mode, the function asks the system
-     *  for an unused temporary directory in the system temporary volume. On
-     *  success, the function creates the temporary directory and updates the
-     *  content of the provided path with the created directory path.
-     *
-     *  If the provided mode is \b DL_FILTER_DELETE, the function simply removes
-     *  the temporary directory provided by the \b dl_path parameter. It uses
-     *  the \b rmdir function assuming the temporary directory is already empty.
-     *  An error is reported otherwise.
-     *
-     *  \param dl_path Temporary storage directory path
-     *  \param dl_mode Temporary storage mode
-     */
-
-    //void dl_filter_temporary( char * const dl_path, int dl_mode );
-
     /*! \brief filtering methods
      *
      *  This function applies the filtering process on each file contained in
-     *  the provided \b dl_opath directory. It simply enumerates the files of
+     *  the provided \b dl_ipath directory. It simply enumerates the files of
      *  the directory and applies the filtering process on each one. The
      *  resulting filtered point clouds are all exported in the same output
      *  stream.
@@ -132,44 +107,46 @@
      *
      *  Two variations of the same filtering methods are available through this
      *  function, the homogeneous filtering and the adaptive one. See the
-     *  documentation of \b libcommon for more information.
+     *  documentation of \b libcommon for more information about these filtering
+     *  methods.
      *
-     *  \param dl_ostream    Output stream descriptor
-     *  \param dl_ipath      Input directory path
-     *  \param dl_mean       Minimum distance mean value
-     *  \param dl_factor     Minimum distance mean multiplier
-     *  \param dl_threshold  Neighbour count threshold
-     *  \param dl_adaptative Adaptative filtering switch
+     *  \param dl_ostream   Output stream
+     *  \param dl_ipath     Input directory path
+     *  \param dl_mean      Minimum distance mean value
+     *  \param dl_factor    Minimum distance mean value factor
+     *  \param dl_threshold Neighbour count threshold
+     *  \param dl_adaptive  adaptive filtering switch
      */
 
-    le_void_t dl_filter( std::ofstream & dl_ostream, le_char_t const * const dl_ipath, le_real_t dl_mean, le_real_t const dl_factor, le_size_t const dl_threshold, bool const dl_adaptative );
+    le_void_t dl_filter( std::ofstream & dl_ostream, le_char_t const * const dl_ipath, le_real_t dl_mean, le_real_t const dl_factor, le_size_t const dl_threshold, bool const dl_adaptive );
 
     /*! \brief main function
      *
      *  The main function reads the point cloud provided through the input file
      *  and exports its filtered version in the provided output stream :
      *
-     *      ./dalai-filter --input/-i [input file path]
-     *                     --output/-o [output file path]
-     *                     --adaptative/-a [filtering mode switch]
-     *                     --factor/-f [minimum distance mean multiplier]
+     *      ./dalai-filter --input/-i [input uv3 file path]
+     *                     --output/-o [output uv3 file path]
+     *                     --adaptive/-a [filtering mode switch]
+     *                     --factor/-f [minimum distance mean value factor]
      *                     --count/-c [sampled elements for mean computation]
-     *                     --threshold/-t [neighbour elements count threshold]
+     *                     --threshold/-t [neighbour count threshold]
      *
-     *  It follows that only 'point' type elements of the provided uv3 file are
-     *  considered through this filtering process.
+     *  The main function assumes that the provided input uv3 stream contains
+     *  only point primitive. The filtering process does not checks the record
+     *  primitive type and applies the filter on each record.
      *
      *  The main function starts by reading the parameters and opens the input
-     *  file. It computes the point cloud elements minimum distances mean value
-     *  using the count parameter.
+     *  file. It computes the elements minimum distance mean value using the
+     *  count parameter.
      *
-     *  In order to performs the filtering process, the input point cloud is
-     *  cut in smallest pieces using the hashing function. The hashing function
-     *  uses the minimums mean to adapt the hash to the input file point cloud.
+     *  In order to performs the filtering process, the input stream is cut in
+     *  smaller pieces using the hashing function. The hashing function uses the
+     *  minimum distance mean value to scale the hashing process.
      *
-     *  The filtering process is then applied on each piece of the hashed point
-     *  cloud and the results of the filtering of all the pieces is exported in
-     *  the output file.
+     *  The filtering process is then applied on each piece of the hashed input
+     *  stream and the results of the filtering of all the pieces is exported in
+     *  the output stream.
      *
      *  \param  argc Standard parameter
      *  \param  argv Standard parameter
