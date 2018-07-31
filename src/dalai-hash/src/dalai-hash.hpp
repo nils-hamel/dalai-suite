@@ -89,24 +89,23 @@
 
     /*! \brief main function (revoked)
      *
-     *  The main function hashes the provided point cloud into a set of smaller
-     *  sub point clouds stored in the output directory :
+     *  The main function hashes the provided uv3 stream into a set of smaller
+     *  sub-stream stored in the output directory :
      *
-     *      ./dalai-hash --uf3/-i [input uf3 file]
+     *      ./dalai-hash --uv3/-i [input uv3 file path]
      *                   --output/-o [output path directory]
      *                   --count/-c [sampled element count]
      *                   --param/-p [hashing parameter]
      *
      *  The functions starts by gathering the parameters and opens the provided
-     *  input file. It computes the point cloud minimum distances mean value
-     *  and hashes the point cloud using the \b lc_hash() function. See the
-     *  documentation of \b libcommon for more information. The hashed sub point
-     *  clouds are written in the provided output directory.
+     *  input stream. It computes the stream minimum distance mean value and
+     *  hashes it using the \b lc_hash() function. See the documentation of
+     *  \b libcommon for more information. The hashed sub-stream are written in
+     *  the provided output directory.
      *
-     *  The count value gives the amount of points to consider to compute the
-     *  minimum distance mean value. The hashing parameter is used with the mean
-     *  value to determine the size of the hashed point clouds. See \b libcommon
-     *  documentation for more information.
+     *  The count value gives the amount of stream record to consider to compute
+     *  the minimum distance mean value. The hashing parameter is used with the
+     *  mean value to determine the size of the sub-stream.
      *
      *  \param  argc Standard parameter
      *  \param  argv Standard parameter
