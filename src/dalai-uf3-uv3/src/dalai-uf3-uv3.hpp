@@ -94,10 +94,10 @@
     header - function prototypes
  */
 
-    /*! \brief main function ( revoked )
+    /*! \brief main function
      *
-     *  The main function reads the provided uf3 file and converts it into a uv3
-     *  file :
+     *  The main function reads the provided uf3 stream and converts it into an
+     *  uv3 stream :
      *
      *      ./dalai-uf3-uv3 --uf3/-i [uf3 input file]
      *                      --uv3/-o [uv3 output file]
