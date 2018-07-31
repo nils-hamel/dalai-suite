@@ -82,7 +82,7 @@
 
     le_enum_t dl_ply_t::dl_ply_type_read( std::string & dl_word ) {
 
-        /* switch on litteral type */
+        /* switch on literal type */
         if ( ( dl_word == "float" ) || ( dl_word == "float32" ) ) {
 
             /* return type */
@@ -264,7 +264,7 @@
                         /* read count */
                         py_stream >> py_vcount;
 
-                        /* update primitve */
+                        /* update primitive */
                         dl_prim = DL_PRIM_VERTEX;
 
                     } else if ( dl_word == "face" ) {
@@ -272,7 +272,7 @@
                         /* read count */
                         py_stream >> py_fcount;
 
-                        /* update primitve */
+                        /* update primitive */
                         dl_prim = DL_PRIM_FACE;
 
                     } else {
@@ -554,7 +554,7 @@
     }
 
 /*
-    source - convertion methods
+    source - conversion methods
  */
 
     le_void_t dl_ply_t::dl_ply_convert( std::fstream & dl_stream ) {
