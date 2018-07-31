@@ -65,7 +65,6 @@
     # include <iostream>
     # include <fstream>
     # include <cstdint>
-    # include <cinttypes>
     # include <common-include.hpp>
     # include <eratosthene-include.h>
 
@@ -98,39 +97,75 @@
     header - function prototypes
  */
 
-    /* *** */
+    /*! \brief header methods
+     *
+     *  This function exports the ply header in the provided output stream
+     *  according to the amount of vertex and faces that have to be written
+     *  in the ply stream.
+     *
+     *  \param dl_stream Stream descriptor of ply file
+     *  \param dl_vertex Vertex count
+     *  \param dl_face   Face count
+     */
 
     le_void_t dl_uv3_ply_header( std::fstream & dl_stream, le_size_t const dl_vertex, le_size_t const dl_face );
 
-    /* *** */
+    /*! \brief statistical methods
+     *
+     *  This function reads the provided input streams and determine the amount
+     *  of point, lines and triangle. The function returns the total amount of
+     *  line and triangle all considered as faces.
+     *
+     *  \param dl_stream Stream descriptor of uv3 file
+     *
+     *  \return Returns total amount of faces in the uv3 stream
+     */
 
-    le_void_t dl_uv3_ply_primitive( std::fstream & dl_stream, le_size_t * const dl_edge, le_size_t * const dl_face );
+    le_size_t dl_uv3_ply_primitive( std::fstream & dl_stream );
 
-    /* *** */
+    /*! \brief conversion methods
+     *
+     *  This function reads each record of the provided uv3 stream and export
+     *  its coordinates as a vertex in the provided ply stream.
+     *
+     *  \param dl_istream Stream descriptor of uv3 file
+     *  \param dl_ostream Stream descriptor of ply file
+     */
 
     le_void_t dl_uv3_ply_vertex( std::fstream & dl_istream, std::fstream & dl_ostream );
 
-    /* *** */
+    /*! \brief conversion methods
+     *
+     *  This function detects line and triangle present in the provided uv3
+     *  stream and exports their definition in the provided output ply stream
+     *  as faces.
+     *
+     *  \param dl_istream Stream descriptor of uv3 file
+     *  \param dl_ostream Stream descriptor of ply file
+     */
 
     le_void_t dl_uv3_ply_face( std::fstream & dl_istream, std::fstream & dl_ostream );
 
-    /*! \brief main methods ( revoked )
+    /*! \brief main methods
      *
-     *  The main function reads the provided universal format file and converts
-     *  it into a ply file :
+     *  The main function reads the provided uv3 stream and converts it into a
+     *  ply file :
      *
-     *      ./dalai-uv3-ply --uf3/-i [uf3 input file]
+     *      ./dalai-uv3-ply --uv3/-i [uv3 input file]
      *                      --ply/-o [ply output file]
+     *                      --vertex-only,-v [exportation switch]
      *
      *  The function starts by allocating the required i/o buffers memory and
-     *  creating the i/o stream. It then creates and exports the output ply file
-     *  header. It then reads the input file by chunk. Each chunk is converted
-     *  and written in the output stream. As all the input file chunks have been
-     *  read, the function closes the stream and release the allocated memory.
+     *  creating the i/o streams. It then creates and exports the output ply 
+     *  file header.
      *
-     *  The ply format, being a very complicated format, is considered only for
-     *  its little endian binary format. The function does not allow to choose
-     *  another format to avoid too large code for a simple conversion tool.
+     *  The function then starts by converting the vertex in the output ply
+     *  stream before to exports the faces, if present. If the 'vertex-only'
+     *  switch is specified, the main function only exports the vertex, i.e. the
+     *  points, in the output ply stream, discarding faces.
+     *
+     *  The created ply file is always considered in its binary representation
+     *  and always considering little-endian byte order.
      *
      *  \param  argc Standard parameter
      *  \param  argv Standard parameter
