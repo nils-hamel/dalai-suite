@@ -150,6 +150,7 @@
         /* delete input stream */
         dl_istream.close();
 
+    /* error management */
     } catch ( int dl_code ) {
 
         /* error management */

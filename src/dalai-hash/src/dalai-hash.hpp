@@ -87,7 +87,7 @@
     header - function prototypes
  */
 
-    /*! \brief main function (revoked)
+    /*! \brief main function
      *
      *  The main function hashes the provided uv3 stream into a set of smaller
      *  sub-stream stored in the output directory :

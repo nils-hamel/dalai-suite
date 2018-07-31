@@ -111,19 +111,19 @@
     header - function prototypes
  */
 
-    /*! \brief main function (revoked)
+    /*! \brief main function
      *
      *  The main function converts the provided las (asprs) file and converts
-     *  it into a universal vector 3 (uv3) format file :
+     *  it into uv3 stream :
      *
      *      ./dalai-las-uv3 --las/-i [las input file]
-     *                      --uf3/-o [uf3 output file]
-     *                      --classification/-c [forced classification switch]
+     *                      --uv3/-o [uv3 output file]
+     *                      --classification/-c [forced classification]
      *
      *  The function starts by reading the input file header in order to detect
      *  if colors are provided. If colors are not provided by the input file,
      *  the main function reads each point classification value and considers a
-     *  colormap to assign colors to points exported in the output file.
+     *  colormap to assign colors to points exported in the output stream.
      *
      *  The function allows to force usage of classification values and colormap
      *  even if colors are available by using the last argument (as a switch).

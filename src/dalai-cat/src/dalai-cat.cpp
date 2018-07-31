@@ -127,6 +127,7 @@
         /* delete stream */
         dl_stream.close();
 
+    /* error management */
     } catch ( int dl_code ) {
 
         /* error management */
