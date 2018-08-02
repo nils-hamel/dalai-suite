@@ -34,7 +34,7 @@
         /* initialise matrix */
         ab_set_identity();
 
-        /* detect largest dimenstion */
+        /* detect largest dimension */
         ab_size = ( ab_width > ab_height ) ? ab_width : ab_height;
 
     }

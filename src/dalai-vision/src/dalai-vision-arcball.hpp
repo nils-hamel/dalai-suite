@@ -60,6 +60,25 @@
     header - structures
  */
 
+    /*! \class dl_arcball_t
+     *  \brief Arcball class
+     *
+     *  This class implements a standard and simple model of arcball allowing
+     *  to track mouse motion and to update model point of view.
+     *
+     *  The class stores basic information about the interface size and holds
+     *  the current state of the arcball matrix applied to rendering matrix.
+     *
+     *  \var dl_arcball_t::ab_width
+     *  Interface width, in pixels
+     *  \var dl_arcball_t::ab_height
+     *  Interface height, in pixels
+     *  \var dl_arcball_t::ab_size
+     *  Maximum value of interface width and height
+     *  \var dl_arcball_t::ab_view
+     *  Arcball rotation matrix
+     */
+
     class dl_arcball_t {
 
     private:
@@ -71,27 +90,64 @@
 
     public:
 
-        /* *** */
+        /*! \brief constructor/destructor methods
+         *
+         *  The constructor simply initialises members with default value and
+         *  sets the arcball matrix to identity.
+         *
+         *  \param dl_width  Interface width, in pixels
+         *  \param dl_height Interface height, in pixels
+         */
 
         dl_arcball_t( le_size_t const dl_width, le_size_t dl_height ) ;
 
-        /* *** */
+        /*! \brief accessor methods
+         *
+         *  This function applies the arcball matrix on the current opengl
+         *  matrix.
+         */
 
         le_void_t ab_get_rotate( le_void_t );
 
     private:
 
-        /* *** */
+        /*! \brief mutator methods
+         *
+         *  This function simply sets the arcball matrix to identity.
+         */
 
         le_void_t ab_set_identity( le_void_t );
 
-        /* *** */
+        /*! \brief mutator methods
+         *
+         *  This function performs the matrix multiplication between the matrix
+         *  provided as parameter and the arcball matrix.
+         *
+         *  The provided matrix has to be a 4 by 4 matrix stored in a linear
+         *  16 entries array.
+         *
+         *  \param dl_matrix Matrix coefficient array
+         */
 
         le_void_t ab_set_multiply( le_real_t * dl_matrix );
 
     public:
 
-        /* *** */
+        /*! \brief mutator methods
+         *
+         *  This function update the arcball matrix according to the mouse click
+         *  start and stop position.
+         *
+         *  The standard arcball model is implemented by the function using a
+         *  mouse trajectory perpendicular vector to compute a rotation matrix
+         *  along this axis. The computed matrix is then composed with the
+         *  current state of the arcball matrix.
+         *
+         *  \param dl_init_x Mouse click initial position
+         *  \param dl_init_y Mouse click initial position
+         *  \param dl_step_x Mouse click final position
+         *  \param dl_step_y Mouse click final position
+         */
 
         le_void_t ab_set_update( le_size_t const dl_init_x, le_size_t const dl_init_y, le_size_t const dl_step_x, le_size_t const dl_step_y );
 

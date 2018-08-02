@@ -91,58 +91,32 @@
     header - structures
  */
 
-    /*! \class dl_vision_t ( revoked )
-     *  \brief Graphical interface class
+    /*! \class dl_vision_t
+     *  \brief Vision class
      *
      *  This class holds the information and methods required to operate the
-     *  software graphical user interface.
+     *  graphical user interface.
      *
      *  It offers methods for the initialisation and deletion of the graphical
      *  context, events management and rendering. It also holds the user point
      *  of view related information.
      *
-     *  The class also holds copies of the opengl model and projection matrix
-     *  and the viewport vector. These elements are usually used for model
-     *  click interpretation.
-     *
      *  \var dl_vision_t::vs_window
-     *  Graphical context window
+     *  Interface window
      *  \var dl_vision_t::vs_context
-     *  Graphical context opengl context
-     *  \var dl_vision_t::dl_event
-     *  Event management structure
-     *  \var dl_vision_t::vs_width
-     *  Width, in pixels, of the interface screen
-     *  \var dl_vision_t::vs_height
-     *  Height, in pixels, of the interface screen
-     *  \var dl_vision_t::vs_near
-     *  Opengl near plane distance
-     *  \var dl_vision_t::vs_far
-     *  Opengl far plane distance
+     *  OpenGL graphical context
      *  \var dl_vision_t::vs_execute
-     *  Execution loop state
-     *  \var dl_vision_t::vs_angle_x
-     *  Rotation angle of the point of view along the x-axis
-     *  \var dl_vision_t::vs_angle_y
-     *  Rotation angle of the point of view along the y-axis
-     *  \var dl_vision_t::vs_angle_z
-     *  Rotation angle of the point of view along the z-axis
-     *  \var dl_vision_t::vs_trans_x
-     *  Translation of the point of view along the x-axis
-     *  \var dl_vision_t::vs_trans_y
-     *  Translation of the point of view along the y-axis
-     *  \var dl_vision_t::vs_trans_z
-     *  Translation of the point of view along the z-axis
-     *  \var dl_vision_t::vs_mouse_x
-     *  Mouse position along screen x-axis
-     *  \var dl_vision_t::vs_mouse_y
-     *  Mouse position along screen y-axis
-     *  \var dl_vision_t::vs_modelview
-     *  Modelview matrix of opengl
-     *  \var dl_vision_t::vs_projection
-     *  Projection matrix of opengl
-     *  \var dl_vision_t::vs_viewport
-     *  Viewport vector of the opengl render screen
+     *  Execution loop operation switch
+     *  \var dl_vision_t::vs_width
+     *  Width, in pixels, of the interface
+     *  \var dl_vision_t::vs_height
+     *  Height, in pixels, of the interface
+     *  \var dl_vision_t::vs_init_x
+     *  Mouse initial click position
+     *  \var dl_vision_t::vs_init_y
+     *  Mouse initial click position
+     *  \var dl_vision_t::vs_dist_z
+     *  Distance of point of view to model rotation center
      */
 
     class dl_vision_t {
@@ -160,16 +134,20 @@
 
     public:
 
-        /*! \brief constructor methods ( revoked )
+        /*! \brief constructor methods
          *
          *  The constructor method sets the interface graphical context using
          *  sdl. After sdl initialisation, it creates the interface windows and
          *  configures the opengl graphical context.
+         *
+         *  The provided model span is used to initialise the point of view.
+         *
+         *  \param dl_model_span Model maximum diameter
          */
 
         dl_vision_t( le_real_t const dl_model_span );
 
-        /*! \brief destructor methods ( revoked )
+        /*! \brief destructor methods
          *
          *  The destructor method simply deletes the interface window and the
          *  opengl graphical context. It finally uninitialise sdl.
@@ -179,34 +157,53 @@
 
     public:
 
-        /* *** */
+        /*! \brief accessor methods
+         *
+         *  This function returns the width in pixel of the interface.
+         *
+         *  \return Interface width, in pixels
+         */
 
         le_size_t vs_get_width( le_void_t );
 
-        /* *** */
+        /*! \brief accessor methods
+         *
+         *  This function returns the height in pixels of the interface.
+         *
+         *  \return Interface height, in pixels
+         */
 
         le_size_t vs_get_height( le_void_t );
 
-        /*! \brief mutator methods ( revoked )
+        /*! \brief mutator methods
          *
          *  This function sets the opengl viewport and projection matrix based
-         *  on the interface screen sizes.
+         *  on the interface width and height.
          *
          *  It also specifies the opengl near and far planes by considering the
-         *  model largest diagonal and minimum distance mean value.
+         *  model maximal diameter.
          *
          *  \param dl_model Model class
          */
 
         le_void_t vs_set_projection( dl_model_t & dl_model );
 
-        /* *** */
+        /*! \brief mutator methods
+         *
+         *  This function update the model rotation center using the point of
+         *  the model below the click.
+         *
+         *  \param dl_click_x Mouse click position
+         *  \param dl_click_y Mouse click position
+         *  \param dl_arcball Arcball class
+         *  \param dl_model   Model class
+         */
 
         le_void_t vs_set_center( le_size_t const dl_click_x, le_size_t const dl_click_y, dl_arcball_t & dl_arcball, dl_model_t & dl_model );
 
     public:
 
-        /*! \brief execution methods ( revoked )
+        /*! \brief execution methods
          *
          *  This function holds the interface execution loop. The execution loop
          *  is responsible of maintaining the software execution.
@@ -214,53 +211,58 @@
          *  In addition, it has to manage the user interface events and it is
          *  responsible of the model and interface rendering.
          *
-         *  \param dl_model Model class
+         *  \param dl_arcball Arcball class
+         *  \param dl_model   Model class
          */
 
         le_void_t vs_execution( dl_arcball_t & dl_arcball, dl_model_t & dl_model );
 
     private:
 
-        /*! \brief event methods ( revoked )
+        /*! \brief event methods
          *
          *  This function is responsible of the management of the user interface
          *  events coming from the keyboard.
          *
-         *  \param dl_event Event structure
-         *  \param dl_model Model class
+         *  \param dl_event   Event structure
+         *  \param dl_arcball Arcball class
+         *  \param dl_model   Model class
          */
 
         le_void_t vs_keydown( SDL_KeyboardEvent dl_event, dl_arcball_t & dl_arcball, dl_model_t & dl_model );
 
-        /*! \brief event methods ( revoked )
+        /*! \brief event methods
          *
          *  This function is responsible of the management of the user interface
          *  events coming from the mouse click.
          *
-         *  \param dl_event Event structure
-         *  \param dl_model Model class
+         *  \param dl_event   Event structure
+         *  \param dl_arcball Arcball class
+         *  \param dl_model   Model class
          */
 
         le_void_t vs_button( SDL_MouseButtonEvent dl_event, dl_arcball_t & dl_arcball, dl_model_t & dl_model );
 
-        /*! \brief event methods ( revoked )
+        /*! \brief event methods
          *
          *  This function is responsible of the management of the user interface
          *  events coming from the mouse motion.
          *
-         *  \param dl_event Event structure
-         *  \param dl_model Model class
+         *  \param dl_event   Event structure
+         *  \param dl_arcball Arcball class
+         *  \param dl_model   Model class
          */
 
         le_void_t vs_motion( SDL_MouseMotionEvent dl_event, dl_arcball_t & dl_arcball, dl_model_t & dl_model );
 
-        /*! \brief event methods ( revoked )
+        /*! \brief event methods
          *
          *  This function is responsible of the management of the user interface
          *  events coming from the mouse wheel.
          *
-         *  \param dl_event Event structure
-         *  \param dl_model Model class
+         *  \param dl_event   Event structure
+         *  \param dl_arcball Arcball class
+         *  \param dl_model   Model class
          */
 
         le_void_t vs_wheel( SDL_MouseWheelEvent dl_event, dl_arcball_t & dl_arcball, dl_model_t & dl_model );

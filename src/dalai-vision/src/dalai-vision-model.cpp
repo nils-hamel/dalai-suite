@@ -467,16 +467,10 @@
         /* check display mode */
         if ( ml_hide != 0 ) {
 
-            /* enable blending */
-            glEnable( GL_BLEND );
-
             /* render model surface */
             ml_surface[0].sf_ren_blend();
             ml_surface[1].sf_ren_blend();
             ml_surface[2].sf_ren_blend();
-
-            /* enable blending */
-            glDisable( GL_BLEND );
 
         }
 

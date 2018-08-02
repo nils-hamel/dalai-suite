@@ -70,58 +70,50 @@
     header - structures
  */
 
-    /*! \class dl_model_t ( revoked )
+    /*! \class dl_model_t
      *  \brief Model class
      *
-     *  This class is used to stored the data of the 3d model manipulated by the
-     *  software through the graphical user interface.
+     *  This class is used to stored the data of the model imported from an uv3
+     *  stream.
      *
-     *  As the class is created, the model is opened and loaded in the class
-     *  memory. In addition to model importation, the creation of the class also
-     *  triggers the analysis of the model. Value such as the model minimum
-     *  distance mean value are computed and stored in the class.
+     *  In the first place, the class contains member allowing the importation
+     *  of the model proper data, that is a memory pointer and sizes. The class
+     *  also holds the definition of the model rotation center and its minimum
+     *  distance mean value.
      *
-     *  In addition, the class also provides management of the surfaces class
-     *  associated to the model. It offers methods allowing to compute the
-     *  intersection point of three defined surface to export its coordinates.
+     *  The class also holds the index array that are used to render the model
+     *  primitive in an efficient manner.
      *
-     *  Finally, the class also offers rendering methods allowing to draw the
-     *  model through the opengl api.
+     *  The class also holds the three surfaces object used to compute optimal
+     *  intersection. The highlighted surface and their display mode are also
+     *  as members.
      *
      *  \var dl_model_t::ml_size
-     *  Number of points composing the model
+     *  Size, in bytes, of the model
+     *  \var dl_model_t::ml_real
+     *  Size, in records, of the model
      *  \var dl_model_t::ml_data
-     *  Model points coordinates and colors array
-     *  \var dl_model_t::ml_psize
-     *  Model rendering point size
+     *  Model memory storage
+     *  \var dl_model_t::ml_x
+     *  Model rotation center
+     *  \var dl_model_t::ml_y
+     *  Model rotation center
+     *  \var dl_model_t::ml_z
+     *  Model rotation center
      *  \var dl_model_t::ml_hide
-     *  If non zero, triggers the display of the surfaces
-     *  \var dl_model_t::ml_pflag
-     *  If non zero, triggers the display of the surfaces estimation points
-     *  \var dl_model_t::ml_xmin
-     *  Model minimum x-coordinate
-     *  \var dl_model_t::ml_xmax
-     *  Model maximum x-coordinate
-     *  \var dl_model_t::ml_ymin
-     *  Model minimum y-coordinate
-     *  \var dl_model_t::ml_ymax
-     *  Model maximum y-coordinate
-     *  \var dl_model_t::ml_zmin
-     *  Model minimum z-coordinate
-     *  \var dl_model_t::ml_zmax
-     *  Model maximum z-coordinate
+     *  Model surface rendering mode
      *  \var dl_model_t::ml_mdmv
      *  Model minimum distance mean value
-     *  \var dl_model_t::ml_x
-     *  Model pseudo-center x-coordinate
-     *  \var dl_model_t::ml_y
-     *  Model pseudo-center y-coordinate
-     *  \var dl_model_t::ml_z
-     *  Model pseudo-center z-coordinate
+     *  \var dl_model_t::ml_span
+     *  Model maximum distance to its centroid
+     *  \var dl_model_t::ml_count
+     *  Model primitive count array
+     *  \var dl_model_t::ml_index
+     *  Model primitive index array
      *  \var dl_model_t::ml_active
-     *  Highlighted surface index
+     *  Model highlighted surface
      *  \var dl_model_t::ml_surface
-     *  Model surfaces array
+     *  Model surfaces
      */
 
     class dl_model_t {
@@ -143,109 +135,120 @@
 
     public:
 
-        /*! \brief constructor methods ( revoked )
+        /*! \brief constructor methods
          *
          *  The constructor methods starts by initialising the class members. It
-         *  then uses the provided path to open and load the model.
+         *  then uses the provided path to open and load the model contained in
+         *  in an uv3 stream.
          *
-         *  After model reading and importation, the constructor uses the class
-         *  methods to compute the characteristic of the model. It then finally
-         *  initialise the three surfaces hold by the class.
+         *  The three surfaces members are initialised before the constructor
+         *  invokes specialised member function to analyse the imported model.
          *
-         *  \param ml_model Path to the uf3 file containing the model
+         *  \param dl_path Model uv3 stream path
          */
 
         dl_model_t( le_char_t const * const dl_path );
 
-        /*! \brief destructor methods ( revoked )
+        /*! \brief destructor methods
          *
          *  The destructor method simply unallocate the memory used to store the
-         *  model data and destruct the class instances associated to the model
-         *  surfaces.
+         *  model data. It also unallocate the memory used for primitive index
+         *  storage.
          */
 
         ~dl_model_t();
 
     public:
 
-        /*! \brief accessor methods ( revoked )
+        /*! \brief accessor methods
          *
-         *  This function returns the largest diagonal of the box containing the
-         *  whole model.
+         *  This function returns two times the largest distance of the model
+         *  point to the model centroid.
          *
-         *  \return Returns model largest diagonal
+         *  \return Returns two times the model radius
          */
 
         le_real_t ml_get_span( le_void_t );
 
-        /*! \brief accessor methods ( revoked )
+        /*! \brief accessor methods
          *
-         *  This function computes and displays in the error output the three
-         *  coordinates of the point at the intersection of the three surfaces
-         *  of the model.
+         *  This function triggers the computation of the intersection of the
+         *  three surface using their specific method.
          */
 
         le_void_t ml_get_intersection( le_void_t );
 
-        /* *** */
+        /*! \brief accessor methods
+         *
+         *  This function allows to apply the model center translation to the
+         *  current opengl matrix. This translation is used to make the model
+         *  rotating around its current center.
+         */
 
         le_void_t ml_get_translation( le_void_t );
 
     public:
 
-        /*! \brief mutator methods ( revoked )
+        /*! \brief mutator methods
          *
-         *  This function allows to reset the model pseudo-center. The model
-         *  pseudo-center is interpreted as the center of rotation by the
-         *  rendering methods.
+         *  This function allows to update the position of the model center of
+         *  rotation.
          *
-         *  \param dl_x Pseudo-center x-coordinate
-         *  \param dl_y Pseudo-center y-coordinate
-         *  \param dl_z Pseudo-center z-coordinate
+         *  \param dl_x Rotation center
+         *  \param dl_y Rotation center
+         *  \param dl_z Rotation center
          */
 
         le_void_t ml_set_center( le_real_t const dl_x, le_real_t const dl_y, le_real_t const dl_z );
 
-        /*! \brief mutator methods ( revoked )
+        /*! \brief mutator methods
          *
          *  This function allows the set the index of the model highlighted
          *  surface. The highlighted surface is the surface on which edition
          *  is possible through the graphical interface.
          *
-         *  \param dl_active Highlighted surface index
+         *  \param dl_surface Highlighted surface index
          */
 
         le_void_t ml_set_surface( le_size_t const dl_surface );
 
-        /*! \brief mutator methods ( revoked )
+        /*! \brief mutator methods
          *
          *  This function allows to switch the rendering state of the model
-         *  surfaces.
+         *  surfaces from transparent to invisible.
          */
 
         le_void_t ml_set_switch( le_void_t );
 
-        /*! \brief mutator methods ( revoked )
+        /*! \brief mutator methods
          *
-         *  This function pushes the model pseudo-center to the stack of
+         *  This function pushes the model rotation center to the stack of
          *  estimation points of the highlighted surface.
          *
          *  As explained in the documentation of \b dl_surface_t, the model
-         *  pseudo-center can also be used to remove points from the stack of
-         *  estimation points.
+         *  rotation center can also be used to remove points from the stack of
+         *  the surface estimation points.
          */
 
         le_void_t ml_set_push( le_void_t );
 
-        /*! \brief mutator methods ( revoked )
+        /*! \brief mutator methods
          *
          *  This function triggers the automatic selection of the estimation
          *  points of the highlighted surface.
+         *
+         *  If the value of \b dl_mode is negative, the growing tolerance is
+         *  smaller than the estimation points set radius. If it is positive,
+         *  the tolerance is greater, allowing to spread the estimation points
+         *  set. If zero is provided, the tolerance is set to the value of the
+         *  estimation points set radius.
+         *
+         *  \param dl_mode Automatic selection mode
          */
 
         le_void_t ml_set_auto( le_size_t const dl_mode );
 
-        /*! \brief mutator methods ( revoked )
+        /*! \brief mutator methods
          *
          *  This function triggers the clearing of the stack of estimation
          *  points of the highlighted surface.
@@ -255,29 +258,46 @@
 
     private:
 
-        /* *** */
+        /*! \brief mutator methods
+         *
+         *  This function performs the analysis of the imported model. This
+         *  function is usually used just after model data importation.
+         *
+         *  In the first place, the function performs an estimation of the model
+         *  point minimal separation mean value. This value is used, combined
+         *  with a factor, as a tolerance reference for point selection.
+         *
+         *  In addition, the function performs also the computation of the model
+         *  centroid, used as initial model rotation center. It also computes
+         *  the maximum distance of points from this centroid.
+         *
+         *  Finally, the function also creates the primitive index array used
+         *  for fast primitive rendering. The type of the uv3 records are
+         *  analysed to compose the index array for each of the primitive.
+         */
 
         le_void_t ml_set_analysis( le_void_t );
 
     public:
 
-        /*! \brief rendering methods ( revoked )
+        /*! \brief rendering methods
          *
-         *  This function renders, using opengl api, the model frame axis. It
-         *  considers the model minimum distance mean value for the rendering
-         *  of the axis to allow the user to have an idea of this important
-         *  value.
+         *  This function renders through opengl the model frame axis.
+         *
+         *  It considers the model minimum distance mean value for the rendering
+         *  of the axis to allow the user to have an idea of this central value.
          */
 
         le_void_t ml_ren_frame( le_void_t );
 
-        /*! \brief rendering methods ( revoked )
+        /*! \brief rendering methods
          *
-         *  This function allows to render the model elements through the opengl
-         *  api using simple points.
+         *  This function renders the primitives of the model. Each group of
+         *  primitive are rendered using optimised methods and vertex, color
+         *  and index array.
          *
-         *  The model pseudo-center is considered as the center of rotation of
-         *  the model.
+         *  The function also invokes the surfaces rendering function for the
+         *  display of the model surface state.
          */
 
         le_void_t ml_ren_model( le_void_t );
