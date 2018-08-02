@@ -26,20 +26,20 @@
 
     /*! \mainpage dalai-suite
      *
-     *  \section _1 dalai-suite
+     *  \section overview Overview
      *
      *  The _dalai-suite_ is dedicated to the gathering and processing of
      *  geographical 3-dimensional information. It allows to considers the most
      *  common file formats and to convert them in a standardised and simple
      *  format.
-     *
+     * 
      *  This standardised format allows to use the suite tools for color
      *  edition, model cleaning and model hashing. In addition, the standard
      *  format is also expected by the _eratosthene-suite_ implementing the EPFL
      *  CDH DHLAB indexation server and its geographical 3-dimensional data
      *  injection tools.
      *
-     *  \section _2 Copyright and License
+     *  \section copyright Copyright and License
      *
      *  **dalai-suite** - Nils Hamel <br >
      *  Copyright (c) 2016-2018 DHLAB, EPFL
