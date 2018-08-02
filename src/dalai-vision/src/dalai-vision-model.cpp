@@ -257,9 +257,6 @@
         /* primitive type variable */
         le_size_t dl_type( 0 );
 
-        /* sampling variable */
-        le_size_t dl_sampling( 0 );
-
         /* buffer pointer variable */
         le_real_t * dl_uv3p( nullptr );
 
@@ -276,9 +273,6 @@
             dl_sample[dl_parse] = ( rand() % ml_real ) * LE_UV3_RECORD;
 
         }
-
-        /* compute sampling */
-        dl_sampling = le_size_t( ( le_real_t( ml_real ) / std::sqrt( ml_real * 1000000 ) ) + 1 ) * LE_UV3_RECORD;
 
         /* parsing model */
         for ( le_size_t dl_parse( 0 ); dl_parse < ml_size; dl_parse += LE_UV3_RECORD ) {
@@ -299,25 +293,20 @@
             ml_y += dl_uv3p[1];
             ml_z += dl_uv3p[2];
 
-            /* apply sampling condition */
-            if ( ( dl_parse % dl_sampling ) == 0 ) {
+            /* parsing sample */
+            for ( le_size_t dl_index( 0 ); dl_index < DL_MODEL_SAMPLE; dl_index ++ ) {
 
-                /* parsing sample */
-                for ( le_size_t dl_index( 0 ); dl_index < DL_MODEL_SAMPLE; dl_index ++ ) {
+                /* avoid identity */
+                if ( dl_parse != dl_sample[dl_index] ) {
 
-                    /* avoid identity */
-                    if ( dl_parse != dl_sample[dl_index] ) {
+                    /* compute buffer pointer */
+                    dl_uv3s = ( le_real_t * ) ( ml_data + dl_sample[dl_index] );
 
-                        /* compute buffer pointer */
-                        dl_uv3s = ( le_real_t * ) ( ml_data + dl_sample[dl_index] );
+                    /* compute and compare distance */
+                    if ( ( dl_distance = lc_geometry_squaredist( dl_uv3p, dl_uv3s ) ) < dl_mdmv[dl_index] ) {
 
-                        /* compute and compare distance */
-                        if ( ( dl_distance = lc_geometry_squaredist( dl_uv3p, dl_uv3s ) ) < dl_mdmv[dl_index] ) {
-
-                            /* update mdmv array */
-                            dl_mdmv[dl_index] = dl_distance;
-
-                        }
+                        /* update mdmv array */
+                        dl_mdmv[dl_index] = dl_distance;
 
                     }
 
