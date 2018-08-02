@@ -24,29 +24,6 @@
      *  dalai-suite - common library - geometry module
      */
 
-    /*! \mainpage dalai-suite
-     *
-     *  \section _1 dalai-suite
-     *
-     *  The _dalai-suite_ is dedicated to the gathering and processing of
-     *  geographical 3-dimensional information. It allows to considers the most
-     *  common file formats and to convert them in a standardised and simple
-     *  format.
-     *
-     *  This standardised format allows to use the suite tools for color
-     *  edition, model cleaning and model hashing. In addition, the standard
-     *  format is also expected by the _eratosthene-suite_ implementing the EPFL
-     *  CDH DHLAB indexation server and its geographical 3-dimensional data
-     *  injection tools.
-     *
-     *  \section _2 Copyright and License
-     *
-     *  **dalai-suite** - Nils Hamel <br >
-     *  Copyright (c) 2016-2018 DHLAB, EPFL
-     *
-     *  This program is licensed under the terms of the GNU GPLv3.
-     */
-
 /*
     header - inclusion guard
  */
@@ -84,7 +61,14 @@
     header - function prototypes
  */
 
-    /* *** */
+    /*! \brief geometry methods
+     *
+     *  This function computes and returns the square value of the euclidean
+     *  distance between the two provided 3-dimensional vectors.
+     *
+     *  \param dl_vec_a First vector array
+     *  \param dl_vec_b Second vector array
+     */
 
     le_real_t lc_geometry_squaredist( le_real_t * dl_vec_a, le_real_t * dl_vec_b );
 

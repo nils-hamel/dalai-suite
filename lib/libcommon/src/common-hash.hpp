@@ -67,23 +67,23 @@
     header - function prototypes
  */
 
-    /*! \brief hashing methods (revoked)
+    /*! \brief hashing methods
      *
-     *  This function imports the point cloud provided by the input stream and
-     *  hashes it in the output directory. The hashing consists in cutting the
-     *  provided point cloud into many smaller point clouds based on cell-based
-     *  space segmentation. Only primitive of the 'point' type are considered.
+     *  This function imports the primitives provided by the input stream and
+     *  hashes them in the output directory. The hashing consists in cutting the
+     *  provided model into many smaller sub-model based on cell-based space
+     *  segmentation.
      *
      *  The function reads the input stream elements one by one and uses the
      *  provided hashing parameter and the minimum distance mean value to
-     *  determine in which sub point cloud each element has to be written. The
-     *  hash function is driven by the following h_i values :
+     *  determine in which sub model each element has to be written. The hash
+     *  function is driven by the following h_i values :
      *
      *      h_i = ( int ) floor( p_i / ( lc_param * lc_mean ) )
      *
      *  with i = x,y,z. The three computed h_i values are then used to composed
-     *  the sub point clouds file name. All elements sharing the same h_i values
-     *  are then written in the same sub point cloud.
+     *  the sub model file name. All elements sharing the same h_i values are
+     *  then written in the same sub point cloud.
      *
      *  \param lc_istream Input stream descriptor
      *  \param lc_opath   Output directory path

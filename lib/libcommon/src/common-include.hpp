@@ -26,7 +26,7 @@
 
     /*! \mainpage dalai-suite
      *
-     *  \section _1 dalai-suite
+     *  \section overview dalai-suite
      *
      *  The _dalai-suite_ is dedicated to the gathering and processing of
      *  geographical 3-dimensional information. It allows to considers the most
@@ -39,7 +39,7 @@
      *  CDH DHLAB indexation server and its geographical 3-dimensional data
      *  injection tools.
      *
-     *  \section _2 Copyright and License
+     *  \section copyright Copyright and License
      *
      *  **dalai-suite** - Nils Hamel <br >
      *  Copyright (c) 2016-2018 DHLAB, EPFL

@@ -71,10 +71,10 @@
     header - function prototypes
  */
 
-    /*! \brief filtering methods (revoked)
+    /*! \brief filtering methods
      *
-     *  This filtering function reads the point cloud provided through the input
-     *  stream and exports its filtered version in the output stream.
+     *  This filtering function reads the uv3 records provided through the input
+     *  stream and exports their filtered version in the output stream.
      *
      *  The implemented filtering method is based on the provided minimum
      *  distance mean value. This value is expected to give the mean value of
@@ -82,7 +82,7 @@
      *  is computed considering a sample of the model (\b lc_statistic_mdmv()).
      *
      *  The function defines a threshold distance given by the multiplication
-     *  of the minimum distance mean value with the provided \b lc_factor The
+     *  of the minimum distance mean value with the provided \b lc_factor. The
      *  function checks for each element of the model the amount of neighbour
      *  that are closer to the defined threshold. The elements that have at
      *  least \b lc_threshold elements below the condition are kept, the other
@@ -95,7 +95,7 @@
      *  result, the applied filtering condition is homogeneous from the entire
      *  model point of view.
      *
-     *  \param lc_istream   Input stream descriptor
+     *  \param lc_ipath     Input stream path
      *  \param lc_ostream   Output stream descriptor
      *  \param lc_mean      Minimums distance mean value
      *  \param lc_factor    Mean value multiplier
@@ -106,8 +106,8 @@
 
     /*! \brief filtering methods (revoked)
      *
-     *  This filtering function reads the point cloud provided through the input
-     *  stream and exports its filtered version in the output stream.
+     *  This filtering function reads the uv3 recrods provided through the input
+     *  stream and exports their filtered version in the output stream.
      *
      *  This function implements a variation of the filtering method implemented
      *  in the \b lc_filter_homogeneous() function.
@@ -124,7 +124,7 @@
      *  implement a filtering algorithm able to take into account the local
      *  specificity of the model when applying the filtering condition.
      *
-     *  \param lc_istream   Input stream descriptor
+     *  \param lc_ipath     Input stream path
      *  \param lc_ostream   Output stream descriptor
      *  \param lc_factor    Local mean value multiplier
      *  \param lc_threshold Neighbour count threshold

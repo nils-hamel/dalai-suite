@@ -68,11 +68,11 @@
     header - function prototypes
  */
 
-    /*! \brief statistical methods (revoked)
+    /*! \brief statistical methods
      *
-     *  This function computes and returns the mean value of the elements vertex
-     *  distance to their closest element. To achieve this computation in a
-     *  reasonable amount of time, the following strategy is considered.
+     *  This function considers the provided uv3 stream and computes the vertex
+     *  minimum distance mean value. To achieve this computation in a reasonable
+     *  amount of time, the following strategy is considered.
      *
      *  The function starts by sampling \b lc_count elements in the input stream
      *  provided through the stream descriptor. For each sampled element, it
@@ -83,8 +83,8 @@
      *  \b lc_count increases. Nevertheless, a value of 32 already allows to
      *  compute a very good approximation of the minimum distance mean value.
      *
-     *  \param lc_istream Input stream descriptor
-     *  \param lc_count   Number of sampled elements
+     *  \param lc_istream Stream descriptor to uv3 file
+     *  \param lc_count   Estimation sampling count
      *
      *  \return Returns minimum distance mean value
      */

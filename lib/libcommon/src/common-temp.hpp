@@ -44,7 +44,6 @@
     # include <iostream>
     # include <cstdlib>
     # include <unistd.h>
-    # include <eratosthene-include.h>
 
 /*
     header - preprocessor definitions
@@ -70,7 +69,23 @@
     header - function prototypes
  */
 
-    /* *** */
+    /*! \brief temporary methods
+     *
+     *  This function allows to create a temporary directory. If the provided
+     *  mode value is set to \b LC_TEMP_CREATE, the directory is created,
+     *  deleted otherwise.
+     *
+     *  The \b lc_root directory path specify in which directory to create the
+     *  temporary one. If a null is provided, the function assume the standard
+     *  UNIX path as root directory (/tmp/).
+     *
+     *  The path of the created temporary directory is set in the \b lc_path
+     *  variable, allowing to use the created directory.
+     *
+     *  \param lc_root Temporary directory location
+     *  \param lc_path Path of the created temporary directory
+     *  \param lc_mode Temporary directory creation / deletion flag
+     */
 
     void lc_temp_directory( char const * const lc_root, char * const lc_path, int const lc_mode );
 
