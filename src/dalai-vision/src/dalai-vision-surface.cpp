@@ -109,10 +109,10 @@
     source - mutator methods
  */
 
-    le_void_t dl_surface_t::sf_set_point_push( le_real_t const dl_x, le_real_t const dl_y, le_real_t const dl_z, le_real_t const dl_tolerence ) {
+    le_void_t dl_surface_t::sf_set_point_push( le_real_t const dl_x, le_real_t const dl_y, le_real_t const dl_z, le_real_t const dl_tolerance ) {
 
         /* check removal procedure */
-        if ( sf_set_point_remove( dl_x, dl_y, dl_z, dl_tolerence ) == false ) {
+        if ( sf_set_point_remove( dl_x, dl_y, dl_z, dl_tolerance ) == false ) {
 
             /* memory management */
             sf_set_memory( 3 );
@@ -129,7 +129,7 @@
 
     }
 
-    le_void_t dl_surface_t::sf_set_point_auto( le_byte_t const * const dl_data, le_size_t const dl_size, le_real_t const dl_tolerence, le_real_t const dl_grow ) {
+    le_void_t dl_surface_t::sf_set_point_auto( le_byte_t const * const dl_data, le_size_t const dl_size, le_real_t const dl_tolerance, le_real_t const dl_grow ) {
 
         /* buffer pointer variable */
         le_real_t * dl_uv3p( nullptr );
@@ -155,7 +155,7 @@
             dl_uv3p = ( le_real_t * ) ( dl_data + dl_parse );
 
             /* apply proximity condition */
-            if ( std::fabs( sf_px * dl_uv3p[0] + sf_py * dl_uv3p[1] + sf_pz * dl_uv3p[2] + sf_pc ) <= dl_tolerence ) {
+            if ( std::fabs( sf_px * dl_uv3p[0] + sf_py * dl_uv3p[1] + sf_pz * dl_uv3p[2] + sf_pc ) <= dl_tolerance ) {
 
                 /* compute distance to centroid */
                 dl_distance  = ( dl_uv3p[0] - sf_cx ) * ( dl_uv3p[0] - sf_cx );
@@ -184,13 +184,13 @@
 
     }
 
-    bool dl_surface_t::sf_set_point_remove( le_real_t const dl_x, le_real_t const dl_y, le_real_t const dl_z, le_real_t dl_tolerence ) {
+    bool dl_surface_t::sf_set_point_remove( le_real_t const dl_x, le_real_t const dl_y, le_real_t const dl_z, le_real_t dl_tolerance ) {
 
         /* distance variable */
         le_real_t dl_distance( 0.0 );
 
         /* compute squared tolerence */
-        dl_tolerence *= dl_tolerence;
+        dl_tolerance *= dl_tolerance;
 
         /* parsing surface elements */
         for ( le_size_t dl_parse( 0 ); dl_parse < sf_size; dl_parse += 3 ) {
@@ -201,7 +201,7 @@
             dl_distance += ( sf_data[dl_parse + 2] - dl_z ) * ( sf_data[dl_parse + 2] - dl_z );
 
             /* apply condition */
-            if ( dl_distance <= dl_tolerence ) {
+            if ( dl_distance <= dl_tolerance ) {
 
                 /* stack element shift */
                 for ( le_size_t dl_index( dl_parse + 3 ); dl_index < sf_size; dl_index += 3 ) {
@@ -342,7 +342,7 @@
         /* swap variable */
         le_real_t * dl_swap( nullptr );
 
-        /* check requierment */
+        /* check requirement */
         if ( ( sf_size += dl_add ) > sf_virt ) {
 
             /* update virtual size */

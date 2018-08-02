@@ -69,7 +69,7 @@
     header - structures
  */
 
-    /*! \class dl_surface_t ( revoked )
+    /*! \class dl_surface_t
      *  \brief Surface class
      *
      *  This class holds the definition of a mathematical plane. In addition to
@@ -90,36 +90,38 @@
      *  of the plane and its estimation points through the opengl api.
      *
      *  \var dl_surface_t::sf_cx
-     *  Centroid of the surface estimation points - x-coordinate
+     *  Estimation point centroid
      *  \var dl_surface_t::sf_cy
-     *  Centroid of the surface estimation points - y-coordinate
+     *  Estimation point centroid
      *  \var dl_surface_t::sf_cz
-     *  Centroid of the surface estimation points - z-coordinate
+     *  Estimation point centroid
      *  \var dl_surface_t::sf_px
-     *  Surface normal vector - x coefficient
+     *  Surface normal vector
      *  \var dl_surface_t::sf_py
-     *  Surface normal vector - y coefficient
+     *  Surface normal vector
      *  \var dl_surface_t::sf_pz
-     *  Surface normal vector - z coefficient
+     *  Surface normal vector
      *  \var dl_surface_t::sf_pc
-     *  Surface normal vector - constant coefficient
+     *  Surface equation constant
      *  \var dl_surface_t::sf_ux
-     *  Surface base vector - x-coordinate
+     *  Surface base vector
      *  \var dl_surface_t::sf_uy
-     *  Surface base vector - y-coordinate
+     *  Surface base vector
      *  \var dl_surface_t::sf_uz
-     *  Surface base vector - z-coordinate
+     *  Surface base vector
      *  \var dl_surface_t::sf_vx
-     *  Surface base vector - x-coordinate
+     *  Surface base vector
      *  \var dl_surface_t::sf_vy
-     *  Surface base vector - y-coordinate
+     *  Surface base vector
      *  \var dl_surface_t::sf_vz
-     *  Surface base vector - z-coordinate
-     *  \var dl_surface_t::sf_cr
+     *  Surface base vector
+     *  \var dl_surface_t::sf_radius
+     *  Estimation point maximum distance from centroid
+     *  \var dl_surface_t::sf_r
      *  Surface red component
-     *  \var dl_surface_t::sf_cg
+     *  \var dl_surface_t::sf_g
      *  Surface green component
-     *  \var dl_surface_t::sf_cb
+     *  \var dl_surface_t::sf_b
      *  Surface blue component
      *  \var dl_surface_t::sf_size
      *  Number of estimation points
@@ -155,15 +157,15 @@
 
     public:
 
-        /*! \brief constructor methods ( revoked )
+        /*! \brief constructor methods
          *
-         *  The constructor simply initialises the class members. In addition,
-         *  it also initialise the estimation points array.
+         *  The constructor simply initialises the class members to default
+         *  values.
          */
 
         dl_surface_t( void );
 
-        /*! \brief destructor methods ( revoked )
+        /*! \brief destructor methods
          *
          *  The desctructor simply releases the memory allocated to handle the
          *  plane estimation points.
@@ -173,66 +175,80 @@
 
     public:
 
-        /* *** */
+        /*! \brief accessor methods
+         *
+         *  This function is used to compute the intersection point between the
+         *  current surface and the two provided one. The intersection is then
+         *  written in the standard output.
+         *
+         *  \param dl_s2 Surface object
+         *  \param dl_s3 Surface object
+         */
 
         le_void_t sf_get_intersection( dl_surface_t & dl_s2, dl_surface_t & dl_s3 );
 
     public:
 
-        /*! \brief mutator methods ( revoked )
+        /*! \brief mutator methods
          *
-         *  This function allows to push a new estimation point to the class
-         *  stack. As the new point is pushed, the function asks the class to
+         *  This function allows to push a new estimation point to the object
+         *  stack. As the new point is pushed, the function asks the object to
          *  make a new estimation of the plane.
          *
-         *  The \b dl_limit value indicates the minimum distance between two
+         *  The \b dl_tolerance value indicates the minimum distance between two
          *  estimation points. If the pushed point is less distant to an already
          *  pushed point, the function removes this last point from the stack
          *  and the provided point is discarded.
          *
-         *  \param dl_x     Pushed point x-coordinate
-         *  \param dl_y     Pushed point y-coordinate
-         *  \param dl_z     Pushed point z-coordinate
-         *  \param dl_limit Estimation point minimal separation
+         *  \param dl_x         Pushed point coordinate
+         *  \param dl_y         Pushed point coordinate
+         *  \param dl_z         Pushed point coordinate
+         *  \param dl_tolerance Minimal estimation points separation
          */
 
-        le_void_t sf_set_point_push( le_real_t const dl_x, le_real_t const dl_y, le_real_t const dl_z, le_real_t const dl_tolerence );
+        le_void_t sf_set_point_push( le_real_t const dl_x, le_real_t const dl_y, le_real_t const dl_z, le_real_t const dl_tolerance );
 
-        /*! \brief mutator methods ( revoked )
+        /*! \brief mutator methods
          *
-         *  This function is used to automatically choose the point of the model
+         *  This function is used to automatically choose points of the model
          *  that are good candidates for the estimation of the plane. It then
-         *  asks the class to recompute the equation of the plane with the
+         *  asks the object to recompute the equation of the plane with the
          *  automatically chosen estimation points.
          *
-         *  With a set of manually added estimation points, the class is able to
-         *  compute the parameters of the plane. With the plane and the model
+         *  With a set of manually added estimation points, the object is able
+         *  to compute the parameters of the plane. With the plane and the model
          *  points, this function is able to select in the model the points that
-         *  are able to be considered as part of the plane. The \b dl_limit
+         *  are able to be considered as part of the plane. The \b dl_tolerance
          *  parameter is used as a threshold distance to select the model
          *  points.
+         *
+         *  The provided \b dl_grow parameter is the 'delta' distance added to
+         *  the estimation points maximal distance to centroid that allow a
+         *  a automatic selection. If the value is greater than zero, the area
+         *  of the estimation set should grow.
          *
          *  This procedure allows to consider a much larger set of estimation
          *  points to compute the equation of the plane. In other words, this
          *  procedure allows to refine the estimation points set, and so, the
          *  equation of the plane that estimate a surface of the model.
          *
-         *  \param dl_data  Model points array
-         *  \param dl_size  Model points count
-         *  \param dl_limit Distance threshold for the selection of the points
+         *  \param dl_data      Model points array
+         *  \param dl_size      Model points count
+         *  \param dl_tolerance Distance threshold for the selection of the points
+         *  \param dl_grow      Selection condition tolerance
          */
 
-        le_void_t sf_set_point_auto( le_byte_t const * const dl_data, le_size_t const dl_size, le_real_t const dl_tolerence, le_real_t const dl_grow );
+        le_void_t sf_set_point_auto( le_byte_t const * const dl_data, le_size_t const dl_size, le_real_t const dl_tolerance, le_real_t const dl_grow );
 
     private:
 
-        /*! \brief mutator methods ( revoked )
+        /*! \brief mutator methods
          *
          *  This function considers a potential pushed estimation point and
          *  checks in the plane estimation points array if the pushed point is
-         *  less distant to an already pushed point that the \b dl_limit value.
-         *  If so, the found point is removed from the stack and the pushed
-         *  candidates is discarded.
+         *  less distant to an already pushed point than the \b dl_tolerance
+         *  value. If so, the found point is removed from the stack and the
+         *  pushed candidate is discarded.
          *
          *  This function allows to remove an estimation point from the surface
          *  array just by provided an estimation of its position.
@@ -241,45 +257,45 @@
          *  function returns true, allowing subsequent processes to discard the
          *  pushed candidate.
          *
-         *  \param  dl_x     Estimation point candidate x-coordinate
-         *  \param  dl_y     Estimation point candidate y-coordinate
-         *  \param  dl_z     Estimation point candidate z-coordinate
-         *  \param  dl_limit Distance threshold for point removal
+         *  \param dl_x         Pushed point coordinate
+         *  \param dl_y         Pushed point coordinate
+         *  \param dl_z         Pushed point coordinate
+         *  \param dl_tolerance Distance threshold for point removal
          *
          *  \return Returns true if a point has been removed, false otherwise.
          */
 
-        bool sf_set_point_remove( le_real_t const dl_x, le_real_t const dl_y, le_real_t const dl_z, le_real_t dl_tolerence );
+        bool sf_set_point_remove( le_real_t const dl_x, le_real_t const dl_y, le_real_t const dl_z, le_real_t dl_tolerance );
 
     public:
 
-        /*! \brief mutator methods ( revoked )
+        /*! \brief mutator methods
          *
          *  This function clears the surface estimation points array.
          */
 
         le_void_t sf_set_point_clear( le_void_t );
 
-        /*! \brief mutator methods ( revoked )
+        /*! \brief mutator methods
          *
          *  This function allows to specify the color of the plane.
          *
-         *  \param dl_cr Color red component
-         *  \param dl_cg Color green component
-         *  \param dl_cb Color blue component
+         *  \param dl_r Color red component
+         *  \param dl_g Color green component
+         *  \param dl_b Color blue component
          */
 
         le_void_t sf_set_color( le_real_t const dl_r, le_real_t const dl_g, le_real_t const dl_b );
 
     private:
 
-        /*! \brief mutator methods ( revoked )
+        /*! \brief mutator methods
          *
          *  This function is called to compute the plane parameters based on the
          *  estimation points of the surface.
          *
          *  The function computes the u matrix of the svd factorisation of the
-         *  matrix build with the estimation points compoents. It then extracts
+         *  matrix build with the estimation points components. It then extracts
          *  the plane normal from the u matrix and uses the estimation points
          *  centroid to compute the plane constant parameter.
          *
@@ -289,17 +305,19 @@
 
         le_void_t sf_set_equation( le_void_t );
 
-        /*! \brief mutator methods ( revoked )
+        /*! \brief mutator methods
          *
          *  This function is used to handle the surface estimation points array
          *  memory. It is typically called as an estimation point is pushed on
          *  the stack. The function checks the memory availability for the new
          *  point and reallocate the memory when necessary.
+         *
+         *  \param dl_add Number of element to push
          */
 
         le_void_t sf_set_memory( le_size_t const dl_add );
 
-        /*! \brief mutator methods ( revoked )
+        /*! \brief mutator methods
          *
          *  This function simply release the memory used to store the plane
          *  estimation points.
@@ -307,17 +325,39 @@
 
         le_void_t sf_set_release( le_void_t );
 
-        /* *** */
+        /*! \brief mutator methods
+         *
+         *  This function simply updates the opengl point display size using the
+         *  provided factor.
+         *
+         *  \param dl_factor Point size multiplication factor
+         */
 
         le_void_t sf_set_pointsize( le_real_t const dl_factor );
 
     public:
 
-        /* *** */
+        /*! \brief rendering methods
+         *
+         *  This function is used to render, through opengl api, the surface
+         *  hold by the object. The function checks in the first place if the
+         *  equation of the surface is computed (sufficient amount of estimation
+         *  point).
+         *
+         *  This function is responsible of non-transparent element rendering.
+         */
 
         le_void_t sf_ren_surface( le_void_t );
 
-        /* *** */
+        /*! \brief rendering methods
+         *
+         *  This function is used to render, through opengl api, the surface
+         *  hold by the object. The function checks in the first place if the
+         *  equation of the surface is computed (sufficient amount of estimation
+         *  point).
+         *
+         *  This function is responsible of transparent element rendering.
+         */
 
         le_void_t sf_ren_blend( le_void_t );
 
