@@ -122,6 +122,7 @@
         le_size_t      ml_size;
         le_size_t      ml_real;
         le_byte_t    * ml_data;
+        le_real_t    * ml_norm;
         le_real_t      ml_x;
         le_real_t      ml_y;
         le_real_t      ml_z;
@@ -257,6 +258,10 @@
         le_void_t ml_set_clear( le_void_t );
 
     private:
+
+        /* *** */
+
+        le_void_t ml_set_normal( le_void_t );
 
         /*! \brief mutator methods
          *

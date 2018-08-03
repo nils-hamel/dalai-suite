@@ -404,7 +404,6 @@
 
         /* update array state */
         glEnableClientState ( GL_VERTEX_ARRAY );
-        glDisableClientState( GL_COLOR_ARRAY  );
 
         /* update array pointer */
         glVertexPointer( 3, GL_DOUBLE, 0, sf_data );
@@ -414,6 +413,9 @@
 
         /* display surface points */
         glDrawArrays( GL_POINTS, 0, sf_size / 3 );
+
+        /* update array state */
+        glDisableClientState( GL_VERTEX_ARRAY );
 
         /* update point size */
         sf_set_pointsize( 0.5 );
@@ -461,7 +463,7 @@
         /* check surface estimation */
         if ( sf_size >= DL_SURFACE_MIN ) {
 
-            /* update blending state */
+            /* update states */
             glEnable( GL_BLEND );
 
             /* primitive bloc */
@@ -487,6 +489,9 @@
 
             /* primitive bloc */
             glEnd();
+
+            /* update states */
+            glDisable( GL_BLEND );
 
         }
 

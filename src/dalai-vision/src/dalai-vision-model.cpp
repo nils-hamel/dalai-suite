@@ -72,6 +72,14 @@
 
         }
 
+        /* allocate buffer memory */
+        if ( ( ml_norm = new ( std::nothrow ) le_real_t[ml_real*3] ) == nullptr ) {
+
+            /* send message */
+            throw( LC_ERROR_MEMORY );
+
+        }
+
         /* clear stream */
         dl_stream.clear();
 
@@ -105,23 +113,14 @@
         ml_index[0] = nullptr;
         ml_index[1] = nullptr;
 
+        ml_set_normal();
+
         /* model analysis */
         ml_set_analysis();
 
     }
 
     dl_model_t::~dl_model_t() {
-
-        /* check buffer */
-        if ( ml_data != nullptr ) {
-
-            /* release buffer memory */
-            delete [] ml_data;
-
-            /* pointer invalidation */
-            ml_data = nullptr;
-
-        }
 
         /* check array */
         if ( ml_index[0] != nullptr ) {
@@ -142,6 +141,28 @@
 
             /* pointer invalidation */
             ml_index[1] = nullptr;
+
+        }
+
+        /* check buffer */
+        if ( ml_norm != nullptr ) {
+
+            /* release buffer memory */
+            delete [] ml_norm;
+
+            /* pointer invalidation */
+            ml_norm = nullptr;
+
+        }
+
+        /* check buffer */
+        if ( ml_data != nullptr ) {
+
+            /* release buffer memory */
+            delete [] ml_data;
+
+            /* pointer invalidation */
+            ml_data = nullptr;
 
         }
 
@@ -240,6 +261,83 @@
 
         /* empty surface stack */
         ml_surface[ml_active].sf_set_point_clear();
+
+    }
+
+    le_void_t dl_model_t::ml_set_normal( le_void_t ) {
+
+        /* buffer pointer variable */
+        le_real_t * dl_uv3p( nullptr );
+
+        /* buffer pointer variable */
+        le_real_t * dl_uv3s( nullptr );
+
+        /* buffer pointer variable */
+        le_real_t * dl_norm( nullptr );
+
+        /* vector variable */
+        le_real_t dl_u[3];
+
+        /* vector variable */
+        le_real_t dl_v[3];
+
+        /* norm variable */
+        le_real_t dl_value( 0.0 );
+
+        /* parsing model element */
+        for ( le_size_t dl_parse( 0 ); dl_parse < ml_real; dl_parse ++ ) {
+
+            /* compute buffer pointer */
+            dl_uv3p = ( le_real_t * ) ( ml_data + dl_parse * LE_UV3_RECORD );
+
+            /* check primitive type */
+            if ( * ( ( le_byte_t * ) ( dl_uv3p + 3 ) ) == LE_UV3_TRIANGLE ) {
+
+                /* compute buffer pointer */
+                dl_uv3s = ( le_real_t * ) ( ml_data + ( dl_parse + 2 ) * LE_UV3_RECORD );
+
+                /* compute vector */
+                dl_u[0] = dl_uv3s[0] - dl_uv3p[0];
+                dl_u[1] = dl_uv3s[1] - dl_uv3p[1];
+                dl_u[2] = dl_uv3s[2] - dl_uv3p[2];
+
+                /* compute buffer pointer */
+                dl_uv3s = ( le_real_t * ) ( ml_data + ( dl_parse + 1 ) * LE_UV3_RECORD );
+
+                /* compute vector */
+                dl_v[0] = dl_uv3s[0] - dl_uv3p[0];
+                dl_v[1] = dl_uv3s[1] - dl_uv3p[1];
+                dl_v[2] = dl_uv3s[2] - dl_uv3p[2];
+
+                /* compute buffer pointer */
+                dl_norm = ml_norm + ( dl_parse * 3 );
+
+                /* compute normal */
+                dl_norm[0] = dl_u[1] * dl_v[2] - dl_u[2] * dl_v[1];
+                dl_norm[1] = dl_u[2] * dl_v[0] - dl_u[0] * dl_v[2];
+                dl_norm[2] = dl_u[0] * dl_v[1] - dl_u[1] * dl_v[0];
+
+                /* compute norm */
+                dl_value = std::sqrt( dl_norm[0] * dl_norm[0] + dl_norm[1] * dl_norm[1] + dl_norm[2] * dl_norm[2] );
+
+                /* normalise */
+                dl_norm[0] /= -dl_value;
+                dl_norm[1] /= -dl_value;
+                dl_norm[2] /= -dl_value;
+
+                /* broadcast */
+                dl_norm[3] = dl_norm[0];
+                dl_norm[4] = dl_norm[1];
+                dl_norm[5] = dl_norm[2];
+                dl_norm[6] = dl_norm[0];
+                dl_norm[7] = dl_norm[1];
+                dl_norm[8] = dl_norm[2];
+
+                dl_parse += 2;
+
+            }
+
+        }
 
     }
 
@@ -442,13 +540,15 @@
 
         /* update array state */
         glEnableClientState( GL_VERTEX_ARRAY );
-        glEnableClientState( GL_COLOR_ARRAY  );
 
         /* update array pointer */
         glVertexPointer( 3, GL_DOUBLE, LE_UV3_RECORD, ml_data );
 
+        /* update array state */
+        glEnableClientState( GL_COLOR_ARRAY  );
+
         /* update array pointer */
-        glColorPointer ( 3, GL_UNSIGNED_BYTE, LE_UV3_RECORD, ml_data + LE_UV3_POSE + LE_UV3_TYPE );
+        glColorPointer( 3, GL_UNSIGNED_BYTE, LE_UV3_RECORD, ml_data + LE_UV3_POSE + LE_UV3_TYPE );
 
         /* display model primitive */
         glDrawArrays( GL_POINTS, 0, ml_real );
@@ -456,8 +556,35 @@
         /* display model primitive */
         glDrawElements( GL_LINES, ml_count[0], GL_UNSIGNED_INT, ml_index[0] );
 
+        /* update array pointer */
+        glEnableClientState( GL_NORMAL_ARRAY );
+
+        /* update array pointer */
+        glNormalPointer( GL_DOUBLE, 0, ml_norm );
+
+        /* enable lighting */
+        glEnable( GL_LIGHTING );
+
+        /* update states */
+        glEnable( GL_CULL_FACE );
+
         /* display model primitive */
         glDrawElements( GL_TRIANGLES, ml_count[1], GL_UNSIGNED_INT, ml_index[1] );
+
+        /* update states */
+        glDisable( GL_CULL_FACE );
+
+        /* disable lighting */
+        glDisable( GL_LIGHTING );
+
+        /* update array state */        
+        glDisableClientState( GL_NORMAL_ARRAY );
+
+        /* update array state */        
+        glDisableClientState( GL_COLOR_ARRAY );
+
+        /* update array state */        
+        glDisableClientState( GL_VERTEX_ARRAY );
 
         /* render model surface */
         ml_surface[2].sf_ren_surface();

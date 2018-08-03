@@ -112,6 +112,18 @@
         /* blend function */
         glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
+        /* shade model */
+        glShadeModel( GL_FLAT );
+
+        /* face culling */
+        glCullFace( GL_BACK );
+
+        /* enable material color */
+        glEnable ( GL_COLOR_MATERIAL );
+
+        /* model lighting configuration */
+        vs_set_light();
+
     }
 
     dl_vision_t::~dl_vision_t() {
@@ -162,6 +174,41 @@
 
         /* compute matrix coefficients */
         gluPerspective( 45.0, double( vs_width ) / double( vs_height ), dl_model.ml_get_span() * 0.01, dl_model.ml_get_span() * 10.0 );
+
+    }
+
+    le_void_t dl_vision_t::vs_set_light( le_void_t ) {
+
+        /* array variable */
+        GLfloat dl_array[4] = { 0.0, 0.0, 0.0, 1.0 };
+
+        /* enable light */
+        glEnable( GL_LIGHT0 );
+
+        /* assign ambient color */
+        dl_array[0] = 0.5;
+        dl_array[1] = 0.5;
+        dl_array[2] = 0.5;
+
+        /* ambient light */
+        glLightfv( GL_LIGHT0, GL_AMBIENT, dl_array );
+        
+        /* assign diffuse color */
+        dl_array[0] = 1.0;
+        dl_array[1] = 1.0;
+        dl_array[2] = 1.0;
+
+        /* diffuse light */
+        glLightfv( GL_LIGHT0, GL_DIFFUSE, dl_array );
+
+        /* light direction */
+        dl_array[0] = 0.0;
+        dl_array[1] = 0.0;
+        dl_array[2] = 1.0;
+        dl_array[3] = 0.0;
+
+        /* light direction */
+        glLightfv( GL_LIGHT0, GL_POSITION, dl_array );
 
     }
 

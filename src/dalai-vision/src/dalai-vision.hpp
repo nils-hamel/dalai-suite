@@ -188,6 +188,10 @@
 
         le_void_t vs_set_projection( dl_model_t & dl_model );
 
+        /* *** */
+
+        le_void_t vs_set_light( le_void_t );
+
         /*! \brief mutator methods
          *
          *  This function update the model rotation center using the point of
