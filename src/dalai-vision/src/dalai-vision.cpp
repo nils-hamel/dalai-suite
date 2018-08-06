@@ -186,9 +186,9 @@
         glEnable( GL_LIGHT0 );
 
         /* assign ambient color */
-        dl_array[0] = 0.5;
-        dl_array[1] = 0.5;
-        dl_array[2] = 0.5;
+        dl_array[0] = 0.4;
+        dl_array[1] = 0.4;
+        dl_array[2] = 0.4;
 
         /* ambient light */
         glLightfv( GL_LIGHT0, GL_AMBIENT, dl_array );
