@@ -188,7 +188,12 @@
 
         le_void_t vs_set_projection( dl_model_t & dl_model );
 
-        /* *** */
+        /*! \brief mutator methods
+         *
+         *  This function implements a simple directional light model used for
+         *  polygonal rendering. The light is set in the direction of sight
+         *  using a simple ambient and diffuse model.
+         */
 
         le_void_t vs_set_light( le_void_t );
 

@@ -113,13 +113,13 @@
         glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
         /* shade model */
-        glShadeModel( GL_FLAT );
+        glShadeModel( GL_SMOOTH );
 
         /* face culling */
         glCullFace( GL_BACK );
 
         /* enable material color */
-        glEnable ( GL_COLOR_MATERIAL );
+        glEnable( GL_COLOR_MATERIAL );
 
         /* model lighting configuration */
         vs_set_light();

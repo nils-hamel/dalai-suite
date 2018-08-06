@@ -94,6 +94,8 @@
      *  Size, in records, of the model
      *  \var dl_model_t::ml_data
      *  Model memory storage
+     *  \var dl_model_t::ml_norm
+     *  Model normal storage
      *  \var dl_model_t::ml_x
      *  Model rotation center
      *  \var dl_model_t::ml_y
@@ -106,9 +108,9 @@
      *  Model minimum distance mean value
      *  \var dl_model_t::ml_span
      *  Model maximum distance to its centroid
-     *  \var dl_model_t::ml_count
+     *  \var dl_model_t::ml_rsize
      *  Model primitive count array
-     *  \var dl_model_t::ml_index
+     *  \var dl_model_t::ml_rdata
      *  Model primitive index array
      *  \var dl_model_t::ml_active
      *  Model highlighted surface
@@ -129,8 +131,8 @@
         le_enum_t      ml_hide;
         le_real_t      ml_mdmv;
         le_real_t      ml_span;
-        GLuint         ml_count[2];
-        GLuint       * ml_index[2];
+        GLuint         ml_rsize[3];
+        GLuint       * ml_rdata;
         le_size_t      ml_active;
         dl_surface_t   ml_surface[3];
 
@@ -259,9 +261,21 @@
 
     private:
 
-        /* *** */
+        /*! \brief mutator methods
+         *
+         *  This function computes the required elements required for model
+         *  rendering.
+         *
+         *  In the first place, the function computes the amount of primitives
+         *  in the model. This statistics is used to set the index array used
+         *  for efficient rendering.
+         *
+         *  In addition, the function creates and fills the normal array used
+         *  for polygon and model lighting. The computation of the normal is
+         *  performed for triangle only.
+         */
 
-        le_void_t ml_set_normal( le_void_t );
+        le_void_t ml_set_render( le_void_t );
 
         /*! \brief mutator methods
          *
@@ -275,10 +289,6 @@
          *  In addition, the function performs also the computation of the model
          *  centroid, used as initial model rotation center. It also computes
          *  the maximum distance of points from this centroid.
-         *
-         *  Finally, the function also creates the primitive index array used
-         *  for fast primitive rendering. The type of the uv3 records are
-         *  analysed to compose the index array for each of the primitive.
          */
 
         le_void_t ml_set_analysis( le_void_t );
