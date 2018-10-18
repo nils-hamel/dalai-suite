@@ -286,7 +286,7 @@
 
         /* size variable */
         le_size_t dl_slength;
-        
+
         /* dispatch stream chunks */
         dl_segment = dl_sort_dispatch( dl_ipath, dl_size, dl_depth, dl_tpath );
 
@@ -382,7 +382,7 @@
 
             /* remove source */
             remove( ( char * ) dl_ofile );
-    
+
         }
 
     }
@@ -441,7 +441,7 @@
         } else {
 
             /* memory-based sorting process */
-            dl_sort_memory( dl_ipath, dl_opath, dl_size, dl_depth );   
+            dl_sort_memory( dl_ipath, dl_opath, dl_size, dl_depth );
 
         }
 

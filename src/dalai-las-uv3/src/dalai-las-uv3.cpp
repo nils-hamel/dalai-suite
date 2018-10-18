@@ -123,9 +123,9 @@
             if ( dl_color == true ) {
 
                 /* retrieve point color components */
-                dl_uv3d[1] = dl_las.GetPoint().GetColor().GetRed();
-                dl_uv3d[2] = dl_las.GetPoint().GetColor().GetGreen();
-                dl_uv3d[3] = dl_las.GetPoint().GetColor().GetBlue();
+                dl_uv3d[1] = dl_las.GetPoint().GetColor().GetRed()   >> 8;
+                dl_uv3d[2] = dl_las.GetPoint().GetColor().GetGreen() >> 8;
+                dl_uv3d[3] = dl_las.GetPoint().GetColor().GetBlue()  >> 8;
 
             } else {
 

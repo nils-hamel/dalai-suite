@@ -206,7 +206,7 @@
                     dl_sedge = dl_size;
 
                 }
-                
+
                 /* range merge */
                 while ( dl_index < dl_sedge ) {
 
@@ -382,10 +382,10 @@
                 dl_fedge = dl_fstream.gcount();
 
                 /* reset head */
-                dl_fhead = 0; 
+                dl_fhead = 0;
 
-            }  
- 
+            }
+
             /* check buffer state */
             if ( ( dl_shead == dl_sedge ) && ( dl_sedge != 0 ) ) {
 
