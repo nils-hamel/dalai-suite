@@ -32,7 +32,7 @@
      *  geographical 3-dimensional information. It allows to considers the most
      *  common file formats and to convert them in a standardised and simple
      *  format.
-     * 
+     *
      *  This standardised format allows to use the suite tools for color
      *  edition, model cleaning and model hashing. In addition, the standard
      *  format is also expected by the _eratosthene-suite_ implementing the EPFL
@@ -94,18 +94,18 @@
      *
      *      ./dalai-hash --uv3/-i [input uv3 file path]
      *                   --output/-o [output path directory]
-     *                   --count/-c [sampled element count]
+     *                   --count/-c [sampled elements count]
      *                   --param/-p [hashing parameter]
      *
      *  The functions starts by gathering the parameters and opens the provided
-     *  input stream. It computes the stream minimum distance mean value and
-     *  hashes it using the \b lc_hash() function. See the documentation of
-     *  \b libcommon for more information. The hashed sub-stream are written in
-     *  the provided output directory.
+     *  input stream. It computes the stream model minimum distances mean value
+     *  and provides it to the \b lc_hash() function used to hash the model. The
+     *  resulting hashed sub-streams are all written in the provided output
+     *  directory considering the uv3 format.
      *
-     *  The count value gives the amount of stream record to consider to compute
-     *  the minimum distance mean value. The hashing parameter is used with the
-     *  mean value to determine the size of the sub-stream.
+     *  The count value gives the amount of input stream record to consider to
+     *  compute the minimum distances mean value. The hashing parameter is used
+     *  with the mean value to determine the size of the sub-streams.
      *
      *  \param  argc Standard parameter
      *  \param  argv Standard parameter
