@@ -81,7 +81,7 @@
         }
 
         /* allocate buffer memory */
-        if ( ( dl_obuffer = new ( std::nothrow ) le_byte_t[LE_UV3_CHUNK * LE_UV3_RECORD] ) == nullptr ) {
+        if ( ( dl_obuffer = new ( std::nothrow ) le_byte_t[LE_UV3_CHUNK * LE_ARRAY_DATA] ) == nullptr ) {
 
             /* send message */
             throw( LC_ERROR_MEMORY );
@@ -104,27 +104,27 @@
                 while ( dl_parse < dl_read ) {
 
                     /* assign primitive coordinates */
-                    std::memcpy( dl_obuffer + dl_index, dl_ibuffer + dl_parse, LE_UV3_POSE );
+                    std::memcpy( dl_obuffer + dl_index, dl_ibuffer + dl_parse, LE_ARRAY_DATA_POSE );
 
                     /* update index */
-                    dl_parse += DL_UF3_POSE, dl_index += LE_UV3_POSE;
+                    dl_parse += DL_UF3_POSE, dl_index += LE_ARRAY_DATA_POSE;
 
                     /* assign primitive type */
                     ( * ( dl_obuffer + dl_index ) ) = LE_UV3_POINT;
 
                     /* update index */
-                    dl_index += LE_UV3_TYPE;
+                    dl_index += LE_ARRAY_DATA_TYPE;
 
                     /* assign primitive data */
-                    std::memcpy( dl_obuffer + dl_index, dl_ibuffer + dl_parse, LE_UV3_DATA );
+                    std::memcpy( dl_obuffer + dl_index, dl_ibuffer + dl_parse, LE_ARRAY_DATA_DATA );
 
                     /* update index */
-                    dl_parse += DL_UF3_DATA, dl_index += LE_UV3_DATA;
+                    dl_parse += DL_UF3_DATA, dl_index += LE_ARRAY_DATA_DATA;
 
                 }
 
                 /* export converted records */
-                dl_ostream.write( ( char * ) dl_obuffer, ( dl_read / DL_UF3_RECORD ) * LE_UV3_RECORD );
+                dl_ostream.write( ( char * ) dl_obuffer, ( dl_read / DL_UF3_RECORD ) * LE_ARRAY_DATA );
 
             }
 

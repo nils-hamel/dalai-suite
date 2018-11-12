@@ -55,7 +55,7 @@
 
 
         /* allocate buffer memory */
-        if ( ( lc_buffer = new ( std::nothrow ) le_byte_t[LE_UV3_RECORD * LE_UV3_CHUNK] ) == nullptr ) {
+        if ( ( lc_buffer = new ( std::nothrow ) le_byte_t[LE_ARRAY_DATA * LE_UV3_CHUNK] ) == nullptr ) {
 
             /* send message */
             throw( LC_ERROR_MEMORY );
@@ -72,13 +72,13 @@
         while ( lc_read > 0 ) {
 
             /* read stream chunk */
-            lc_istream.read( ( char * ) lc_buffer, LE_UV3_RECORD * LE_UV3_CHUNK );
+            lc_istream.read( ( char * ) lc_buffer, LE_ARRAY_DATA * LE_UV3_CHUNK );
 
             /* retrieve read byte count */
             lc_read = lc_istream.gcount();
 
             /* parsing stream chunk */
-            for ( le_size_t lc_parse( 0 ); lc_parse < lc_read; lc_parse += LE_UV3_RECORD ) {
+            for ( le_size_t lc_parse( 0 ); lc_parse < lc_read; lc_parse += LE_ARRAY_DATA ) {
 
                 /* check primitive stack */
                 if ( ( -- lc_stack ) == 0 ) {
@@ -111,7 +111,7 @@
                 }
 
                 /* export record to stream */
-                lc_ostream.write( ( char * ) ( lc_buffer + lc_parse ), LE_UV3_RECORD );
+                lc_ostream.write( ( char * ) ( lc_buffer + lc_parse ), LE_ARRAY_DATA );
 
                 /* close output stream */
                 lc_ostream.close();

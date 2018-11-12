@@ -70,7 +70,7 @@
         le_size_t dl_tcount( 0 );
 
         /* allocate buffer memory */
-        if ( ( dl_buffer = new ( std::nothrow ) le_byte_t[LE_UV3_CHUNK * LE_UV3_RECORD] ) == nullptr ) {
+        if ( ( dl_buffer = new ( std::nothrow ) le_byte_t[LE_UV3_CHUNK * LE_ARRAY_DATA] ) == nullptr ) {
 
             /* send message */
             throw( LC_ERROR_MEMORY );
@@ -87,13 +87,13 @@
         while ( dl_read != 0 ) {
 
             /* read stream chunk */
-            dl_stream.read( ( char * ) dl_buffer, LE_UV3_CHUNK * LE_UV3_RECORD );
+            dl_stream.read( ( char * ) dl_buffer, LE_UV3_CHUNK * LE_ARRAY_DATA );
 
             /* read byte count */
             dl_read = dl_stream.gcount();
 
             /* parsing read chunk */
-            for ( le_size_t dl_parse( LE_UV3_POSE ); dl_parse < dl_read; dl_parse += LE_UV3_RECORD ) {
+            for ( le_size_t dl_parse( LE_ARRAY_DATA_POSE ); dl_parse < dl_read; dl_parse += LE_ARRAY_DATA ) {
 
                 /* check primitive type */
                 if ( dl_buffer[dl_parse] == LE_UV3_LINE ) {
@@ -144,7 +144,7 @@
         uint8_t * dl_plyd( nullptr );
 
         /* allocate buffer memory */
-        if ( ( dl_ibuffer = new ( std::nothrow ) le_byte_t[LE_UV3_CHUNK * LE_UV3_RECORD] ) == nullptr ) {
+        if ( ( dl_ibuffer = new ( std::nothrow ) le_byte_t[LE_UV3_CHUNK * LE_ARRAY_DATA] ) == nullptr ) {
 
             /* send message */
             throw( LC_ERROR_MEMORY );
@@ -169,13 +169,13 @@
         while ( dl_read != 0 ) {
 
             /* read stream chunk */
-            dl_istream.read( ( char * ) dl_ibuffer, LE_UV3_CHUNK * LE_UV3_RECORD );
+            dl_istream.read( ( char * ) dl_ibuffer, LE_UV3_CHUNK * LE_ARRAY_DATA );
 
             /* read byte count */
             dl_read = dl_istream.gcount();
 
             /* parsing read chunk */
-            for ( le_size_t dl_parse( 0 ), dl_index( 0 ); dl_parse < dl_read; dl_parse += LE_UV3_RECORD, dl_index += DL_PLY_VERTEX ) {
+            for ( le_size_t dl_parse( 0 ), dl_index( 0 ); dl_parse < dl_read; dl_parse += LE_ARRAY_DATA, dl_index += DL_PLY_VERTEX ) {
 
                 /* compute buffer pointer */
                 dl_uv3p = ( le_real_t * ) ( dl_ibuffer + dl_parse );
@@ -202,7 +202,7 @@
             }
 
             /* export buffer */
-            dl_ostream.write( ( char * ) dl_obuffer, ( dl_read / LE_UV3_RECORD ) * DL_PLY_VERTEX );
+            dl_ostream.write( ( char * ) dl_obuffer, ( dl_read / LE_ARRAY_DATA ) * DL_PLY_VERTEX );
 
         }
 
@@ -239,7 +239,7 @@
         le_data_t * dl_uv3d( nullptr );
 
         /* allocate buffer memory */
-        if ( ( dl_ibuffer = new ( std::nothrow ) le_byte_t[LE_UV3_CHUNK * LE_UV3_RECORD] ) == nullptr ) {
+        if ( ( dl_ibuffer = new ( std::nothrow ) le_byte_t[LE_UV3_CHUNK * LE_ARRAY_DATA] ) == nullptr ) {
 
             /* send message */
             throw( LC_ERROR_MEMORY );
@@ -260,29 +260,29 @@
         while ( dl_read != 0 ) {
 
             /* read stream chunk */
-            dl_istream.read( ( char * ) dl_ibuffer, LE_UV3_CHUNK * LE_UV3_RECORD );
+            dl_istream.read( ( char * ) dl_ibuffer, LE_UV3_CHUNK * LE_ARRAY_DATA );
 
             /* retrieve byte count */
             dl_read = dl_istream.gcount();
 
             /* parsing stream chunk */
-            for ( le_size_t dl_parse( 0 ); dl_parse < dl_read; dl_parse += LE_UV3_RECORD ) {
+            for ( le_size_t dl_parse( 0 ); dl_parse < dl_read; dl_parse += LE_ARRAY_DATA ) {
 
                 /* compute buffer pointer */
-                dl_uv3d = ( le_data_t * ) ( dl_ibuffer + dl_parse + LE_UV3_POSE );
+                dl_uv3d = ( le_data_t * ) ( dl_ibuffer + dl_parse + LE_ARRAY_DATA_POSE );
 
                 /* check primitive type */
                 if ( ( * dl_uv3d ) == LE_UV3_LINE ) {
 
                     /* assign vertex index */
-                    ( ( int32_t * ) ( dl_lbuffer + 1 ) )[dl_lmodule] = dl_offset + ( dl_parse / LE_UV3_RECORD );
+                    ( ( int32_t * ) ( dl_lbuffer + 1 ) )[dl_lmodule] = dl_offset + ( dl_parse / LE_ARRAY_DATA );
 
                     /* update primitive module */
                     if ( ( ++ dl_lmodule ) == 2 ) {
 
                         /* reset module */
                         dl_lmodule = 0;
-    
+
                         /* export buffer */
                         dl_ostream.write( ( char * ) dl_lbuffer, DL_PLY_LINE );
 
@@ -291,7 +291,7 @@
                 } else if ( ( * dl_uv3d ) == LE_UV3_TRIANGLE ) {
 
                     /* assign vertex index */
-                    ( ( int32_t * ) ( dl_tbuffer + 1 ) )[dl_tmodule] = dl_offset + ( dl_parse / LE_UV3_RECORD );
+                    ( ( int32_t * ) ( dl_tbuffer + 1 ) )[dl_tmodule] = dl_offset + ( dl_parse / LE_ARRAY_DATA );
 
                     /* update primitive module */
                     if ( ( ++ dl_tmodule ) == 3 ) {
@@ -309,7 +309,7 @@
             }
 
             /* update offset */
-            dl_offset += ( dl_read / LE_UV3_RECORD );
+            dl_offset += ( dl_read / LE_ARRAY_DATA );
 
         }
 
@@ -351,7 +351,7 @@
         }
 
         /* check consistency */
-        if ( ( dl_vertex = ( dl_istream.tellg() / LE_UV3_RECORD ) ) == 0 ) {
+        if ( ( dl_vertex = ( dl_istream.tellg() / LE_ARRAY_DATA ) ) == 0 ) {
 
             /* send message */
             throw( LC_ERROR_FORMAT );
@@ -417,7 +417,7 @@
     }
 
         /* send message */
-        return( EXIT_SUCCESS );            
+        return( EXIT_SUCCESS );
 
     }
 

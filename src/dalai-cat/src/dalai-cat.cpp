@@ -58,7 +58,7 @@
     int main( int argc, char ** argv ) {
 
         /* stream buffer variable */
-        le_byte_t dl_buffer[LE_UV3_RECORD];
+        le_byte_t dl_buffer[LE_ARRAY_DATA];
 
         /* buffer pointer variable */
         le_real_t * dl_uv3p( nullptr );
@@ -99,10 +99,10 @@
         while ( dl_read != 0 ) {
 
             /* read stream record */
-            dl_stream.read( ( char * ) dl_buffer, LE_UV3_RECORD );
+            dl_stream.read( ( char * ) dl_buffer, LE_ARRAY_DATA );
 
             /* check read record */
-            if ( ( dl_read = dl_stream.gcount() ) == LE_UV3_RECORD ) {
+            if ( ( dl_read = dl_stream.gcount() ) == LE_ARRAY_DATA ) {
 
                 /* check display format */
                 if ( dl_index == 0 ) {

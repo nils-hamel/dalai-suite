@@ -69,7 +69,7 @@
         }
 
         /* allocate buffer memory */
-        if ( ( dl_buffer = new ( std::nothrow ) le_byte_t[LE_UV3_CHUNK * LE_UV3_RECORD] ) == nullptr ) {
+        if ( ( dl_buffer = new ( std::nothrow ) le_byte_t[LE_UV3_CHUNK * LE_ARRAY_DATA] ) == nullptr ) {
 
             /* send message */
             throw( LC_ERROR_MEMORY );
@@ -80,13 +80,13 @@
         while ( dl_read != 0 ) {
 
             /* read stream chunk */
-            dl_istream.read( ( char * ) dl_buffer, LE_UV3_CHUNK * LE_UV3_RECORD );
+            dl_istream.read( ( char * ) dl_buffer, LE_UV3_CHUNK * LE_ARRAY_DATA );
 
             /* check read bytes */
             if ( ( dl_read = dl_istream.gcount() ) > 0 ) {
 
                 /* parsing chunk */
-                for ( le_size_t dl_parse( 0 ); dl_parse < dl_read; dl_parse += LE_UV3_RECORD ) {
+                for ( le_size_t dl_parse( 0 ); dl_parse < dl_read; dl_parse += LE_ARRAY_DATA ) {
 
                     /* apply shift on coordinates */
                     ( ( le_real_t * ) ( dl_buffer + dl_parse ) )[0] += dl_xshift;

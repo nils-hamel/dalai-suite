@@ -29,7 +29,7 @@
         /* value variable */
         le_real_t * lc_value( nullptr );
 
-        /* buffer variable */  
+        /* buffer variable */
         le_byte_t * lc_sample( nullptr );
 
         /* buffer variable */
@@ -60,7 +60,7 @@
         lc_size = lc_istream.tellg();
 
         /* allocate buffer memory */
-        if ( ( lc_buffer = new ( std::nothrow ) le_byte_t[LE_UV3_RECORD * LE_UV3_CHUNK] ) == nullptr ) {
+        if ( ( lc_buffer = new ( std::nothrow ) le_byte_t[LE_ARRAY_DATA * LE_UV3_CHUNK] ) == nullptr ) {
 
             /* send message */
             throw( LC_ERROR_MEMORY );
@@ -68,7 +68,7 @@
         }
 
         /* allocate buffer memory */
-        if ( ( lc_sample = new ( std::nothrow ) le_byte_t[LE_UV3_RECORD * lc_count] ) == nullptr ) {
+        if ( ( lc_sample = new ( std::nothrow ) le_byte_t[LE_ARRAY_DATA * lc_count] ) == nullptr ) {
 
             /* send message */
             throw( LC_ERROR_MEMORY );
@@ -90,10 +90,10 @@
             lc_value[lc_parse] = std::numeric_limits<le_real_t>::max();
 
             /* select homogeneous stream record */
-            lc_istream.seekg( ( ( lc_size / LE_UV3_RECORD ) / lc_count ) * LE_UV3_RECORD * lc_parse );
+            lc_istream.seekg( ( ( lc_size / LE_ARRAY_DATA ) / lc_count ) * LE_ARRAY_DATA * lc_parse );
 
             /* import selected stream record */
-            lc_istream.read( ( char * ) ( lc_sample + lc_parse * LE_UV3_RECORD ), LE_UV3_RECORD );
+            lc_istream.read( ( char * ) ( lc_sample + lc_parse * LE_ARRAY_DATA ), LE_ARRAY_DATA );
 
         }
 
@@ -107,13 +107,13 @@
         while ( lc_read > 0 ) {
 
             /* read stream chunk */
-            lc_istream.read( ( char * ) lc_buffer, LE_UV3_RECORD * LE_UV3_CHUNK );
+            lc_istream.read( ( char * ) lc_buffer, LE_ARRAY_DATA * LE_UV3_CHUNK );
 
             /* read byte count */
             lc_read = lc_istream.gcount();
 
             /* parsing chunk */
-            for ( le_size_t lc_parse( 0 ); lc_parse < lc_read; lc_parse += LE_UV3_RECORD ) {
+            for ( le_size_t lc_parse( 0 ); lc_parse < lc_read; lc_parse += LE_ARRAY_DATA ) {
 
                 /* create buffer pointer */
                 lc_uv3p = ( le_real_t * ) ( lc_buffer + lc_parse );
@@ -122,7 +122,7 @@
                 for ( le_size_t lc_index( 0 ); lc_index < lc_count; lc_index ++ ) {
 
                     /* create buffer pointer */
-                    lc_uv3s = ( le_real_t * ) ( lc_sample + lc_index * LE_UV3_RECORD );
+                    lc_uv3s = ( le_real_t * ) ( lc_sample + lc_index * LE_ARRAY_DATA );
 
                     /* compute and check distance */
                     if ( ( lc_distance = lc_geometry_squaredist( lc_uv3p, lc_uv3s ) ) < lc_value[lc_index] ) {

@@ -606,7 +606,7 @@
         }
 
         /* allocate buffer memory */
-        if ( ( dl_obuffer = new ( std::nothrow ) le_byte_t[LE_UV3_CHUNK * LE_UV3_RECORD] ) == nullptr ) {
+        if ( ( dl_obuffer = new ( std::nothrow ) le_byte_t[LE_UV3_CHUNK * LE_ARRAY_DATA] ) == nullptr ) {
 
             /* send message */
             throw( LC_ERROR_MEMORY );
@@ -651,7 +651,7 @@
                     if ( dl_uv3p[2] != dl_uv3p[2] ) continue;
 
                     /* validate record */
-                    dl_export += LE_UV3_RECORD;
+                    dl_export += LE_ARRAY_DATA;
 
                     /* assign primitive type */
                     dl_uv3d[0] = LE_UV3_POINT;
@@ -710,7 +710,7 @@
         }
 
         /* allocate buffer memory */
-        if ( ( dl_obuffer = new ( std::nothrow ) le_byte_t[LE_UV3_RECORD] ) == nullptr ) {
+        if ( ( dl_obuffer = new ( std::nothrow ) le_byte_t[LE_ARRAY_DATA] ) == nullptr ) {
 
             /* send message */
             throw( LC_ERROR_MEMORY );
@@ -758,7 +758,7 @@
                 dl_uv3d[3] = dl_ply_vertex_integer( dl_ibuffer, 0, DL_VERTEX_B );
 
                 /* export record to stream */
-                dl_stream.write( ( char * ) dl_obuffer, LE_UV3_RECORD );
+                dl_stream.write( ( char * ) dl_obuffer, LE_ARRAY_DATA );
 
             }
 
@@ -937,7 +937,7 @@
     }
 
         /* send message */
-        return( EXIT_SUCCESS );    
+        return( EXIT_SUCCESS );
 
     }
 

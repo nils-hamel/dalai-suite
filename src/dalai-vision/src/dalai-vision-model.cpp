@@ -52,7 +52,7 @@
         }
 
         /* push stream size */
-        ml_real = ( ml_size = dl_stream.tellg() ) / LE_UV3_RECORD;
+        ml_real = ( ml_size = dl_stream.tellg() ) / LE_ARRAY_DATA;
 
         /* check random capability */
         if ( RAND_MAX < ml_size ) {
@@ -109,7 +109,7 @@
         /* initialise rendering */
         ml_rsize[0] = 0;
         ml_rsize[1] = 0;
-        ml_rsize[2] = 0; 
+        ml_rsize[2] = 0;
 
         /* model preparation */
         ml_set_render();
@@ -288,7 +288,7 @@
         le_real_t dl_length( 0.0 );
 
         /* parsing model element */
-        for ( le_size_t dl_parse( LE_UV3_POSE ); dl_parse < ml_size; dl_parse += LE_UV3_RECORD ) {
+        for ( le_size_t dl_parse( LE_ARRAY_DATA_POSE ); dl_parse < ml_size; dl_parse += LE_ARRAY_DATA ) {
 
             /* update primitive count */
             ml_rsize[ml_data[dl_parse]-1] ++;
@@ -321,7 +321,7 @@
         for ( le_size_t dl_parse( 0 ); dl_parse < ml_real; dl_parse ++ ) {
 
             /* compute buffer pointer */
-            dl_uv3p = ( le_real_t * ) ( ml_data + dl_parse * LE_UV3_RECORD );
+            dl_uv3p = ( le_real_t * ) ( ml_data + dl_parse * LE_ARRAY_DATA );
 
             /* compute buffer pointer */
             dl_uv3t = ( le_byte_t * ) ( dl_uv3p + 3 );
@@ -341,7 +341,7 @@
                 if ( ( dl_tmod = ( dl_tmod + 1 ) % 3 ) == 0 ) {
 
                     /* compute buffer pointer */
-                    dl_uv3s = ( le_real_t * ) ( ml_data + ( dl_parse + 1 ) * LE_UV3_RECORD );
+                    dl_uv3s = ( le_real_t * ) ( ml_data + ( dl_parse + 1 ) * LE_ARRAY_DATA );
 
                     /* compute vector */
                     dl_u[0] = dl_uv3s[0] - dl_uv3p[0];
@@ -349,7 +349,7 @@
                     dl_u[2] = dl_uv3s[2] - dl_uv3p[2];
 
                     /* compute buffer pointer */
-                    dl_uv3s = ( le_real_t * ) ( ml_data + ( dl_parse + 2 ) * LE_UV3_RECORD );
+                    dl_uv3s = ( le_real_t * ) ( ml_data + ( dl_parse + 2 ) * LE_ARRAY_DATA );
 
                     /* compute vector */
                     dl_v[0] = dl_uv3s[0] - dl_uv3p[0];
@@ -414,12 +414,12 @@
             dl_mdmv[dl_parse] = std::numeric_limits<le_real_t>::max();
 
             /* initialise sampling array */
-            dl_sample[dl_parse] = ( rand() % ml_real ) * LE_UV3_RECORD;
+            dl_sample[dl_parse] = ( rand() % ml_real ) * LE_ARRAY_DATA;
 
         }
 
         /* parsing model */
-        for ( le_size_t dl_parse( 0 ); dl_parse < ml_size; dl_parse += LE_UV3_RECORD ) {
+        for ( le_size_t dl_parse( 0 ); dl_parse < ml_size; dl_parse += LE_ARRAY_DATA ) {
 
             /* compute buffer pointer */
             dl_uv3p = ( le_real_t * ) ( ml_data + dl_parse );
@@ -469,7 +469,7 @@
         ml_mdmv /= le_real_t( DL_MODEL_SAMPLE );
 
         /* parsing model */
-        for ( le_size_t dl_parse( 0 ); dl_parse < ml_size; dl_parse += LE_UV3_RECORD ) {
+        for ( le_size_t dl_parse( 0 ); dl_parse < ml_size; dl_parse += LE_ARRAY_DATA ) {
 
             /* compute buffer pointer */
             dl_uv3p = ( le_real_t * ) ( ml_data + dl_parse );
@@ -484,7 +484,7 @@
                 ml_span = dl_distance;
 
             }
-            
+
         }
 
         /* compute model span */
@@ -564,13 +564,13 @@
         glEnableClientState( GL_VERTEX_ARRAY );
 
         /* update array pointer */
-        glVertexPointer( 3, GL_DOUBLE, LE_UV3_RECORD, ml_data );
+        glVertexPointer( 3, GL_DOUBLE, LE_ARRAY_DATA, ml_data );
 
         /* update array state */
         glEnableClientState( GL_COLOR_ARRAY  );
 
         /* update array pointer */
-        glColorPointer( 3, GL_UNSIGNED_BYTE, LE_UV3_RECORD, ml_data + LE_UV3_POSE + LE_UV3_TYPE );
+        glColorPointer( 3, GL_UNSIGNED_BYTE, LE_ARRAY_DATA, ml_data + LE_ARRAY_DATA_POSE + LE_ARRAY_DATA_TYPE );
 
         /* display model primitive */
         glDrawArrays( GL_POINTS, 0, ml_real );
@@ -599,13 +599,13 @@
         /* disable lighting */
         glDisable( GL_LIGHTING );
 
-        /* update array state */        
+        /* update array state */
         glDisableClientState( GL_NORMAL_ARRAY );
 
-        /* update array state */        
+        /* update array state */
         glDisableClientState( GL_COLOR_ARRAY );
 
-        /* update array state */        
+        /* update array state */
         glDisableClientState( GL_VERTEX_ARRAY );
 
         /* render model surface */

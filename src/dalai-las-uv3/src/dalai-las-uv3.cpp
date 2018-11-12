@@ -27,7 +27,7 @@
     int main( int argc, char ** argv ) {
 
         /* buffer variable */
-        le_byte_t dl_buffer[LE_UV3_RECORD] = { 0 };
+        le_byte_t dl_buffer[LE_ARRAY_DATA] = { 0 };
 
         /* buffer pointer variable */
         le_real_t * dl_uv3p( nullptr );
@@ -140,7 +140,7 @@
             }
 
             /* output stream exportation */
-            dl_ostream.write( ( char * ) dl_buffer, LE_UV3_RECORD );
+            dl_ostream.write( ( char * ) dl_buffer, LE_ARRAY_DATA );
 
         }
 

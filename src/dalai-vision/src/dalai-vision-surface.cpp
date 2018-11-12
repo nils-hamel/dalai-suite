@@ -149,7 +149,7 @@
         sf_size = 0;
 
         /* parsing model */
-        for ( le_size_t dl_parse( 0 ); dl_parse < dl_size; dl_parse += LE_UV3_RECORD ) {
+        for ( le_size_t dl_parse( 0 ); dl_parse < dl_size; dl_parse += LE_ARRAY_DATA ) {
 
             /* compute buffer pointer */
             dl_uv3p = ( le_real_t * ) ( dl_data + dl_parse );
@@ -298,11 +298,11 @@
             dl_matrix(2,dl_index) = sf_data[dl_parse + 2] - sf_cz;
 
             /* compute distance to centroid */
-            dl_radius = std::sqrt( 
+            dl_radius = std::sqrt(
 
-                dl_matrix(0,dl_index) * dl_matrix(0,dl_index) + 
-                dl_matrix(1,dl_index) * dl_matrix(1,dl_index) + 
-                dl_matrix(2,dl_index) * dl_matrix(2,dl_index) 
+                dl_matrix(0,dl_index) * dl_matrix(0,dl_index) +
+                dl_matrix(1,dl_index) * dl_matrix(1,dl_index) +
+                dl_matrix(2,dl_index) * dl_matrix(2,dl_index)
 
             );
 
@@ -434,7 +434,7 @@
                 dl_sin = std::sin( dl_parse );
 
                 /* primitive vertex */
-                glVertex3f( 
+                glVertex3f(
 
                     sf_cx + ( sf_ux * dl_cos + sf_vx * dl_sin ) * sf_radius * 5.0,
                     sf_cy + ( sf_uy * dl_cos + sf_vy * dl_sin ) * sf_radius * 5.0,
@@ -477,7 +477,7 @@
                 dl_sin = std::sin( dl_parse );
 
                 /* primitive vertex */
-                glVertex3f( 
+                glVertex3f(
 
                     sf_cx + ( sf_ux * dl_cos + sf_vx * dl_sin ) * sf_radius * 5.0,
                     sf_cy + ( sf_uy * dl_cos + sf_vy * dl_sin ) * sf_radius * 5.0,
