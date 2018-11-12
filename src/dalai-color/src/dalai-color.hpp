@@ -32,7 +32,7 @@
      *  geographical 3-dimensional information. It allows to considers the most
      *  common file formats and to convert them in a standardised and simple
      *  format.
-     * 
+     *
      *  This standardised format allows to use the suite tools for color
      *  edition, model cleaning and model hashing. In addition, the standard
      *  format is also expected by the _eratosthene-suite_ implementing the EPFL
@@ -90,14 +90,14 @@
 
     /*! \brief color mapping methods
      *
-     *  This function assigns a color to the provided color vector based on the
-     *  provided height value. It starts by clamping the height value using the
-     *  boundary values provided as parameters. The heights is then normalised
-     *  on this interval and the color is computed following the implemented
-     *  colormap.
+     *  This function assigns a color value to the provided color vector based
+     *  on the provided height value. It starts by clamping the height value
+     *  using the provided boundaries. The heights is then normalised on this
+     *  interval, using a cyclic condition when the height is outside of the
+     *  range, and the color is computed following the implemented colormap.
      *
-     *  \param dl_height Point height
-     *  \param dl_data   Point color array
+     *  \param dl_height Element height
+     *  \param dl_data   Element color array
      *  \param dl_ledge  Height clamping range lower boundary
      *  \param dl_hedge  Height clamping range upper boundary
      */
@@ -107,8 +107,7 @@
     /*! \brief main methods
      *
      *  The main function reads the vertex of the primitives of the provided uv3
-     *  file and overrides their color through a mapping based on the vertex
-     *  height :
+     *  file and overrides their color using an height-based colormap :
      *
      *      ./dalai-color --input/-i [input file]
      *                    --output/-o [output file]
@@ -117,9 +116,9 @@
      *
      *  The resulting colored uv3 primitives are exported in the provided output
      *  stream.
-     * 
+     *
      *  The vertex height is understood as the value stored by their third
-     *  coordinates. If the third component is outside of the provided range, a
+     *  coordinate. If the third component is outside of the provided range, a
      *  cyclic condition is considered.
      *
      *  \param  argc Standard parameter
