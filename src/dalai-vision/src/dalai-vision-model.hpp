@@ -79,14 +79,14 @@
      *  In the first place, the class contains member allowing the importation
      *  of the model proper data, that is a memory pointer and sizes. The class
      *  also holds the definition of the model rotation center and its minimum
-     *  distance mean value.
+     *  distances mean value.
      *
      *  The class also holds the index array that are used to render the model
      *  primitive in an efficient manner.
      *
      *  The class also holds the three surfaces object used to compute optimal
-     *  intersection. The highlighted surface and their display mode are also
-     *  as members.
+     *  intersection in the model. The highlighted surfaces and their display
+     *  mode are also members of this class.
      *
      *  \var dl_model_t::ml_size
      *  Size, in bytes, of the model
@@ -105,9 +105,9 @@
      *  \var dl_model_t::ml_hide
      *  Model surface rendering mode
      *  \var dl_model_t::ml_mdmv
-     *  Model minimum distance mean value
+     *  Model minimum distances mean value
      *  \var dl_model_t::ml_span
-     *  Model maximum distance to its centroid
+     *  Model maximum distances to its centroid
      *  \var dl_model_t::ml_rsize
      *  Model primitive count array
      *  \var dl_model_t::ml_rdata
@@ -166,7 +166,7 @@
         /*! \brief accessor methods
          *
          *  This function returns two times the largest distance of the model
-         *  point to the model centroid.
+         *  points to the model centroid.
          *
          *  \return Returns two times the model radius
          */
@@ -176,15 +176,15 @@
         /*! \brief accessor methods
          *
          *  This function triggers the computation of the intersection of the
-         *  three surface using their specific method.
+         *  three surfaces using their specific method.
          */
 
         le_void_t ml_get_intersection( le_void_t );
 
         /*! \brief accessor methods
          *
-         *  This function allows to apply the model center translation to the
-         *  current opengl matrix. This translation is used to make the model
+         *  This function allows to apply the model translation center to the
+         *  current OpenGL matrix. This translation is used to make the model
          *  rotating around its current center.
          */
 
@@ -230,7 +230,7 @@
          *
          *  As explained in the documentation of \b dl_surface_t, the model
          *  rotation center can also be used to remove points from the stack of
-         *  the surface estimation points.
+         *  the highlighted surface estimation points.
          */
 
         le_void_t ml_set_push( le_void_t );
@@ -272,7 +272,7 @@
          *
          *  In addition, the function creates and fills the normal array used
          *  for polygon and model lighting. The computation of the normal is
-         *  performed for triangle only.
+         *  performed for triangles only.
          */
 
         le_void_t ml_set_render( le_void_t );
@@ -283,12 +283,12 @@
          *  function is usually used just after model data importation.
          *
          *  In the first place, the function performs an estimation of the model
-         *  point minimal separation mean value. This value is used, combined
+         *  vertex minimal separation mean value. This value is used, combined
          *  with a factor, as a tolerance reference for point selection.
          *
          *  In addition, the function performs also the computation of the model
          *  centroid, used as initial model rotation center. It also computes
-         *  the maximum distance of points from this centroid.
+         *  the maximum distance of points from the model centroid.
          */
 
         le_void_t ml_set_analysis( le_void_t );
@@ -297,10 +297,10 @@
 
         /*! \brief rendering methods
          *
-         *  This function renders through opengl the model frame axis.
+         *  This function renders through OpenGL the model frame axis.
          *
-         *  It considers the model minimum distance mean value for the rendering
-         *  of the axis to allow the user to have an idea of this central value.
+         *  It considers the minimum distances mean value for the rendering of
+         *  the axis to allow the user to have an idea of this important value.
          */
 
         le_void_t ml_ren_frame( le_void_t );
@@ -308,8 +308,7 @@
         /*! \brief rendering methods
          *
          *  This function renders the primitives of the model. Each group of
-         *  primitive are rendered using optimised methods and vertex, color
-         *  and index array.
+         *  primitives are rendered using optimised methods.
          *
          *  The function also invokes the surfaces rendering function for the
          *  display of the model surface state.

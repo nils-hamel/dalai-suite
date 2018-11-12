@@ -87,7 +87,7 @@
      *  points, the class offers methods to add and remove such points.
      *
      *  Finally, the class offers functions allowing to display a representation
-     *  of the plane and its estimation points through the opengl api.
+     *  of the plane and its estimation points through the OpenGL API.
      *
      *  \var dl_surface_t::sf_cx
      *  Estimation point centroid
@@ -118,11 +118,11 @@
      *  \var dl_surface_t::sf_radius
      *  Estimation point maximum distance from centroid
      *  \var dl_surface_t::sf_r
-     *  Surface red component
+     *  Surface color red component
      *  \var dl_surface_t::sf_g
-     *  Surface green component
+     *  Surface color green component
      *  \var dl_surface_t::sf_b
-     *  Surface blue component
+     *  Surface color blue component
      *  \var dl_surface_t::sf_size
      *  Number of estimation points
      *  \var dl_surface_t::sf_virt
@@ -168,7 +168,7 @@
         /*! \brief destructor methods
          *
          *  The desctructor simply releases the memory allocated to handle the
-         *  plane estimation points.
+         *  surface estimation points.
          */
 
         ~dl_surface_t( void );
@@ -178,7 +178,7 @@
         /*! \brief accessor methods
          *
          *  This function is used to compute the intersection point between the
-         *  current surface and the two provided one. The intersection is then
+         *  current surface and the two provided ones. The intersection is then
          *  written in the standard output.
          *
          *  \param dl_s2 Surface object
@@ -230,11 +230,11 @@
          *  This procedure allows to consider a much larger set of estimation
          *  points to compute the equation of the plane. In other words, this
          *  procedure allows to refine the estimation points set, and so, the
-         *  equation of the plane that estimate a surface of the model.
+         *  equation of the plane that estimate a surface in the model.
          *
          *  \param dl_data      Model points array
          *  \param dl_size      Model points count
-         *  \param dl_tolerance Distance threshold for the selection of the points
+         *  \param dl_tolerance Point selection distance threshold
          *  \param dl_grow      Selection condition tolerance
          */
 
@@ -245,7 +245,7 @@
         /*! \brief mutator methods
          *
          *  This function considers a potential pushed estimation point and
-         *  checks in the plane estimation points array if the pushed point is
+         *  checks in the surface estimation points array if the pushed point is
          *  less distant to an already pushed point than the \b dl_tolerance
          *  value. If so, the found point is removed from the stack and the
          *  pushed candidate is discarded.
@@ -260,7 +260,7 @@
          *  \param dl_x         Pushed point coordinate
          *  \param dl_y         Pushed point coordinate
          *  \param dl_z         Pushed point coordinate
-         *  \param dl_tolerance Distance threshold for point removal
+         *  \param dl_tolerance Point selection distance threshold
          *
          *  \return Returns true if a point has been removed, false otherwise.
          */
@@ -278,7 +278,7 @@
 
         /*! \brief mutator methods
          *
-         *  This function allows to specify the color of the plane.
+         *  This function allows to specify the color of the surface.
          *
          *  \param dl_r Color red component
          *  \param dl_g Color green component
@@ -310,7 +310,7 @@
          *  This function is used to handle the surface estimation points array
          *  memory. It is typically called as an estimation point is pushed on
          *  the stack. The function checks the memory availability for the new
-         *  point and reallocate the memory when necessary.
+         *  point and re-allocate the memory when necessary.
          *
          *  \param dl_add Number of element to push
          */
@@ -327,7 +327,7 @@
 
         /*! \brief mutator methods
          *
-         *  This function simply updates the opengl point display size using the
+         *  This function simply updates the OpenGL point display size using the
          *  provided factor.
          *
          *  \param dl_factor Point size multiplication factor
@@ -339,10 +339,10 @@
 
         /*! \brief rendering methods
          *
-         *  This function is used to render, through opengl api, the surface
+         *  This function is used to render, through OpenGL API, the surface
          *  hold by the object. The function checks in the first place if the
          *  equation of the surface is computed (sufficient amount of estimation
-         *  point).
+         *  points). The surface is then rendered.
          *
          *  This function is responsible of non-transparent element rendering.
          */
@@ -351,10 +351,10 @@
 
         /*! \brief rendering methods
          *
-         *  This function is used to render, through opengl api, the surface
+         *  This function is used to render, through OpenGL API, the surface
          *  hold by the object. The function checks in the first place if the
          *  equation of the surface is computed (sufficient amount of estimation
-         *  point).
+         *  points). The surface is then rendered.
          *
          *  This function is responsible of transparent element rendering.
          */

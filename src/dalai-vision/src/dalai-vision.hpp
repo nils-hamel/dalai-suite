@@ -32,7 +32,7 @@
      *  geographical 3-dimensional information. It allows to considers the most
      *  common file formats and to convert them in a standardised and simple
      *  format.
-     * 
+     *
      *  This standardised format allows to use the suite tools for color
      *  edition, model cleaning and model hashing. In addition, the standard
      *  format is also expected by the _eratosthene-suite_ implementing the EPFL
@@ -104,9 +104,9 @@
      *  \var dl_vision_t::vs_window
      *  Interface window
      *  \var dl_vision_t::vs_context
-     *  OpenGL graphical context
+     *  OpenGL context
      *  \var dl_vision_t::vs_execute
-     *  Execution loop operation switch
+     *  Execution loop switch
      *  \var dl_vision_t::vs_width
      *  Width, in pixels, of the interface
      *  \var dl_vision_t::vs_height
@@ -137,8 +137,8 @@
         /*! \brief constructor methods
          *
          *  The constructor method sets the interface graphical context using
-         *  sdl. After sdl initialisation, it creates the interface windows and
-         *  configures the opengl graphical context.
+         *  SDL library. After SDL initialisation, it creates the interface
+         *  windows and configures the OpenGL context.
          *
          *  The provided model span is used to initialise the point of view.
          *
@@ -150,7 +150,7 @@
         /*! \brief destructor methods
          *
          *  The destructor method simply deletes the interface window and the
-         *  opengl graphical context. It finally uninitialise sdl.
+         *  OpenGL context. It finally uninitialise SDL library.
          */
 
         ~dl_vision_t();
@@ -159,7 +159,7 @@
 
         /*! \brief accessor methods
          *
-         *  This function returns the width in pixel of the interface.
+         *  This function returns the width in pixels of the interface.
          *
          *  \return Interface width, in pixels
          */
@@ -177,10 +177,10 @@
 
         /*! \brief mutator methods
          *
-         *  This function sets the opengl viewport and projection matrix based
+         *  This function sets the OpenGL viewport and projection matrix based
          *  on the interface width and height.
          *
-         *  It also specifies the opengl near and far planes by considering the
+         *  It also specifies the OpenGL near and far planes by considering the
          *  model maximal diameter.
          *
          *  \param dl_model Model class
@@ -192,18 +192,18 @@
          *
          *  This function implements a simple directional light model used for
          *  polygonal rendering. The light is set in the direction of sight
-         *  using a simple ambient and diffuse model.
+         *  using a simple ambient and diffuse light model.
          */
 
         le_void_t vs_set_light( le_void_t );
 
         /*! \brief mutator methods
          *
-         *  This function update the model rotation center using the point of
+         *  This function updates the model rotation center using the point of
          *  the model below the click.
          *
-         *  \param dl_click_x Mouse click position
-         *  \param dl_click_y Mouse click position
+         *  \param dl_click_x Mouse click x-position
+         *  \param dl_click_y Mouse click y-position
          *  \param dl_arcball Arcball class
          *  \param dl_model   Model class
          */
@@ -299,7 +299,7 @@
      *  on the estimation points stack of the highlighted surface. If the point
      *  is already in the stack, it is removed by this click.
      *
-     *  Pressing [q], [w] or [e] allows the highlight respectively the first,
+     *  Pressing [q], [w] or [e] allows to highlight respectively the first,
      *  second and third model surfaces. Pressing the keys [a], [s] and [d]
      *  trigger the automatic (re)selection of the estimation points of the
      *  highlighted surface. The automatic selection only make sense as at least

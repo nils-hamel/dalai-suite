@@ -92,7 +92,7 @@
 
         /*! \brief constructor/destructor methods
          *
-         *  The constructor simply initialises members with default value and
+         *  The constructor simply initialises members with default values and
          *  sets the arcball matrix to identity.
          *
          *  \param dl_width  Interface width, in pixels
@@ -103,8 +103,8 @@
 
         /*! \brief accessor methods
          *
-         *  This function applies the arcball matrix on the current opengl
-         *  matrix.
+         *  This function applies the arcball matrix on the current OpenGL
+         *  rendering matrix (modelview).
          */
 
         le_void_t ab_get_rotate( le_void_t );
@@ -126,7 +126,7 @@
          *  The provided matrix has to be a 4 by 4 matrix stored in a linear
          *  16 entries array.
          *
-         *  \param dl_matrix Matrix coefficient array
+         *  \param dl_matrix Matrix coefficients array
          */
 
         le_void_t ab_set_multiply( le_real_t * dl_matrix );
