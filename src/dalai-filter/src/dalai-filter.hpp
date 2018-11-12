@@ -32,7 +32,7 @@
      *  geographical 3-dimensional information. It allows to considers the most
      *  common file formats and to convert them in a standardised and simple
      *  format.
-     * 
+     *
      *  This standardised format allows to use the suite tools for color
      *  edition, model cleaning and model hashing. In addition, the standard
      *  format is also expected by the _eratosthene-suite_ implementing the EPFL
@@ -97,52 +97,57 @@
      *  This function applies the filtering process on each file contained in
      *  the provided \b dl_ipath directory. It simply enumerates the files of
      *  the directory and applies the filtering process on each one. The
-     *  resulting filtered point clouds are all exported in the same output
-     *  stream.
+     *  resulting filtered models are all exported in the same output stream.
      *
      *  Usually, this function is applied on the directory in which the input
-     *  point cloud has been hashed. In other words, this filtering function
-     *  assumes that all the point cloud files found in the provided input
-     *  directory are parts of the same input point cloud.
+     *  model has been hashed. In other words, this filtering function assumes
+     *  that all the model files found in the provided input directory are part
+     *  of the same input model.
      *
      *  Two variations of the same filtering methods are available through this
      *  function, the homogeneous filtering and the adaptive one. See the
      *  documentation of \b libcommon for more information about these filtering
-     *  methods.
+     *  methods. If \b true is provided as \b dl_adaptive parameter, the
+     *  adaptive filtering process is considered.
+     *
+     *  Note : The implementation of the filtering process does not takes into
+     *  account the type of the read records. It is then not suitable for non
+     *  point-based models.
      *
      *  \param dl_ostream   Output stream
      *  \param dl_ipath     Input directory path
-     *  \param dl_mean      Minimum distance mean value
-     *  \param dl_factor    Minimum distance mean value factor
+     *  \param dl_mean      Minimum distances mean value
+     *  \param dl_factor    Minimum distances mean value factor
      *  \param dl_threshold Neighbour count threshold
-     *  \param dl_adaptive  adaptive filtering switch
+     *  \param dl_adaptive  Adaptive filtering switch
      */
 
     le_void_t dl_filter( std::ofstream & dl_ostream, le_char_t const * const dl_ipath, le_real_t dl_mean, le_real_t const dl_factor, le_size_t const dl_threshold, bool const dl_adaptive );
 
     /*! \brief main function
      *
-     *  The main function reads the point cloud provided through the input file
-     *  and exports its filtered version in the provided output stream :
+     *  The main function reads the model provided through the input uv3 file
+     *  and exports its filtered version in the provided output uv3 file :
      *
      *      ./dalai-filter --input/-i [input uv3 file path]
      *                     --output/-o [output uv3 file path]
      *                     --adaptive/-a [filtering mode switch]
-     *                     --factor/-f [minimum distance mean value factor]
+     *                     --factor/-f [minimum distances mean value factor]
      *                     --count/-c [sampled elements for mean computation]
      *                     --threshold/-t [neighbour count threshold]
      *
      *  The main function assumes that the provided input uv3 stream contains
-     *  only point primitive. The filtering process does not checks the record
+     *  only point primitives. The filtering process does not checks the record
      *  primitive type and applies the filter on each record.
      *
      *  The main function starts by reading the parameters and opens the input
-     *  file. It computes the elements minimum distance mean value using the
+     *  file. It computes the elements minimum distances mean value using the
      *  count parameter.
      *
      *  In order to performs the filtering process, the input stream is cut in
-     *  smaller pieces using the hashing function. The hashing function uses the
-     *  minimum distance mean value to scale the hashing process.
+     *  smaller pieces using the \b libcommon hashing function. The hashing
+     *  function uses the minimum distances mean value to scale the hashing
+     *  process.
      *
      *  The filtering process is then applied on each piece of the hashed input
      *  stream and the results of the filtering of all the pieces is exported in
