@@ -32,7 +32,7 @@
      *  geographical 3-dimensional information. It allows to considers the most
      *  common file formats and to convert them in a standardised and simple
      *  format.
-     * 
+     *
      *  This standardised format allows to use the suite tools for color
      *  edition, model cleaning and model hashing. In addition, the standard
      *  format is also expected by the _eratosthene-suite_ implementing the EPFL
@@ -90,7 +90,7 @@
     /*! \brief main methods
      *
      *  The main function reads the content of the provided input uv3 stream and
-     *  applies the provided shift on each respective dimension :
+     *  applies the provided translation on each respective dimension :
      *
      *      ./dalai-shift --input/-i [uv3 input file]
      *                    --output/-o [uv3 output file]
@@ -100,8 +100,10 @@
      *
      *  The main function starts by opening both input and output streams before
      *  to read the input stream chunk by chunk. The provided shift values are
-     *  then added to each record of the chunk. The processed chunk is then
-     *  exported in the output stream.
+     *  then added to the respective coordinates of each record of each chunk.
+     *
+     *  The processed chunks are then exported one by one in the created output
+     *  stream.
      *
      *  \param  argc Standard parameter
      *  \param  argv Standard parameter
