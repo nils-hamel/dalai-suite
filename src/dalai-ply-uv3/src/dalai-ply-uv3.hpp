@@ -32,7 +32,7 @@
      *  geographical 3-dimensional information. It allows to considers the most
      *  common file formats and to convert them in a standardised and simple
      *  format.
-     * 
+     *
      *  This standardised format allows to use the suite tools for color
      *  edition, model cleaning and model hashing. In addition, the standard
      *  format is also expected by the _eratosthene-suite_ implementing the EPFL
@@ -257,7 +257,7 @@
          *
          *  \param dl_type Type to read
          *
-         *  \return Returns read type value
+         *  \return Returns read value
          */
 
         long long int dl_ply_io_integer( le_enum_t const dl_type );
@@ -268,8 +268,8 @@
          *  vertex in the ply stream. The vertex record is read, according to
          *  its length and is returned through the provided buffer.
          *
-         *  \param dl_index  Index, zero-based, of the vertex
-         *  \param dl_buffer Byte buffer receiving the read vertex record
+         *  \param dl_index  Index, zero-based and in bytes, of the vertex
+         *  \param dl_buffer Bytes buffer receiving the read vertex record
          */
 
         le_void_t dl_ply_io_vertex( le_size_t const dl_index, le_byte_t * const dl_buffer );
@@ -307,7 +307,7 @@
         /*! \brief conversion methods
          *
          *  This method is specialised in mesh-based conversion from ply to uv3
-         *  format. It reads each face index list and converts then into uv3
+         *  format. It reads each face index list and converts them into uv3
          *  polygonal record before to export them in the specified output
          *  stream.
          *
@@ -319,12 +319,12 @@
         /*! \brief conversion methods
          *
          *  This function is used to read the vertex property as a floating
-         *  value from its storage type.
+         *  value from its storage buffer.
          *
          *  \param dl_buffer Vertex record buffer
-         *  \param dl_offset Vertex offset in the buffer
+         *  \param dl_offset Vertex offset in the buffer, in bytes
          *  \param dl_vertex Property to read
-         *  
+         *
          *  \return Returns read property as double
          */
 
@@ -333,12 +333,12 @@
         /*! \brief conversion methods
          *
          *  This function is used to read the vertex property as an integer
-         *  value from its storage type.
+         *  value from its storage buffer.
          *
          *  \param dl_buffer Vertex record buffer
-         *  \param dl_offset Vertex offset in the buffer
+         *  \param dl_offset Vertex offset in the buffer, in bytes
          *  \param dl_vertex Property to read
-         *  
+         *
          *  \return Returns read property as integer
          */
 
@@ -353,7 +353,7 @@
     /*! \brief main function
      *
      *  The main function reads the provided ply stream content and converts it
-     *  into uv3 stream : 
+     *  into uv3 stream :
      *
      *      ./dalai-ply-uv3 --ply/-i [ply input file path]
      *                      --uv3/-o [uv3 output file path]
@@ -365,10 +365,12 @@
      *  If the ply file contains only vertex, a specialised and fast function
      *  is used to converts the vertex into uv3 records. If the ply stream
      *  contains at least one face, only line and triangles are converted and
-     *  exported in the output u3 stream.
+     *  exported in the output uv3 stream.
      *
      *  The converted ply file is always considered in its binary representation
-     *  and always considering little-endian byte order.
+     *  and always considering little-endian byte order. In addition, the vertex
+     *  have to carry color information as the face colors are ignored by the
+     *  conversion process.
      *
      *  \param argc Standard parameter
      *  \param argv Standard parameter
