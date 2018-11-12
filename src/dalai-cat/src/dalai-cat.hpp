@@ -32,7 +32,7 @@
      *  geographical 3-dimensional information. It allows to considers the most
      *  common file formats and to convert them in a standardised and simple
      *  format.
-     * 
+     *
      *  This standardised format allows to use the suite tools for color
      *  edition, model cleaning and model hashing. In addition, the standard
      *  format is also expected by the _eratosthene-suite_ implementing the EPFL
@@ -91,28 +91,32 @@
      *
      *  This function converts the provided position vector into an eratosthene
      *  address structure before to display the spatial index of the computed
-     *  address. The provided length gives the number of digit to consider.
+     *  address. The provided length gives the number of digit to consider for
+     *  the spatial index.
      *
-     *  \param dl_pose Position vector
-     *  \param dl_length Address spatial index length
+     *  \param dl_pose   Position vector
+     *  \param dl_length Spatial index length - in digit count
      */
 
     le_void_t dl_cat_address( le_real_t * const dl_pose, le_byte_t const dl_length );
 
     /*! \brief main methods
      *
-     *  The main function reads the primitives stored in the provided uv3 file 
+     *  The main function reads the primitives stored in the provided uv3 file
      *  and displays them on the standard output :
      *
-     *      ./dalai-cat --uv3/-i [uv3 input file] --index/-x [index size]
+     *      ./dalai-cat --uv3/-i [uv3 input file]
+     *                  --index/-x [index size]
      *
-     *  The main function reads the provided file and import the primitives one
-     *  by one before to display them on the standard output. The primitives
-     *  vertex coordinates, type and color are written on the terminal.
+     *  The main function reads the provided file and imports the element
+     *  records one by one before to display them on the standard output. The
+     *  element vertex coordinates, type and color are considered for output.
      *
      *  If the provided '--index' is non-zero, the vertex coordinates of each
-     *  primitive is replaced by the eratosthene address spatial index using
-     *  the value as index length.
+     *  element is replaced by the eratosthene address spatial index using
+     *  the value as spatial index length. In such a case, the provided model
+     *  is expected to be aligned in the WGS84 coordinate system, with heights
+     *  over the frame ellipsoid.
      *
      *  \param  argc Standard parameter
      *  \param  argv Standard parameter
