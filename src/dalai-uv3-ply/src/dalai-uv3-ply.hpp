@@ -32,7 +32,7 @@
      *  geographical 3-dimensional information. It allows to considers the most
      *  common file formats and to convert them in a standardised and simple
      *  format.
-     * 
+     *
      *  This standardised format allows to use the suite tools for color
      *  edition, model cleaning and model hashing. In addition, the standard
      *  format is also expected by the _eratosthene-suite_ implementing the EPFL
@@ -103,7 +103,7 @@
      *  according to the amount of vertex and faces that have to be written
      *  in the ply stream.
      *
-     *  \param dl_stream Stream descriptor of ply file
+     *  \param dl_stream PLY stream descriptor
      *  \param dl_vertex Vertex count
      *  \param dl_face   Face count
      */
@@ -113,10 +113,10 @@
     /*! \brief statistical methods
      *
      *  This function reads the provided input streams and determine the amount
-     *  of point, lines and triangle. The function returns the total amount of
-     *  line and triangle all considered as faces.
+     *  of points, lines and triangles. The function returns the total amount of
+     *  lines and triangles all considered as faces.
      *
-     *  \param dl_stream Stream descriptor of uv3 file
+     *  \param dl_stream UV3 stream descriptor
      *
      *  \return Returns total amount of faces in the uv3 stream
      */
@@ -128,20 +128,20 @@
      *  This function reads each record of the provided uv3 stream and export
      *  its coordinates as a vertex in the provided ply stream.
      *
-     *  \param dl_istream Stream descriptor of uv3 file
-     *  \param dl_ostream Stream descriptor of ply file
+     *  \param dl_istream UV3 stream descriptor
+     *  \param dl_ostream PLY stream descriptor
      */
 
     le_void_t dl_uv3_ply_vertex( std::fstream & dl_istream, std::fstream & dl_ostream );
 
     /*! \brief conversion methods
      *
-     *  This function detects line and triangle present in the provided uv3
-     *  stream and exports their definition in the provided output ply stream
-     *  as faces.
+     *  This function detects the lines and triangles present in the provided
+     *  uv3 stream and exports their definition in the provided output ply
+     *  stream as faces.
      *
-     *  \param dl_istream Stream descriptor of uv3 file
-     *  \param dl_ostream Stream descriptor of ply file
+     *  \param dl_istream UV3 stream descriptor
+     *  \param dl_ostream PLY stream descriptor
      */
 
     le_void_t dl_uv3_ply_face( std::fstream & dl_istream, std::fstream & dl_ostream );
@@ -153,16 +153,16 @@
      *
      *      ./dalai-uv3-ply --uv3/-i [uv3 input file]
      *                      --ply/-o [ply output file]
-     *                      --vertex-only,-v [exportation switch]
+     *                      --vertex-only,-v [conversion switch]
      *
      *  The function starts by allocating the required i/o buffers memory and
-     *  creating the i/o streams. It then creates and exports the output ply 
+     *  creating the i/o streams. It then creates and exports the output ply
      *  file header.
      *
      *  The function then starts by converting the vertex in the output ply
-     *  stream before to exports the faces, if present. If the 'vertex-only'
+     *  stream before to export the faces, if present. If the 'vertex-only'
      *  switch is specified, the main function only exports the vertex, i.e. the
-     *  points, in the output ply stream, discarding faces.
+     *  points, in the output ply stream discarding faces.
      *
      *  The created ply file is always considered in its binary representation
      *  and always considering little-endian byte order.
