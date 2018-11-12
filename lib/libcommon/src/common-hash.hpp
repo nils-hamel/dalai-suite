@@ -71,19 +71,19 @@
      *
      *  This function imports the primitives provided by the input stream and
      *  hashes them in the output directory. The hashing consists in cutting the
-     *  provided model into many smaller sub-model based on cell-based space
+     *  provided model into many smaller sub-models based on cell-based space
      *  segmentation.
      *
      *  The function reads the input stream elements one by one and uses the
-     *  provided hashing parameter and the minimum distance mean value to
-     *  determine in which sub model each element has to be written. The hash
+     *  provided hashing parameter and the minimum distances mean value to
+     *  determine in which sub-model each element has to be written. The hash
      *  function is driven by the following h_i values :
      *
      *      h_i = ( int ) floor( p_i / ( lc_param * lc_mean ) )
      *
      *  with i = x,y,z. The three computed h_i values are then used to composed
-     *  the sub model file name. All elements sharing the same h_i values are
-     *  then written in the same sub point cloud.
+     *  the sub-model file name. All elements sharing the same h_i values are
+     *  then written in the same sub-model.
      *
      *  \param lc_istream Input stream descriptor
      *  \param lc_opath   Output directory path

@@ -76,8 +76,11 @@
     /*! \brief error methods
      *
      *  This function analysis the provided error code and displays the related
-     *  error message on the error output (cerr). If the provided error code is
-     *  not recognised, the function does nothing.
+     *  error message on the error output (cerr).
+     *
+     *  If the provided code is not linked to an implemented error, the function
+     *  does nothing. The same behaviour applies when \b LC_ERROR_NONE code is
+     *  is provided.
      *
      *  \param lc_code Error code
      */

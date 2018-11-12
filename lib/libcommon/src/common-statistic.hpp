@@ -71,22 +71,25 @@
     /*! \brief statistical methods
      *
      *  This function considers the provided uv3 stream and computes the vertex
-     *  minimum distance mean value. To achieve this computation in a reasonable
-     *  amount of time, the following strategy is considered.
+     *  minimum distances mean value. To achieve the computation of the value in
+     *  a reasonable amount of time, the following strategy is considered.
      *
      *  The function starts by sampling \b lc_count elements in the input stream
      *  provided through the stream descriptor. For each sampled element, it
-     *  searches the distance to its closest element. It finally computes the
-     *  mean value of the found minimal distances on the sampled set.
+     *  searches the distance to its closest element considering all the other
+     *  element of the model. It finally computes the minimum distances mean
+     *  value on the sampled set.
      *
-     *  The approximation of the minimum distance mean value gets better as
-     *  \b lc_count increases. Nevertheless, a value of 32 already allows to
-     *  compute a very good approximation of the minimum distance mean value.
+     *  The approximation of the minimum distances mean value gets better as
+     *  the provided \b lc_count increases. Nevertheless, a value of 32 already
+     *  allows to compute a good approximation of the minimum distances mean
+     *  value. The choice of the \b lc_count depends minaly on the size of the
+     *  model to analyse.
      *
-     *  \param lc_istream Stream descriptor to uv3 file
-     *  \param lc_count   Estimation sampling count
+     *  \param lc_istream Input stream descriptor
+     *  \param lc_count   Element sampling count
      *
-     *  \return Returns minimum distance mean value
+     *  \return Returns minimum distances mean value of the model
      */
 
     le_real_t lc_statistic_mdmv( std::ifstream & lc_istream, le_size_t const lc_count );

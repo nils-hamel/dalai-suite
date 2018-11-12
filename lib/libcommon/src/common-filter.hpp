@@ -77,16 +77,16 @@
      *  stream and exports their filtered version in the output stream.
      *
      *  The implemented filtering method is based on the provided minimum
-     *  distance mean value. This value is expected to give the mean value of
-     *  the nearest neighbour of each element of the model. Usually, this value
+     *  distances mean value. This value is expected to give the mean value of
+     *  the nearest neighbours of the elements of the model. Usually, this value
      *  is computed considering a sample of the model (\b lc_statistic_mdmv()).
      *
      *  The function defines a threshold distance given by the multiplication
-     *  of the minimum distance mean value with the provided \b lc_factor. The
+     *  of the minimum distances mean value with the provided \b lc_factor. The
      *  function checks for each element of the model the amount of neighbour
      *  that are closer to the defined threshold. The elements that have at
      *  least \b lc_threshold elements below the condition are kept, the other
-     *  being discarded.
+     *  are discarded.
      *
      *  This filtering method is called homogeneous because the model provided
      *  through the input stream is assumed to be only a portion of a larger
@@ -95,16 +95,20 @@
      *  result, the applied filtering condition is homogeneous from the entire
      *  model point of view.
      *
+     *  Note : The implementation of the filtering process does not takes into
+     *  account the type of the read records. It is then not suitable for non
+     *  point-based models.
+     *
      *  \param lc_ipath     Input stream path
      *  \param lc_ostream   Output stream descriptor
-     *  \param lc_mean      Minimums distance mean value
-     *  \param lc_factor    Mean value multiplier
-     *  \param lc_threshold Neighbour count threshold
+     *  \param lc_mean      Minimum distances mean value
+     *  \param lc_factor    Minimum distances mean value factor
+     *  \param lc_threshold Neighbour condition threshold
      */
 
     le_void_t lc_filter_homogeneous( le_char_t const * const lc_ipath, std::ofstream & lc_ostream, le_real_t const lc_mean, le_real_t const lc_factor, le_size_t const lc_threshold );
 
-    /*! \brief filtering methods (revoked)
+    /*! \brief filtering methods
      *
      *  This filtering function reads the uv3 recrods provided through the input
      *  stream and exports their filtered version in the output stream.
@@ -113,21 +117,25 @@
      *  in the \b lc_filter_homogeneous() function.
      *
      *  The variation of the filtering method consists in computing the minimum
-     *  distance mean value of the input stream as if it was a entire model
+     *  distances mean value of the input stream as if it was a entire model
      *  rather that a portion of it. The filtering condition is identical as in
-     *  the previous function expect that the condition is computed using the
-     *  computed local mean value.
+     *  the previous function except that the condition is computed using the
+     *  computed local minimum distances mean value.
      *
      *  This function can then be used to filter a complete model stored in a
-     *  single stream without to provide a mean value. It can also be used on
-     *  streams that contain only a portion of a larger model in order to
-     *  implement a filtering algorithm able to take into account the local
-     *  specificity of the model when applying the filtering condition.
+     *  single stream without to provide a minimum distances mean value. It can
+     *  also be used on streams that contain only a portion of a larger model in
+     *  order to implement a filtering algorithm able to take into account the
+     *  local specificities of the model.
+     *
+     *  Note : The implementation of the filtering process does not takes into
+     *  account the type of the read records. It is then not suitable for non
+     *  point-based models.
      *
      *  \param lc_ipath     Input stream path
      *  \param lc_ostream   Output stream descriptor
-     *  \param lc_factor    Local mean value multiplier
-     *  \param lc_threshold Neighbour count threshold
+     *  \param lc_factor    Minimum distances mean value factor
+     *  \param lc_threshold Neighbour condition threshold
      */
 
     le_void_t lc_filter_adaptative( le_char_t const * const lc_ipath, std::ofstream & lc_ostream, le_real_t const lc_factor, le_size_t const lc_threshold );

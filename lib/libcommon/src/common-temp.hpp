@@ -72,19 +72,23 @@
     /*! \brief temporary methods
      *
      *  This function allows to create a temporary directory. If the provided
-     *  mode value is set to \b LC_TEMP_CREATE, the directory is created,
+     *  mode value is set to \b LC_TEMP_CREATE, the directory is created and
      *  deleted otherwise.
      *
-     *  The \b lc_root directory path specify in which directory to create the
-     *  temporary one. If a null is provided, the function assume the standard
-     *  UNIX path as root directory (/tmp/).
+     *  The \b lc_root directory path specifies in which directory to create the
+     *  temporary one. If a null pointer is provided, the function assume that
+     *  the standard UNIX path has to be considered (/tmp).
      *
      *  The path of the created temporary directory is set in the \b lc_path
-     *  variable, allowing to use the created directory.
+     *  variable, allowing to return it.
+     *
+     *  In case of a deletion, the existence of the directory provided as the
+     *  \b lc_path parameter is not checked. In addition, the \b le_root is
+     *  ignored in case of deletion.
      *
      *  \param lc_root Temporary directory location
      *  \param lc_path Path of the created temporary directory
-     *  \param lc_mode Temporary directory creation / deletion flag
+     *  \param lc_mode Temporary directory creation/deletion mode
      */
 
     void lc_temp_directory( char const * const lc_root, char * const lc_path, int const lc_mode );

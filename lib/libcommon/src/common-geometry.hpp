@@ -63,11 +63,13 @@
 
     /*! \brief geometry methods
      *
-     *  This function computes and returns the square value of the euclidean
-     *  distance between the two provided 3-dimensional vectors.
+     *  This function computes and returns the squared value of the euclidean
+     *  distance between the two provided three-dimensional vectors.
      *
      *  \param dl_vec_a First vector array
      *  \param dl_vec_b Second vector array
+     *
+     *  \return Returns the squared value of the vector distance
      */
 
     le_real_t lc_geometry_squaredist( le_real_t * dl_vec_a, le_real_t * dl_vec_b );
