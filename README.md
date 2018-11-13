@@ -1,8 +1,25 @@
 ## Overview
 
-The _dalai-suite_ is dedicated to the gathering and processing of geographical 3-dimensional information. It allows to considers the most common file formats and to convert them in a standardised and simple format.
+The _dalai-suite_ is part of the Eratosthene Project and is dedicated to 3D models gathering, processing and format conversion. It allows to consider the most common formats and to convert them into the project common format. The _dalai-suite_ is mainly used for data gathering and processing, allowing to make them compatible with remote Eratosthene servers injection format.
 
-This standardised format allows to use the suite tools for color edition, model cleaning and model hashing. In addition, the standard format is also expected by the _eratosthene-suite_ implementing the EPFL CDH DHLAB indexation server and its geographical 3-dimensional data injection tools.
+In addition, the project common format allows to apply the _dalai-suite_ solutions for 3D models processing. The suite offers solution for massive 3D models cleaning, hashing and assisted geographical registration. The suite also provides solution for 3D models display and analysis.
+
+## Suite Solutions
+
+This section gives an overview of the tools available in the _dalai-suite_. Its purpose is to provide examples of the suite solutions applied on actual data.
+
+In the first place, the _dalai-vision_ solution allows to read and display the content of the project common format. It allows to view models through a simple graphical interface to analyse point-based models, polygonal models and mixed models.
+
+<br />
+<p align="center">
+<img src="https://github.com/nils-hamel/dalai-suite/blob/master/doc/image/vision-1a.jpg?raw=true" width="384">
+&nbsp;
+<img src="https://github.com/nils-hamel/dalai-suite/blob/master/doc/image/vision-1b.jpg?raw=true" width="384">
+<br />
+<i>Vision interface showing models of the City of Geneva - Data : SITG and DHLAB</i>
+</p>
+<br />
+
 
 ## Copyright and License
 
