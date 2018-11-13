@@ -20,6 +20,16 @@ In the first place, the _dalai-vision_ solution allows to read and display the c
 </p>
 <br />
 
+<br />
+<p align="center">
+<img src="https://github.com/nils-hamel/dalai-suite/blob/master/doc/image/vision-2a.jpg?raw=true" width="384">
+&nbsp;
+<img src="https://github.com/nils-hamel/dalai-suite/blob/master/doc/image/vision-2b.jpg?raw=true" width="384">
+<br />
+<i>Vision interface showing models of the City of Geneva in 1850 and 2018 - Data : Ville de Genève and SITG</i>
+</p>
+<br />
+
 
 ## Copyright and License
 
