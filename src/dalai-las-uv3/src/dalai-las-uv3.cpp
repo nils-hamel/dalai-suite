@@ -36,8 +36,8 @@
         /* color mapping variable */
         char dl_colormap[19][3] = DL_COLORMAP;
 
-        /* mode variable */
-        bool dl_color( false );
+        /* extraction mode variable */
+        le_enum_t dl_extract = DL_EXTRACT_CLASS;
 
         /* stream variable */
         std::ifstream dl_istream;
@@ -81,17 +81,42 @@
 
         }
 
-        /* check forced classification */
-        if ( lc_read_flag( argc, argv, "--classification", "-c" ) == false ) {
+        /* check classification switch */
+        if ( lc_read_flag( argc, argv, "--classification", "-c" ) == true ) {
 
-            /* retrieve input file format */
-            le_enum_t dl_format( dl_las.GetHeader().GetDataFormatId() );
+            /* assign extraction mode */
+            dl_extract = DL_EXTRACT_CLASS;
 
-            /* check color availability */
-            if ( ( dl_format == 2 ) || ( dl_format == 3 ) || ( dl_format == 5 ) ) {
+        } else {
 
-                /* update mode */
-                dl_color = true;
+            /* check color switch */
+            if ( lc_read_flag( argc, argv, "--color", "-r" ) == true ) {
+
+                /* extract LAS format */
+                le_enum_t dl_format( dl_las.GetHeader().GetDataFormatId() );
+
+                /* check consistency */
+                if ( ( dl_format == 2 ) || ( dl_format == 3 ) || ( dl_format == 5 ) ) {
+
+                    /* assign extraction mode */
+                    dl_extract = DL_EXTRACT_COLOR;
+
+                } else {
+
+                    /* send message */
+                    throw( LC_ERROR_FORMAT );
+
+                }
+
+            } else {
+
+                /* check intensity switch */
+                if ( lc_read_flag( argc, argv, "--intensity", "-i" ) == true ) {
+
+                    /* assign extraction mode */
+                    dl_extract = DL_EXTRACT_INTEN;
+
+                }
 
             }
 
@@ -119,23 +144,33 @@
             if ( dl_uv3p[1] != dl_uv3p[1] ) continue;
             if ( dl_uv3p[2] != dl_uv3p[2] ) continue;
 
-            /* check mode */
-            if ( dl_color == true ) {
-
-                /* retrieve point color components */
-                dl_uv3d[1] = dl_las.GetPoint().GetColor().GetRed()   >> 8;
-                dl_uv3d[2] = dl_las.GetPoint().GetColor().GetGreen() >> 8;
-                dl_uv3d[3] = dl_las.GetPoint().GetColor().GetBlue()  >> 8;
-
-            } else {
+            /* check extraction mode */
+            if ( dl_extract == DL_EXTRACT_CLASS ) {
 
                 /* retrieve point classification */
                 le_enum_t dl_class( dl_las.GetPoint().GetClassification().GetClass() % 19 );
 
-                /* assign classification colormap element */
+                /* assign classification colormap */
                 dl_uv3d[1] = dl_colormap[dl_class][0];
                 dl_uv3d[2] = dl_colormap[dl_class][1];
                 dl_uv3d[3] = dl_colormap[dl_class][2];
+
+            } else if ( dl_extract == DL_EXTRACT_COLOR ) {
+
+                /* assign point color components */
+                dl_uv3d[1] = dl_las.GetPoint().GetColor().GetRed()   >> 8;
+                dl_uv3d[2] = dl_las.GetPoint().GetColor().GetGreen() >> 8;
+                dl_uv3d[3] = dl_las.GetPoint().GetColor().GetBlue()  >> 8;
+
+            } else if ( dl_extract == DL_EXTRACT_INTEN ) {
+
+                /* retrieve point intensity */
+                le_size_t dl_inten( dl_las.GetPoint().GetIntensity() );
+
+                /* assign point intensity */
+                dl_uv3d[1] = dl_inten;
+                dl_uv3d[2] = dl_inten;
+                dl_uv3d[3] = dl_inten;
 
             }
 

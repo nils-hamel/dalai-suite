@@ -72,6 +72,11 @@
     header - preprocessor definitions
  */
 
+    /* define extraction mode */
+    # define DL_EXTRACT_CLASS 0
+    # define DL_EXTRACT_COLOR 1
+    # define DL_EXTRACT_INTEN 2
+
     /* define classification colormap */
     # define DL_COLORMAP { \
         {  64,  64,  64 }, \
