@@ -123,15 +123,18 @@
      *
      *      ./dalai-las-uv3 --las/-i [las input file]
      *                      --uv3/-o [uv3 output file]
-     *                      --classification/-c [forced classification]
+     *                      --classification/-c [extraction switch]
+     *                      --color/-r [extraction switch]
+     *                      --intensity/-i [extraction switch]
      *
-     *  The function starts by reading the input file header in order to detect
-     *  if colors are provided. If colors are not provided by the input file,
-     *  the main function reads each point classification value and considers a
-     *  colormap to assign colors to points exported in the output stream.
+     *  The main function starts by reading the input file header. Depending on
+     *  the provided extraction switch, the availability of the desired data
+     *  components is checked. The file content is read and converted into the
+     *  uv3 format before to be written in the output stream.
      *
-     *  The function allows to force usage of classification values and colormap
-     *  even if colors are available by using the last argument as a switch.
+     *  If no extraction switch is provided, the classification is assumed for
+     *  extraction. If multiple extraction switch are provided, only the first
+     *  one is considered.
      *
      *  \param  argc Main function parameters
      *  \param  argv Main function parameters
