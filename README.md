@@ -4,7 +4,7 @@ The _dalai-suite_ is part of the Eratosthene Project and is dedicated to 3D mode
 
 In addition, the project common format allows to apply the _dalai-suite_ solutions for 3D models processing. The suite offers solution for massive 3D models cleaning, hashing and assisted geographical registration. The suite also provides solution for 3D models display and analysis.
 
-## Suite Solutions
+## Solutions Presentation
 
 This section gives an overview of the tools available in the _dalai-suite_. Its purpose is to provide examples of the suite solutions applied on actual data.
 
