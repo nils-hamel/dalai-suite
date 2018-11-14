@@ -28,16 +28,18 @@
      *
      *  \section overview Overview
      *
-     *  The _dalai-suite_ is dedicated to the gathering and processing of
-     *  geographical 3-dimensional information. It allows to considers the most
-     *  common file formats and to convert them in a standardised and simple
-     *  format.
+     *  The _dalai-suite_ is part of the Eratosthene Project and is dedicated to
+     *  3D models gathering, processing and format conversion. It allows to
+     *  consider the most common formats and to convert them into the project
+     *  common format. The _dalai-suite_ is mainly used for data gathering and
+     *  processing, allowing to make them compatible with remote Eratosthene
+     *  servers injection format.
      *
-     *  This standardised format allows to use the suite tools for color
-     *  edition, model cleaning and model hashing. In addition, the standard
-     *  format is also expected by the _eratosthene-suite_ implementing the EPFL
-     *  CDH DHLAB indexation server and its geographical 3-dimensional data
-     *  injection tools.
+     *  In addition, the project common format allows to apply the _dalai-suite_
+     *  solutions for 3D models processing. The suite offers solution for
+     *  massive 3D models cleaning, hashing and assisted geographical
+     *  registration. The suite also provides solution for 3D models display and
+     *  analysis.
      *
      *  \section copyright Copyright and License
      *
@@ -46,7 +48,6 @@
      *
      *  This program is licensed under the terms of the GNU GPLv3.
      */
-
 /*
     header - inclusion guard
  */
