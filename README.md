@@ -44,6 +44,18 @@ In addition to models visualisation, the _dalai-vision_ also implements an assis
 </p>
 <br />
 
+Model filtering is also available through the _dalai-filter_ tool that allows to deduce clean representation of dense point-based models. It is especially adapted for dense models deduced from image sequences. The tool using the project common format and taking advantage of the model hashing, it allows to filter arbitrary large point-based model :
+
+<br />
+<p align="center">
+<img src="https://github.com/nils-hamel/dalai-suite/blob/master/doc/image/filter-1a.jpg?raw=true" width="384">
+&nbsp;
+<img src="https://github.com/nils-hamel/dalai-suite/blob/master/doc/image/filter-1b.jpg?raw=true" width="384">
+<br />
+<i>Example of ideal intersection extraction through identified model surfaces - Data : SITG and DHLAB</i>
+</p>
+<br />
+
 ## Copyright and License
 
 **dalai-suite** - Nils Hamel <br >
