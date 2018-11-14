@@ -52,7 +52,7 @@ Model filtering is also available through the _dalai-filter_ tool that allows to
 &nbsp;
 <img src="https://github.com/nils-hamel/dalai-suite/blob/master/doc/image/filter-1b.jpg?raw=true" width="384">
 <br />
-<i>Example of ideal intersection extraction through identified model surfaces - Data : SITG and DHLAB</i>
+<i>Original model (left) and its filtered counterpart (right) - Data : SITG and DHLAB</i>
 </p>
 <br />
 
