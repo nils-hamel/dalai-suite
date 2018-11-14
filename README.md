@@ -8,7 +8,7 @@ In addition, the project common format allows to apply the _dalai-suite_ solutio
 
 This section gives an overview of the tools available in the _dalai-suite_. Its purpose is to provide examples of the suite solutions applied on actual data.
 
-In the first place, the _dalai-vision_ solution allows to read and display the content of the project common format. It allows to view models through a simple graphical interface in both case of point-based models :
+In the first place, it allows the _dalai-vision_ solution to read and display the content of the project common format. It allows it to view models through a simple graphical interface in both case of point-based models :
 
 <br />
 <p align="center">
@@ -32,7 +32,7 @@ and polygonal models as illustrated with models of the City of Geneva :
 </p>
 <br />
 
-In addition to models visualisation, the _dalai-vision_ also implements an assisted geographical regsitration tool mainly used for point-based models registration in a specific coordinate system. The tool allows to extrapolate surfaces of the models to allows the determination of precise intersections able to be used a control points during registration process :
+In addition to models visualization, the _dalai-vision_ also implements an assisted geographical registration tool mainly used for point-based models registration in a specific coordinate system. The tool allows the user to extrapolate surfaces of the models to allow the determination of precise intersections able to be used a control points during registration process :
 
 <br />
 <p align="center">
@@ -40,11 +40,11 @@ In addition to models visualisation, the _dalai-vision_ also implements an assis
 &nbsp;
 <img src="https://github.com/nils-hamel/dalai-suite/blob/master/doc/image/vision-3b.jpg?raw=true" width="384">
 <br />
-<i>Example of ideal intersection extraction through identified model surfaces - Data : SITG and DHLAB</i>
+<i>Example of ideal intersection extraction through surfaces extrapolation - Data : SITG and DHLAB</i>
 </p>
 <br />
 
-Model filtering is also available through the _dalai-filter_ tool that allows to deduce clean representation of dense point-based models. It is especially adapted for dense models deduced from image sequences. The tool using the project common format and taking advantage of the model hashing, it allows to filter arbitrary large point-based model :
+Model filtering is also available through the _dalai-filter_ tool that allows to deduce clean representation of dense point-based models. It is especially adapted for dense models deduced from image sequences. The tool using the project common format and taking advantage of the model hashing, it allows to filter arbitrary large point-based models :
 
 <br />
 <p align="center">
