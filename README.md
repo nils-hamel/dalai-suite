@@ -56,6 +56,20 @@ Model filtering is also available through the _dalai-filter_ tool that allows to
 </p>
 <br />
 
+As a last illustration, the _suite_ also provides conversion tools allowing to bring data from standard format, such as polygon file format (PLY) and ASPRS (LAS) model, to the project common format. The conversion from LAS format allows to convert the element using their provided color, their classification or their intensities :
+
+<br />
+<p align="center">
+<img src="https://github.com/nils-hamel/dalai-suite/blob/master/doc/image/convert-1a.jpg?raw=true" width="384">
+&nbsp;
+<img src="https://github.com/nils-hamel/dalai-suite/blob/master/doc/image/convert-1b.jpg?raw=true" width="384">
+<br />
+<i>ASPRS LAS converted using classification (left) and intensities (right) - Data : SITG and New York City (US-GOV)</i>
+</p>
+<br />
+
+The _dalai-suite_ offer the required tools to collect, convert, process large amount of 3D data making them available for injection in remote Eratosthene servers.
+
 ## Copyright and License
 
 **dalai-suite** - Nils Hamel <br >
