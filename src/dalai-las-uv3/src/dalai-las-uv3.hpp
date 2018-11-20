@@ -127,7 +127,7 @@
      *                      --uv3/-o [uv3 output file]
      *                      --classification/-c [extraction switch]
      *                      --color/-r [extraction switch]
-     *                      --intensity/-i [extraction switch]
+     *                      --intensity/-e [extraction switch]
      *
      *  The main function starts by reading the input file header. Depending on
      *  the provided extraction switch, the availability of the desired data

@@ -111,7 +111,7 @@
             } else {
 
                 /* check intensity switch */
-                if ( lc_read_flag( argc, argv, "--intensity", "-i" ) == true ) {
+                if ( lc_read_flag( argc, argv, "--intensity", "-e" ) == true ) {
 
                     /* assign extraction mode */
                     dl_extract = DL_EXTRACT_INTEN;
