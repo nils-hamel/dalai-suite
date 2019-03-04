@@ -284,11 +284,15 @@
          *
          *  In the first place, the function performs an estimation of the model
          *  vertex minimal separation mean value. This value is used, combined
-         *  with a factor, as a tolerance reference for point selection.
+         *  with a factor, as a tolerance reference for points selection.
          *
          *  In addition, the function performs also the computation of the model
-         *  centroid, used as initial model rotation center. It also computes
-         *  the maximum distance of points from the model centroid.
+         *  centroid, used as initial model rotation center. The centroid is
+         *  also used to shift the model near the origin to avoid GPU simple
+         *  simple precision saturation.
+         *
+         *  In the last place, the function also computes the size of the model
+         *  by finding the centroid most distant point.
          */
 
         le_void_t ml_set_analysis( le_void_t );

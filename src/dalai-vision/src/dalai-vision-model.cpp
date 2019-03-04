@@ -466,8 +466,13 @@
             /* compute buffer pointer */
             dl_uv3p = ( le_real_t * ) ( ml_data + dl_parse );
 
+            /* shift to center - avoid simple-precision saturation */
+            dl_uv3p[0] -= ml_x;
+            dl_uv3p[1] -= ml_y;
+            dl_uv3p[2] -= ml_z;
+
             /* compute distance to center */
-            dl_distance = ( dl_uv3p[0] - ml_x ) * ( dl_uv3p[0] - ml_x ) + ( dl_uv3p[1] - ml_y ) * ( dl_uv3p[1] - ml_y ) + ( dl_uv3p[2] - ml_z ) * ( dl_uv3p[2] - ml_z );
+            dl_distance = dl_uv3p[0] * dl_uv3p[0] + dl_uv3p[1] * dl_uv3p[1] + dl_uv3p[2] * dl_uv3p[2];
 
             /* search extremal distance */
             if ( dl_distance > ml_span ) {
@@ -478,6 +483,11 @@
             }
 
         }
+
+        /* resets model center */
+        ml_x = 0.0;
+        ml_y = 0.0;
+        ml_z = 0.0;
 
         /* compute model span */
         ml_span = std::sqrt( ml_span ) * 2.0;
