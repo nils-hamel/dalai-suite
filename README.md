@@ -89,7 +89,7 @@ The _dalai-suite_ comes with the following package dependencies (Ubuntu 16.04 LT
 
 and the following external dependencies provided as sub-modules :
 
-* liberatosthene 1.1
+* liberatosthene 1.2
 
 The code documentation is built using Doxygen.
 
