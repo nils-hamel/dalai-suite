@@ -54,14 +54,6 @@
         /* push stream size */
         ml_real = ( ml_size = dl_stream.tellg() ) / LE_ARRAY_DATA;
 
-        /* check random capability */
-        if ( RAND_MAX < ml_size ) {
-
-            /* send message */
-            throw( LC_ERROR_RANDOM );
-
-        }
-
         /* initialise random */
         srand( time( nullptr ) );
 
@@ -414,7 +406,7 @@
             dl_mdmv[dl_parse] = std::numeric_limits<le_real_t>::max();
 
             /* initialise sampling array */
-            dl_sample[dl_parse] = ( rand() % ml_real ) * LE_ARRAY_DATA;
+            dl_sample[dl_parse] = ( ( rand() * ml_real ) / RAND_MAX ) * LE_ARRAY_DATA;
 
         }
 
