@@ -26,6 +26,9 @@
 
     int main( int argc, char ** argv ) {
 
+        /* intensities factor variable */
+        le_real_t dl_factor( lc_read_double( argc, argv, "--factor", "-f", 1.0 ) );
+
         /* buffer variable */
         le_byte_t dl_buffer[LE_ARRAY_DATA] = { 0 };
 
@@ -165,7 +168,7 @@
             } else if ( dl_extract == DL_EXTRACT_INTEN ) {
 
                 /* retrieve point intensity */
-                le_size_t dl_inten( dl_las.GetPoint().GetIntensity() );
+                le_size_t dl_inten( dl_las.GetPoint().GetIntensity() * dl_factor );
 
                 /* assign point intensity */
                 dl_uv3d[1] = dl_inten;
