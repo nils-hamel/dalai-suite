@@ -30,7 +30,7 @@
         le_address_t dl_address = LE_ADDRESS_C_SIZE( dl_length );
 
         /* address string variable */
-        le_char_t dl_string[_LE_USE_DEPTH + 1];
+        le_char_t dl_string[_LE_USE_DEPTH + 1] = { 0 };
 
         /* convert position to address */
         le_address_set_pose( & dl_address, dl_pose );
