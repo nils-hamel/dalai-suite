@@ -1,5 +1,5 @@
 /*
- *  dalai-suite - interlis
+ *  dalai-suite - interlis-uv3
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
  *      Copyright (c) 2016-2018 DHLAB, EPFL
@@ -18,10 +18,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   dalai-interlis.hpp
+    /*! \file   dalai-interlis-uv3.hpp
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  dalai-suite - interlis
+     *  dalai-suite - interlis-uv3
      */
 
     /*! \mainpage dalai-suite
@@ -53,8 +53,8 @@
     header - inclusion guard
  */
 
-    # ifndef __DL_INTERLIS__
-    # define __DL_INTERLIS__
+    # ifndef __DL_INTERLIS_UV3__
+    # define __DL_INTERLIS_UV3__
 
 /*
     header - internal includes
@@ -124,13 +124,13 @@
      *  The main function opens and reads the provided INTERLIS file and extract
      *  the targeted data before to convert and export them in uv3 format :
      *
-     *      ./dalai-interlis --interlis/-i [input file]
-     *                       --uv3/-o [output file]
-     *                       --red/-r [uv3 record color]
-     *                       --green/-g [uv3 record color]
-     *                       --blue/-b [uv3 record color]
-     *                       --topic/-t [interlis target topic]
-     *                       --table/-a [interlis target table]
+     *      ./dalai-interlis-uv3 --interlis/-i [input file]
+     *                           --uv3/-o [output file]
+     *                           --red/-r [uv3 record color]
+     *                           --green/-g [uv3 record color]
+     *                           --blue/-b [uv3 record color]
+     *                           --topic/-t [interlis target topic]
+     *                           --table/-a [interlis target table]
      *
      *  The main function starts by locating the target topic in the provided
      *  interlis data file. In the found topic, the target table is searched.

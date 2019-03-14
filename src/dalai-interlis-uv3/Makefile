@@ -3,7 +3,7 @@
 #
 
     # c/cpp, suite-base/suite/library #
-    MAKE_NAME:=dalai-interlis
+    MAKE_NAME:=dalai-interlis-uv3
     MAKE_LANG:=cpp
     MAKE_TYPE:=suite
 

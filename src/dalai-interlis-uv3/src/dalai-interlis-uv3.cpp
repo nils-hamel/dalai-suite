@@ -1,5 +1,5 @@
 /*
- *  dalai-suite - interlis
+ *  dalai-suite - interlis-uv3
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
  *      Copyright (c) 2016-2018 DHLAB, EPFL
@@ -18,7 +18,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    # include "dalai-interlis.hpp"
+    # include "dalai-interlis-uv3.hpp"
 
 /*
     source - buffer methods
