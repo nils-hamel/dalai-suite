@@ -2,7 +2,7 @@
  *  dalai-suite - vision
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
- *      Copyright (c) 2016-2018 DHLAB, EPFL
+ *      Copyright (c) 2016-2019 DHLAB, EPFL
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
     source - constructor/destructor methods
  */
 
-    dl_arcball_t::dl_arcball_t( le_size_t const dl_width, le_size_t dl_height ) 
+    dl_arcball_t::dl_arcball_t( le_size_t const dl_width, le_size_t dl_height )
 
         : ab_width ( dl_width  >> 1 )
         , ab_height( dl_height >> 1 )
@@ -128,7 +128,7 @@
         /* compute position vector */
         dl_step[0] = ( dl_step_x - ab_width  ) / ab_size;
         dl_step[1] = ( ab_height - dl_step_y ) / ab_size;
-        
+
         /* compute radial component */
         dl_init[3] = dl_init[0] * dl_init[0] + dl_init[1] * dl_init[1];
         dl_step[3] = dl_step[0] * dl_step[0] + dl_step[1] * dl_step[1];

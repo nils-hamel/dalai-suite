@@ -2,7 +2,7 @@
  *  dalai-suite - vision
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
- *      Copyright (c) 2016-2018 DHLAB, EPFL
+ *      Copyright (c) 2016-2019 DHLAB, EPFL
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -76,12 +76,12 @@
 
         /* create window */
         vs_window = SDL_CreateWindow(
-            "dalai-suite - dalai-vision", 
-            SDL_WINDOWPOS_CENTERED, 
-            SDL_WINDOWPOS_CENTERED, 
-            vs_width, 
-            vs_height, 
-            SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL 
+            "dalai-suite - dalai-vision",
+            SDL_WINDOWPOS_CENTERED,
+            SDL_WINDOWPOS_CENTERED,
+            vs_width,
+            vs_height,
+            SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL
         );
 
         /* check window */
@@ -192,7 +192,7 @@
 
         /* ambient light */
         glLightfv( GL_LIGHT0, GL_AMBIENT, dl_array );
-        
+
         /* assign diffuse color */
         dl_array[0] = 1.0;
         dl_array[1] = 1.0;
@@ -266,7 +266,7 @@
 
             /* assign modelview center */
             dl_model.ml_set_center( dl_px, dl_py, dl_pz );
-            
+
         }
 
     }
