@@ -135,7 +135,7 @@
      *  The main function starts by locating the target topic in the provided
      *  interlis data file. In the found topic, the target table is searched.
      *  The content of the table is then read object by object to extract the
-     *  geomtry.
+     *  geometry.
      *
      *  The geometry is converted into uv3 lines primitive before to be exported
      *  in the output uv3 file. The provided color is used to assign the uv3
