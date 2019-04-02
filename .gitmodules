@@ -1,3 +1,6 @@
 [submodule "lib/liberatosthene"]
 	path = lib/liberatosthene
 	url = https://github.com/nils-hamel/liberatosthene.git
+[submodule "lib/libptolemee"]
+	path = lib/libptolemee
+	url = git@github.com:nils-hamel/libptolemee.git
