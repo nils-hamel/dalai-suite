@@ -2,7 +2,7 @@
  *  dalai-suite - common library
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
- *      Copyright (c) 2016-2018 DHLAB, EPFL
+ *      Copyright (c) 2016-2019 DHLAB, EPFL
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -46,16 +46,17 @@
  */
 
     /* define errors code */
-    # define LC_ERROR_NONE      ( 0 )
-    # define LC_ERROR_MEMORY    ( 1 )
-    # define LC_ERROR_IO_ACCESS ( 2 )
-    # define LC_ERROR_IO_READ   ( 3 )
-    # define LC_ERROR_IO_WRITE  ( 4 )
-    # define LC_ERROR_IO_REMOVE ( 5 )
-    # define LC_ERROR_FORMAT    ( 6 )
-    # define LC_ERROR_CONTEXT   ( 7 )
-    # define LC_ERROR_DOMAIN    ( 8 )
-    # define LC_ERROR_RANDOM    ( 9 )
+    # define LC_ERROR_NONE      (  0 )
+    # define LC_ERROR_MEMORY    (  1 )
+    # define LC_ERROR_IO_ACCESS (  2 )
+    # define LC_ERROR_IO_READ   (  3 )
+    # define LC_ERROR_IO_WRITE  (  4 )
+    # define LC_ERROR_IO_REMOVE (  5 )
+    # define LC_ERROR_FORMAT    (  6 )
+    # define LC_ERROR_CONTEXT   (  7 )
+    # define LC_ERROR_DOMAIN    (  8 )
+    # define LC_ERROR_RANDOM    (  9 )
+    # define LC_ERROR_CONVERT   ( 10 )
 
 /*
     header - preprocessor macros
