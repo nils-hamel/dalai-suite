@@ -62,6 +62,7 @@
 
     # include "common-args.hpp"
     # include "common-error.hpp"
+    # include "common-file.hpp"
     # include "common-filter.hpp"
     # include "common-geometry.hpp"
     # include "common-hash.hpp"
