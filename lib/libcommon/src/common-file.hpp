@@ -68,7 +68,20 @@
     header - function prototypes
  */
 
-    /* *** */
+    /*! \brief filesystem methods
+     *
+     *  This function detects if the provided path points to a regular file or
+     *  to a directory. If the path to a regular file, the function returns the
+     *  \b LC_FILE value. In case of a directory, the \b LC_DIRECTORY value is
+     *  returned.
+     *
+     *  The the pointed entity is neither a regular file nor directory, the
+     *  function returns the \b LC_OTHER value.
+     *
+     *  \param lc_path Entity path
+     *
+     *  \return Returns LC_FILE on file and LC_DIRECTORY on directory
+     */
 
     int lc_file_detect( char const * const lc_path );
 
