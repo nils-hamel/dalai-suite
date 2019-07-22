@@ -93,6 +93,58 @@
     }
 
 /*
+    source - batch methods
+ */
+
+    le_void_t dl_geoid_batch( le_char_t const * const dl_input, le_char_t const * const dl_output, GeographicLib::Geoid & dl_geoid, le_real_t const dl_conversion ) {
+
+        /* directory variable */
+        DIR * dl_directory( nullptr );
+
+        /* entity variable */
+        struct dirent * dl_entity( nullptr );
+
+        /* string conversion */
+        std::string dl_inbase( ( char * ) dl_input );
+
+        /* string conversion */
+        std::string dl_outbase( ( char * ) dl_output );
+
+        /* check consistency */
+        if ( ( dl_directory = opendir( ( char * ) dl_input ) ) == nullptr ) {
+
+            /* send message */
+            throw( LC_ERROR_IO_ACCESS );
+
+        }
+
+        /* entity enumeration */
+        while ( ( dl_entity = readdir( dl_directory ) ) != NULL ) {
+
+            /* check for files */
+            if ( dl_entity->d_type == DT_REG ) {
+
+                /* convert string */
+                std::string dl_name( dl_entity->d_name );
+
+                /* filter on extension */
+                if ( dl_name.substr( dl_name.length() - 4, 4 ) == ".uv3" ) {
+
+                    /* process file */
+                    dl_geoid_height( ( le_char_t * ) ( dl_inbase + "/" + dl_name ).c_str(), ( le_char_t * ) ( dl_outbase + "/" + dl_name ).c_str(), dl_geoid, dl_conversion );
+
+                }
+
+            }
+
+        }
+
+        /* close directory */
+        closedir( dl_directory );
+
+    }
+
+/*
     source - main methods
  */
 
@@ -111,7 +163,7 @@
         le_char_t * dl_output = ( le_char_t * ) lc_read_string( argc, argv, "--output", "-o" );
 
         /* conversion variable */
-        le_real_t dl_conversion( 0.0 );
+        le_real_t dl_conversion( +1.0 );
 
     /* error management */
     try {
@@ -143,7 +195,8 @@
 
             }
 
-            /* *** */
+            /* batch processing */
+            dl_geoid_batch( dl_input, dl_output, dl_geoid, dl_conversion );
 
         } else {
 

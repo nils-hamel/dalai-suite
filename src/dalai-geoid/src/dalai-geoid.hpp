@@ -66,6 +66,8 @@
 
     # include <iostream>
     # include <fstream>
+    # include <sys/types.h>
+    # include <dirent.h>
     # include <common-include.hpp>
     # include <eratosthene-include.h>
     # include <GeographicLib/Geoid.hpp>
@@ -96,6 +98,10 @@
     /* *** */
 
     le_void_t dl_geoid_height( le_char_t const * const dl_input, le_char_t const * const dl_output, GeographicLib::Geoid & dl_geoid, le_real_t const dl_conversion );
+
+    /* *** */
+
+    le_void_t dl_geoid_batch( le_char_t const * const dl_input, le_char_t const * const dl_output, GeographicLib::Geoid & dl_geoid, le_real_t const dl_conversion );
 
     /*! \brief main methods
      *
