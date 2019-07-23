@@ -179,7 +179,7 @@
 
         } else if ( lc_read_flag( argc, argv, "--to-ell", "-e" ) == true ) {
 
-            /* update conversion */
+            /* update conversion (default) */
             dl_conversion = +1.0;
 
         }

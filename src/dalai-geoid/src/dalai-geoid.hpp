@@ -18,7 +18,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-    /*! \file   dalai-cat.hpp
+    /*! \file   dalai-geoid.hpp
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
      *  dalai-suite - geoid
@@ -95,17 +95,81 @@
     header - function prototypes
  */
 
-    /* *** */
+    /*! \brief conversion methods
+     *
+     *  This function converts the height of the UV3 file provided through the
+     *  input path from MSL to ellipsoidal height and inversely.
+     *
+     *  The input path points at the source file while the output path points
+     *  at the output file receiving the converted data.
+     *
+     *  The provided geoid structure hold the definition of the geoid to use
+     *  and ensure interpolation process.
+     *
+     *  The conversion flag has to be +1.0 for MSL to ellipsoidal height
+     *  conversion and -1.0 for the invert conversion.
+     *
+     *  \param dl_input      Input stream path (file)
+     *  \param dl_output     Output stream path (file)
+     *  \param dl_geoid      Geoid structure (GeographicLib)
+     *  \param dl_conversion Conversion mode value (+1.0 or -1.0)
+     */
 
     le_void_t dl_geoid_height( le_char_t const * const dl_input, le_char_t const * const dl_output, GeographicLib::Geoid & dl_geoid, le_real_t const dl_conversion );
 
-    /* *** */
+    /*! \brief batch methods
+     *
+     *  This function allows to apply a conversion batch processing on a folder
+     *  containing multiple UV3 files.
+     *
+     *  The function list and filter the UV3 fils from the input directory and
+     *  export the conversion result in the output directory using the same file
+     *  name.
+     *
+     *  Both input and output provided path have to point to directories.
+     *
+     *  \param dl_input      Input stream path (directory)
+     *  \param dl_output     Output stream path (directory)
+     *  \param dl_geoid      Geoid structure (GeographicLib)
+     *  \param dl_conversion Conversion mode value (+1.0 or -1.0)
+     */
 
     le_void_t dl_geoid_batch( le_char_t const * const dl_input, le_char_t const * const dl_output, GeographicLib::Geoid & dl_geoid, le_real_t const dl_conversion );
 
     /*! \brief main methods
      *
-     *      ./dalai-geoid -- []
+     *  The main function reads the specified input UV3 stream and apply a geoid
+     *  correction on the heights of the vertices :
+     *
+     *      ./dalai-geoid --name/-n   [geoid model name]
+     *                    --path/-p   [geoid model storage directory]
+     *                    --input/-i  [input directive]
+     *                    --output/-o [output directive]
+     *                    --to-msl/-m [correction directive]
+     *                    --to-ell/-e [correction directive]
+     *
+     *  The geoid model used to apply the height correction on the vertex is
+     *  expected to be in PGM format (see GeographicLib for more information).
+     *  The '.pgm' extension is added to the name of the geoid and the path is
+     *  used to find the model storage file.
+     *
+     *  If the input directive points to a regular file, it is processed by the
+     *  main function and exported in the file pointed by the output directive.
+     *
+     *  If the input directive points to a directory, the main function list the
+     *  UV3 stream hold in the directory and process each of them. The output
+     *  directive has to point to another directory in which the converted UV3
+     *  stream are exported. The name of the input files is kept to name the
+     *  output files in such case.
+     *
+     *  If the '--to-msl' conversion directive is provided, the vertex heights
+     *  are converted from ellipsoidal height to MSL height. If the '--to-ell'
+     *  directive is provided, the opposite appends.
+     *
+     *  Most of the time, geoid model are provided in WGS84 frame. The UV3
+     *  stream vertices have then to be expressed in this reference frame. If
+     *  vertices are expressed in another datum, the geoid model has to be
+     *  adapted to this datum.
      *
      *  \param  argc Standard parameter
      *  \param  argv Standard parameter
