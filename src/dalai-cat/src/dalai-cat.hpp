@@ -92,12 +92,11 @@
     /*! \brief address methods
      *
      *  This function converts the provided position vector into an eratosthene
-     *  address structure before to display the spatial index of the computed
-     *  address. The provided length gives the number of digit to consider for
-     *  the spatial index.
+     *  address structure before to display its spatial index. The provided
+     *  length gives the number of digits to consider for the spatial index.
      *
      *  \param dl_pose   Position vector
-     *  \param dl_length Spatial index length - in digit count
+     *  \param dl_length Spatial index length (digit count)
      */
 
     le_void_t dl_cat_address( le_real_t * const dl_pose, le_byte_t const dl_length );
@@ -110,12 +109,12 @@
      *      ./dalai-cat --uv3/-i [uv3 input file]
      *                  --index/-x [index size]
      *
-     *  The main function reads the provided file and imports the element
+     *  The main function reads the provided file and imports the primitives
      *  records one by one before to display them on the standard output. The
-     *  element vertex coordinates, type and color are considered for output.
+     *  primitives vertex coordinates, type and color are displayed.
      *
      *  If the provided '--index' is non-zero, the vertex coordinates of each
-     *  element is replaced by the eratosthene address spatial index using
+     *  primitive is replaced by the eratosthene address spatial index using
      *  the value as spatial index length. In such a case, the provided model
      *  is expected to be aligned in the WGS84 coordinate system, with heights
      *  over the frame ellipsoid.
