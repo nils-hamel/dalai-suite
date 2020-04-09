@@ -2,7 +2,7 @@
  *  dalai-suite - color
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
- *      Copyright (c) 2016-2019 DHLAB, EPFL
+ *      Copyright (c) 2016-2020 DHLAB, EPFL
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -118,6 +118,11 @@
      *
      *  The resulting colored uv3 primitives are exported in the provided output
      *  stream.
+     *
+     *  The provided maximum and minimum heights are used to set the cyclic
+     *  boundaries of the applied colormap. The colormaps starts with its first
+     *  color on the minimum heights and ends with its last color on the given
+     *  maximum height.
      *
      *  The vertex height is understood as the value stored by their third
      *  coordinate. If the third component is outside of the provided range, a
