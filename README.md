@@ -86,7 +86,7 @@ _Models automated transformation and editing_
 
 * [UV3 file height geoid conversion](src/dalai-geoid)
 * [UV3 file height-based coloring](src/dalai-color)
-* [UV3 file hashing (automated segmentation)](src/dalai-hash)
+* [UV3 file hashing](src/dalai-hash)
 
 A detailed documentation of specific file formats used by the tools of this suite can be found of the [format page](FORMAT.md).
 
