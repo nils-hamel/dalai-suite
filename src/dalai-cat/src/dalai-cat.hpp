@@ -2,7 +2,7 @@
  *  dalai-suite - cat
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
- *      Copyright (c) 2016-2019 DHLAB, EPFL
+ *      Copyright (c) 2016-2020 DHLAB, EPFL
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -117,7 +117,7 @@
      *  primitive is replaced by the eratosthene address spatial index using
      *  the value as spatial index length. In such a case, the provided model
      *  is expected to be aligned in the WGS84 coordinate system, with heights
-     *  over the frame ellipsoid.
+     *  above the frame ellipsoid.
      *
      *  \param  argc Standard parameter
      *  \param  argv Standard parameter

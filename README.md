@@ -70,6 +70,16 @@ As a last illustration, the _suite_ also provides conversion tools allowing to b
 
 The _dalai-suite_ offer the required tools to collect, convert, process large amount of 3D data making them available for injection in remote Eratosthene servers.
 
+## Dalai-Suite
+
+Each implemented tool comes with its own documentation that explains the implemented solution and gives examples of usages and results :
+
+_Display tools_
+
+* [UV3 file content display](src/dalai-cat/README.md)
+
+A detailed documentation of specific file formats used by the tools of this suite can be found of the [format page](FORMAT.md).
+
 ## Copyright and License
 
 **dalai-suite** - Nils Hamel <br >

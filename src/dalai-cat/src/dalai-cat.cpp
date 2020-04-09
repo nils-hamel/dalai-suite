@@ -2,7 +2,7 @@
  *  dalai-suite - cat
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
- *      Copyright (c) 2016-2019 DHLAB, EPFL
+ *      Copyright (c) 2016-2020 DHLAB, EPFL
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -108,7 +108,7 @@
                 if ( dl_index == 0 ) {
 
                     /* display geographic coordinates */
-                    printf( "%e %e %e ", dl_uv3p[0], dl_uv3p[1], dl_uv3p[2] );
+                    printf( "%+e %+e %+e ", dl_uv3p[0], dl_uv3p[1], dl_uv3p[2] );
 
                 } else {
 
