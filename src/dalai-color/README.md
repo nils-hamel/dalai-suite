@@ -14,9 +14,9 @@ The following illustrations shows the result obtained using this tool :
 
 <br />
 <p align="center">
-<img src="https://github.com/nils-hamel/image-suite/blob/master/src/dalai-color/doc/color-1.jpg?raw=true" width="384">
+<img src="https://github.com/nils-hamel/dalai-suite/blob/master/src/dalai-color/doc/color-1.jpg?raw=true" width="384">
 &nbsp;
-<img src="https://github.com/nils-hamel/image-suite/blob/master/src/dalai-color/doc/color-2.jpg?raw=true" width="384">
+<img src="https://github.com/nils-hamel/dalai-suite/blob/master/src/dalai-color/doc/color-2.jpg?raw=true" width="384">
 <br />
 <i>Original model (left) and its colored counterpart (right)</i>
 </p>
