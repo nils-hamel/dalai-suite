@@ -78,7 +78,11 @@ _Display tools_
 
 * [UV3 file content display](src/dalai-cat)
 
-_Model automated transformation and editing_
+_Models automated filtering and cleaning_
+
+* [UV3 file statistical filtering](src/dalai-filter)
+
+_Models automated transformation and editing_
 
 * [UV3 file height-based coloring](src/dalai-color)
 

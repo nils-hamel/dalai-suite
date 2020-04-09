@@ -2,7 +2,7 @@
  *  dalai-suite - filter
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
- *      Copyright (c) 2016-2019 DHLAB, EPFL
+ *      Copyright (c) 2016-2020 DHLAB, EPFL
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -97,7 +97,7 @@
      *
      *  This function applies the filtering process on each file contained in
      *  the provided \b dl_ipath directory. It simply enumerates the files of
-     *  the directory and applies the filtering process on each one. The
+     *  the directory and applies the filtering process on each of them. The
      *  resulting filtered models are all exported in the same output stream.
      *
      *  Usually, this function is applied on the directory in which the input
@@ -109,7 +109,7 @@
      *  function, the homogeneous filtering and the adaptive one. See the
      *  documentation of \b libcommon for more information about these filtering
      *  methods. If \b true is provided as \b dl_adaptive parameter, the
-     *  adaptive filtering process is considered.
+     *  adaptive filtering process is considered, the homogeneous one otherwise.
      *
      *  Note : The implementation of the filtering process does not takes into
      *  account the type of the read records. It is then not suitable for non
@@ -132,6 +132,7 @@
      *
      *      ./dalai-filter --input/-i [input uv3 file path]
      *                     --output/-o [output uv3 file path]
+     *                     --temporary/-y [Temporary directory path]
      *                     --adaptive/-a [filtering mode switch]
      *                     --factor/-f [minimum distances mean value factor]
      *                     --count/-c [sampled elements for mean computation]
@@ -139,20 +140,25 @@
      *
      *  The main function assumes that the provided input uv3 stream contains
      *  only point primitives. The filtering process does not checks the record
-     *  primitive type and applies the filter on each record.
+     *  primitive type and applies the filter on each record which can breaks
+     *  them in case line and triangles appears in the uv3 stream.
      *
      *  The main function starts by reading the parameters and opens the input
      *  file. It computes the elements minimum distances mean value using the
-     *  count parameter.
+     *  count parameter provided by the user.
      *
      *  In order to performs the filtering process, the input stream is cut in
      *  smaller pieces using the \b libcommon hashing function. The hashing
-     *  function uses the minimum distances mean value to scale the hashing
-     *  process.
+     *  function uses the minimum distances mean value and the default factor
+     *  \b DL_FILTER_HASH to scale the hashing.
      *
      *  The filtering process is then applied on each piece of the hashed input
      *  stream and the results of the filtering of all the pieces is exported in
      *  the output stream.
+     *
+     *  The temporary directory is mandatory and used to store the pieces of the
+     *  model created during the hashing process. It has to offer enough of free
+     *  space according to the size of the model to filter.
      *
      *  \param  argc Standard parameter
      *  \param  argv Standard parameter
