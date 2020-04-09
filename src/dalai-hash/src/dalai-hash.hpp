@@ -2,7 +2,7 @@
  *  dalai-suite - hash
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
- *      Copyright (c) 2016-2019 DHLAB, EPFL
+ *      Copyright (c) 2016-2020 DHLAB, EPFL
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -91,23 +91,28 @@
 
     /*! \brief main function
      *
-     *  The main function hashes the provided uv3 stream into a set of smaller
-     *  sub-stream stored in the output directory :
+     *  The main function hashes the provided uv3 files into a set of smaller
+     *  uv3 sub-files stored in the output directory :
      *
-     *      ./dalai-hash --uv3/-i [input uv3 file path]
+     *      ./dalai-hash --input/-i [input uv3 file path]
      *                   --output/-o [output path directory]
      *                   --count/-c [sampled elements count]
-     *                   --param/-p [hashing parameter]
+     *                   --parameter/-p [hashing parameter]
      *
      *  The functions starts by gathering the parameters and opens the provided
-     *  input stream. It computes the stream model minimum distances mean value
-     *  and provides it to the \b lc_hash() function used to hash the model. The
-     *  resulting hashed sub-streams are all written in the provided output
+     *  input file. It computes the file model minimum distances mean value and
+     *  provides it to the \b lc_hash() function used to hash the model. The
+     *  resulting hashed sub-files are all written in the provided output
      *  directory considering the uv3 format.
      *
-     *  The count value gives the amount of input stream record to consider to
-     *  compute the minimum distances mean value. The hashing parameter is used
-     *  with the mean value to determine the size of the sub-streams.
+     *  The hashing process is based on a floating point congruence applied on
+     *  the three coordinates of the input file vertex. The congruence is also
+     *  used to name the different pieces output files resulting of the hash
+     *  process. See \b libcommon documentation for more information.
+     *
+     *  The count value gives the amount of input file uv3 records to consider
+     *  to compute the minimum distances mean value. The hashing parameter is
+     *  used with the mean value to determine the size of the sub-files.
      *
      *  \param  argc Standard parameter
      *  \param  argv Standard parameter

@@ -2,7 +2,7 @@
  *  dalai-suite - hash
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
- *      Copyright (c) 2016-2019 DHLAB, EPFL
+ *      Copyright (c) 2016-2020 DHLAB, EPFL
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@
         le_size_t dl_count( lc_read_signed( argc, argv, "--count", "-c", 64 ) );
 
         /* hashing variable */
-        le_real_t dl_param( lc_read_double( argc, argv, "--param", "-p", 250.0 ) );
+        le_real_t dl_param( lc_read_double( argc, argv, "--parameter", "-p", 250.0 ) );
 
         /* minimum distance mean variable */
         le_real_t dl_mean( 0.0 );
@@ -42,7 +42,7 @@
     try {
 
         /* create stream */
-        dl_istream.open( lc_read_string( argc, argv, "--uv3", "-i" ), std::ios::in | std::ios::binary );
+        dl_istream.open( lc_read_string( argc, argv, "--input", "-i" ), std::ios::in | std::ios::binary );
 
         /* check stream */
         if ( dl_istream.is_open() == false ) {
