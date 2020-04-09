@@ -36,12 +36,12 @@ The second phase of the filtering process is the model hashing : in order to dea
 
 The last phase is the filtering itself, applied on each hashed pieces of the model, and comes with two variations : for both variations, the filtering condition is the same and driven by the parameters :
 
-    * Minimum distance mean value factor : _--factor/-f_
-    * Neighbours count value threshold : _--threshold/-t_
+* Minimum distance mean value factor : _--factor/-f_
+* Neighbours count value threshold : _--threshold/-t_
 
 The filtering condition is applied as follows : for each point of the model piece, the amount of neighbour points withing a range of :
 
-    range = (_minimum distance mean value_) * (_--factor/-f_ parameter value)
+    range = (minimum distance mean value) * (--factor/-f parameter value)
 
 to the considered point position is determined. If this count is above the threshold parameter (_--threshold/-t_), the point passes the filter and is kept. It is otherwise discarded. As all the point of the pieces are filtered, the resulting point are exported in the output file.
 
