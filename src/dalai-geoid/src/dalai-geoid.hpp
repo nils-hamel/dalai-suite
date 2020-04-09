@@ -2,7 +2,7 @@
  *  dalai-suite - geoid
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
- *      Copyright (c) 2016-2019 DHLAB, EPFL
+ *      Copyright (c) 2016-2020 DHLAB, EPFL
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -97,14 +97,14 @@
 
     /*! \brief conversion methods
      *
-     *  This function converts the height of the UV3 file provided through the
+     *  This function converts the height of the uv3 file provided through the
      *  input path from MSL to ellipsoidal height and inversely.
      *
      *  The input path points at the source file while the output path points
      *  at the output file receiving the converted data.
      *
      *  The provided geoid structure hold the definition of the geoid to use
-     *  and ensure interpolation process.
+     *  and ensure interpolation process (see GeographicLib).
      *
      *  The conversion flag has to be +1.0 for MSL to ellipsoidal height
      *  conversion and -1.0 for the invert conversion.
@@ -120,13 +120,15 @@
     /*! \brief batch methods
      *
      *  This function allows to apply a conversion batch processing on a folder
-     *  containing multiple UV3 files.
+     *  containing multiple uv3 files.
      *
-     *  The function list and filter the UV3 fils from the input directory and
+     *  The function list and filter the uv3 files from the input directory and
      *  export the conversion result in the output directory using the same file
-     *  name.
+     *  name. Then, both input and output provided path have to point to valid
+     *  directories.
      *
-     *  Both input and output provided path have to point to directories.
+     *  The conversion flag has to be +1.0 for MSL to ellipsoidal height
+     *  conversion and -1.0 for the invert conversion.
      *
      *  \param dl_input      Input stream path (directory)
      *  \param dl_output     Output stream path (directory)
@@ -138,7 +140,7 @@
 
     /*! \brief main methods
      *
-     *  The main function reads the specified input UV3 stream and apply a geoid
+     *  The main function reads the specified input uv3 stream and apply a geoid
      *  correction on the heights of the vertices :
      *
      *      ./dalai-geoid --name/-n   [geoid model name]
@@ -155,21 +157,25 @@
      *
      *  If the input directive points to a regular file, it is processed by the
      *  main function and exported in the file pointed by the output directive.
+     *  In such a case, the output directive has to point to a file.
      *
      *  If the input directive points to a directory, the main function list the
-     *  UV3 stream hold in the directory and process each of them. The output
-     *  directive has to point to another directory in which the converted UV3
-     *  stream are exported. The name of the input files is kept to name the
+     *  uv3 files hold in the directory and process each of them. The output
+     *  directive has to point to another directory in which the converted uv3
+     *  files are exported. The name of the input files is kept to name the
      *  output files in such case.
      *
      *  If the '--to-msl' conversion directive is provided, the vertex heights
      *  are converted from ellipsoidal height to MSL height. If the '--to-ell'
      *  directive is provided, the opposite appends.
      *
-     *  Most of the time, geoid model are provided in WGS84 frame. The UV3
-     *  stream vertices have then to be expressed in this reference frame. If
+     *  Most of the time, geoid model are provided in WGS84 frame. The uv3
+     *  files vertices have then to be expressed in this reference frame. If
      *  vertices are expressed in another datum, the geoid model has to be
      *  adapted to this datum.
+     *
+     *  Finally, the longitudes and latitudes of the uv3 files are expected to
+     *  be angles expressed in radian. 
      *
      *  \param  argc Standard parameter
      *  \param  argv Standard parameter

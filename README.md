@@ -84,6 +84,7 @@ _Models automated filtering and cleaning_
 
 _Models automated transformation and editing_
 
+* [UV3 file height geoid conversion](src/dalai-geoid)
 * [UV3 file height-based coloring](src/dalai-color)
 
 A detailed documentation of specific file formats used by the tools of this suite can be found of the [format page](FORMAT.md).

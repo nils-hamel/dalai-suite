@@ -2,7 +2,7 @@
  *  dalai-suite - geoid
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
- *      Copyright (c) 2016-2019 DHLAB, EPFL
+ *      Copyright (c) 2016-2020 DHLAB, EPFL
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -199,6 +199,14 @@
             dl_geoid_batch( dl_input, dl_output, dl_geoid, dl_conversion );
 
         } else {
+
+            /* check consistency */
+            if ( lc_file_detect( ( char * ) dl_output ) == LC_DIRECTORY ) {
+
+                /* send message */
+                throw( LC_ERROR_IO_WRITE );
+
+            }
 
             /* process file */
             dl_geoid_height( dl_input, dl_output, dl_geoid, dl_conversion );

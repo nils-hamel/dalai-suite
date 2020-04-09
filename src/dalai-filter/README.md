@@ -12,7 +12,7 @@ This tools expects models in _uv3_ format that contains only points. If models c
 
 Considering point-based model contain in an _uv3_ file, the following command :
 
-    ./dalai-filter -i /path/to/file.uv3 -o /path/to/filtered.uv3 -f 2.0 -c 64 -t 2 -y /tmp/filter-temporary
+    ./dalai-filter -i /path/to/file.uv3 -o /path/to/filtered.uv3 -c 64 -y /tmp/tempdir -f 2.0 -t 2
 
 allows to filter its content as illustrated by the following images :
 
