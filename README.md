@@ -76,11 +76,11 @@ Each implemented tool comes with its own documentation that explains the impleme
 
 _Display tools_
 
-* [UV3 file content display](src/dalai-cat/README.md)
+* [UV3 file content display](src/dalai-cat)
 
 _Model automated transformation and editing_
 
-* [UV3 file height-based coloring](src/dalai-color/README.md)
+* [UV3 file height-based coloring](src/dalai-color)
 
 A detailed documentation of specific file formats used by the tools of this suite can be found of the [format page](FORMAT.md).
 
