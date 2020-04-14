@@ -2,7 +2,7 @@
  *  dalai-suite - common library
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
- *      Copyright (c) 2016-2019 DHLAB, EPFL
+ *      Copyright (c) 2016-2020 DHLAB, EPFL
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
     /*! \file   common-temp.hpp
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  dalai-suite - common library - temporary
+     *  dalai-suite - common library - temporary module
      */
 
 /*
