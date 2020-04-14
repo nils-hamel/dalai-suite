@@ -2,7 +2,7 @@
  *  dalai-suite - shift
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
- *      Copyright (c) 2016-2019 DHLAB, EPFL
+ *      Copyright (c) 2016-2020 DHLAB, EPFL
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -91,8 +91,8 @@
 
     /*! \brief main methods
      *
-     *  The main function reads the content of the provided input uv3 stream and
-     *  applies the provided translation on each respective dimension :
+     *  The main function reads the content of the provided input uv3 file and
+     *  applies the provided translation on the vertex :
      *
      *      ./dalai-shift --input/-i [uv3 input file]
      *                    --output/-o [uv3 output file]
@@ -100,12 +100,16 @@
      *                    --y/-y [y-dimension shift]
      *                    --z/-z [z-dimension shift]
      *
-     *  The main function starts by opening both input and output streams before
+     *  The main function starts by opening both input and output files before
      *  to read the input stream chunk by chunk. The provided shift values are
-     *  then added to the respective coordinates of each record of each chunk.
+     *  then added to the respective coordinates of each record of each chunk :
+     *
+     *      vertex_x = vertex_x + shift_x
+     *      vertex_y = vertex_y + shift_y
+     *      vertex_z = vertex_z + shift_z
      *
      *  The processed chunks are then exported one by one in the created output
-     *  stream.
+     *  file.
      *
      *  \param  argc Standard parameter
      *  \param  argv Standard parameter

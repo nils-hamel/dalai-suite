@@ -84,7 +84,8 @@ _Models automated filtering and cleaning_
 
 _Models automated transformation and editing_
 
-* [UV3 file height geoid conversion](src/dalai-geoid)
+* [UV3 file translation](src/dalai-shift)
+* [UV3 file geoid heights conversion](src/dalai-geoid)
 * [UV3 file height-based coloring](src/dalai-color)
 * [UV3 file hashing](src/dalai-hash)
 
