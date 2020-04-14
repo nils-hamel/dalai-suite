@@ -21,11 +21,6 @@ As the interface is started, the following displays can be obtained :
 <img src="https://github.com/nils-hamel/dalai-suite/blob/master/src/dalai-vision/doc/interface-2.jpg?raw=true" width="384">
 <br />
 <i>Vision interface showing point-based models of the City of Geneva - Data : SITG and DHLAB</i>
-</p>
-<br />
-
-<br />
-<p align="center">
 <img src="https://github.com/nils-hamel/dalai-suite/blob/master/src/dalai-vision/doc/interface-3.jpg?raw=true" width="384">
 &nbsp;
 <img src="https://github.com/nils-hamel/dalai-suite/blob/master/src/dalai-vision/doc/interface-4.jpg?raw=true" width="384">
