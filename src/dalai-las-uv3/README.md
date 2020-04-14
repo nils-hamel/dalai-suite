@@ -26,7 +26,7 @@ The following images give an illustration of the conversion of two _LAS_ files :
 &nbsp;
 <img src="https://github.com/nils-hamel/dalai-suite/blob/master/src/dalai-las-uv3/doc/convert-2.jpg?raw=true" width="384">
 <br />
-<i>Example of INTERLIS data converted in uv3 format on a Swiss land register model - Data : SITN</i>
+<i>LAS conversion using classification (left) and intensities (right) - Data : SITG and New York City (US-GOV)</i>
 </p>
 <br />
 
