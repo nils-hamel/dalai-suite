@@ -96,6 +96,7 @@ _Models format conversion_
 * [LAS to UV3](src/dalai-las-uv3)
 * [PLY to UV3](src/dalai-ply-uv3)
 * [UF3 to UV3](src/dalai-uf3-uv3)
+* [UV3 to PLY](src/dalai-uv3-ply)
 
 A detailed documentation of specific file formats used by the tools of this suite can be found of the [format page](FORMAT.md).
 

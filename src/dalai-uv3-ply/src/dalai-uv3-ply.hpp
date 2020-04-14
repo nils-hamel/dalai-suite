@@ -2,7 +2,7 @@
  *  dalai-suite - uv3-ply
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
- *      Copyright (c) 2016-2019 DHLAB, EPFL
+ *      Copyright (c) 2016-2020 DHLAB, EPFL
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -150,7 +150,7 @@
 
     /*! \brief main methods
      *
-     *  The main function reads the provided uv3 stream and converts it into a
+     *  The main function reads the provided uv3 file and converts it into a
      *  ply file :
      *
      *      ./dalai-uv3-ply --uv3/-i [uv3 input file]
@@ -162,9 +162,9 @@
      *  file header.
      *
      *  The function then starts by converting the vertex in the output ply
-     *  stream before to export the faces, if present. If the 'vertex-only'
-     *  switch is specified, the main function only exports the vertex, i.e. the
-     *  points, in the output ply stream discarding faces.
+     *  file before to export the faces, if present. If the 'vertex-only' switch
+     *  is specified, the main function only exports the vertex, i.e. the
+     *  points, in the output ply file, discarding faces.
      *
      *  The created ply file is always considered in its binary representation
      *  and always considering little-endian byte order.
