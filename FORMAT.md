@@ -41,7 +41,17 @@ There is not imposed order for the storage of the primitives, but for poly-verte
     [x][y][z][1][red][green][blue]
     ...
 
-The amount of primitive stored in an _uv3_ file is not limited. It follows that any tool using the _uv3_ format has to implement methodology to deal with potentially very large file.
+The amount of primitive stored in an _uv3_ file is not limited. It follows that any tool using the _uv3_ format has to implement methodologies to deal with potentially very large file without exhausting the available volatile memory.
+
+### Note on UV3 format and geographical coordinates
+
+In case an _uv3_ file is used to store model expressed in geographical coordinates system, the coordinates stored through the records vertex have to follow the strict following order :
+
+    x : dimension associated to longitude direction
+    y : dimension associated to latitude direction
+    z : dimension associated to height or altitude
+
+In addition, in case of angular coordinates, the _uv3_ impose to store all the angle in radians (decimal degrees are not allowed).
 
 ## UF3 Format (Predecessor of UV3)
 
