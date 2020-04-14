@@ -101,7 +101,7 @@
      *
      *  It offers methods for the initialisation and deletion of the graphical
      *  context, events management and rendering. It also holds the user point
-     *  of view related information.
+     *  of view modification related information.
      *
      *  \var dl_vision_t::vs_window
      *  Interface window
@@ -110,9 +110,9 @@
      *  \var dl_vision_t::vs_execute
      *  Execution loop switch
      *  \var dl_vision_t::vs_width
-     *  Width, in pixels, of the interface
+     *  Width, in pixels, of the interface (rendering surface)
      *  \var dl_vision_t::vs_height
-     *  Height, in pixels, of the interface
+     *  Height, in pixels, of the interface (rendering surface)
      *  \var dl_vision_t::vs_init_x
      *  Mouse initial click position
      *  \var dl_vision_t::vs_init_y
@@ -286,20 +286,20 @@
 
     /*! \brief main function
      *
-     *  This software allows to import uv3 models and to manipulate them through
-     *  a simple graphical interface :
+     *  This tool allows to import an uv3 model and to visualise them through a
+     *  simple graphical interface :
      *
      *      ./dalai-vision --uv3/-i [uv3 file path]
      *
-     *  The interface allows to manipulate the model using the mouse : by
-     *  maintaining the right click, the motion of the mouse allows to rotate
+     *  The interface allows to visualise the model using the mouse : by
+     *  maintaining the left-click, the motion of the mouse allows to rotate
      *  the model. Playing with the mouse wheel allows to update the distance to
      *  the model.
      *
-     *  The double-click on a point of the model sets it as the model center of
-     *  rotation. By clicking the mouse wheel, the center of rotation is pushed
-     *  on the estimation points stack of the highlighted surface. If the point
-     *  is already in the stack, it is removed by this click.
+     *  The double-left-click on a point of the model sets it as the model
+     *  center of rotation. By clicking the mouse wheel, the center of rotation
+     *  is pushed on the estimation points stack of the highlighted surface. If
+     *  the point is already in the stack, it is removed from it.
      *
      *  Pressing [q], [w] or [e] allows to highlight respectively the first,
      *  second and third model surfaces. Pressing the keys [a], [s] and [d]
@@ -317,7 +317,7 @@
      *  points stack of the highlighted surface.
      *
      *  The escape key allows to stop the execution loop which causes the
-     *  software to quit.
+     *  tool to quit.
      *
      *  \param argc Standard parameter
      *  \param argv Standard parameter
