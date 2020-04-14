@@ -76,6 +76,7 @@ Each implemented tool comes with its own documentation that explains the impleme
 
 _Display tools_
 
+* [UV3 file visualisation and registration](src/dalai-vision)
 * [UV3 file content display](src/dalai-cat)
 
 _Models automated filtering and cleaning_
