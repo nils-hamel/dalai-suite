@@ -2,7 +2,7 @@
  *  dalai-suite - uf3-uv3
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
- *      Copyright (c) 2016-2019 DHLAB, EPFL
+ *      Copyright (c) 2016-2020 DHLAB, EPFL
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -98,16 +98,16 @@
 
     /*! \brief main function
      *
-     *  The main function reads the provided uf3 stream and converts it into an
+     *  The main function reads the provided uf3 file and converts it into an
      *  uv3 stream :
      *
      *      ./dalai-uf3-uv3 --uf3/-i [uf3 input file]
      *                      --uv3/-o [uv3 output file]
      *
      *  The main function starts by creating the two input and output streams
-     *  before to starts the conversion. The input file is read by chunks and
+     *  before to start the conversion. The input file is read by chunks and
      *  each chunk is converted from uf3 to uv3 format. The converted chunks are
-     *  then exported in the output stream.
+     *  then exported in the output file.
      *
      *  This software is design to ensure compatibility with the previous uf3
      *  format used by the dalai-suite.
