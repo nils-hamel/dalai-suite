@@ -139,8 +139,8 @@
      *
      *  The geometry is converted into uv3 lines primitive before to be exported
      *  in the output uv3 file. The provided color is used to assign the uv3
-     *  primitive color.
-
+     *  primitives color.
+     *
      *  \param  argc Standard parameter
      *  \param  argv Standard parameter
      *
