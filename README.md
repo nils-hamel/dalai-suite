@@ -90,6 +90,10 @@ _Models automated transformation and editing_
 * [UV3 file height-based coloring](src/dalai-color)
 * [UV3 file hashing](src/dalai-hash)
 
+_Models format conversion_
+
+* [INTERLIS to UV3](src/dalai-interlis-uv3)
+
 A detailed documentation of specific file formats used by the tools of this suite can be found of the [format page](FORMAT.md).
 
 ## Copyright and License
