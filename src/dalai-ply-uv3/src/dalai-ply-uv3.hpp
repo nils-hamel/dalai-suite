@@ -2,7 +2,7 @@
  *  dalai-suite - ply-uv3
  *
  *      Nils Hamel - nils.hamel@bluewin.ch
- *      Copyright (c) 2016-2019 DHLAB, EPFL
+ *      Copyright (c) 2016-2020 DHLAB, EPFL
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -354,8 +354,8 @@
 
     /*! \brief main function
      *
-     *  The main function reads the provided ply stream content and converts it
-     *  into uv3 stream :
+     *  The main function reads the provided ply file content and converts it
+     *  into uv3 file :
      *
      *      ./dalai-ply-uv3 --ply/-i [ply input file path]
      *                      --uv3/-o [uv3 output file path]
@@ -365,7 +365,7 @@
      *  file and converts it into uv3 format.
      *
      *  If the ply file contains only vertex, a specialised and fast function
-     *  is used to converts the vertex into uv3 records. If the ply stream
+     *  is used to converts the vertex into uv3 records. If the ply file
      *  contains at least one face, only line and triangles are converted and
      *  exported in the output uv3 stream.
      *
