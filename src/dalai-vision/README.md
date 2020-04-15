@@ -16,15 +16,15 @@ As the interface is started, the following displays can be obtained :
 
 <br />
 <p align="center">
-<img src="https://github.com/nils-hamel/dalai-suite/blob/master/src/dalai-vision/doc/interface-1.jpg?raw=true" width="384">
+<img src="https://github.com/nils-hamel/dalai-suite/blob/master/src/dalai-vision/doc/vision-1.jpg?raw=true" width="384">
 &nbsp;
-<img src="https://github.com/nils-hamel/dalai-suite/blob/master/src/dalai-vision/doc/interface-2.jpg?raw=true" width="384">
+<img src="https://github.com/nils-hamel/dalai-suite/blob/master/src/dalai-vision/doc/vision-2.jpg?raw=true" width="384">
 <br />
 <i>Vision interface showing point-based models of the City of Geneva - Data : SITG and DHLAB</i>
 <br />
-<img src="https://github.com/nils-hamel/dalai-suite/blob/master/src/dalai-vision/doc/interface-3.jpg?raw=true" width="384">
+<img src="https://github.com/nils-hamel/dalai-suite/blob/master/src/dalai-vision/doc/vision-3.jpg?raw=true" width="384">
 &nbsp;
-<img src="https://github.com/nils-hamel/dalai-suite/blob/master/src/dalai-vision/doc/interface-4.jpg?raw=true" width="384">
+<img src="https://github.com/nils-hamel/dalai-suite/blob/master/src/dalai-vision/doc/vision-4.jpg?raw=true" width="384">
 <br />
 <i>Vision interface showing models of the City of Geneva in 1850 and 2018 - Data : Ville de Genève and SITG</i>
 </p>

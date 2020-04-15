@@ -289,7 +289,7 @@
      *  This tool allows to import an uv3 model and to visualise them through a
      *  simple graphical interface :
      *
-     *      ./dalai-vision --uv3/-i [uv3 file path]
+     *      ./dalai-vision --input/-i [uv3 file path]
      *
      *  The interface allows to visualise the model using the mouse : by
      *  maintaining the left-click, the motion of the mouse allows to rotate

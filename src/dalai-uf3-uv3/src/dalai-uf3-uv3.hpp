@@ -101,8 +101,8 @@
      *  The main function reads the provided uf3 file and converts it into an
      *  uv3 stream :
      *
-     *      ./dalai-uf3-uv3 --uf3/-i [uf3 input file]
-     *                      --uv3/-o [uv3 output file]
+     *      ./dalai-uf3-uv3 --input/-i [uf3 input file]
+     *                      --output/-o [uv3 output file]
      *
      *  The main function starts by creating the two input and output streams
      *  before to start the conversion. The input file is read by chunks and

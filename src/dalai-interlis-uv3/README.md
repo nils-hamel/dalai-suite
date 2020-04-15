@@ -4,9 +4,9 @@ This tool allows to convert [_INTERLIS_](https://www.interlis.ch/dokumentation/i
 
 ## Usage
 
-Considering an _INTERLIS_ file (_ITF_) containing Swiss land register geometries, the following command allows to extract a specific part of the database :
+Considering an _INTERLIS_ file (_itf_) containing Swiss land register geometries, the following command allows to extract a specific part of the database :
 
-    ./dalai-interlis -i /path/to/file.itf -o /path/to/export.uv3
+    ./dalai-interlis -i /path/to/file.itf -o /path/to/converted.uv3
                      -r 255 -g 192 -b 0 
                      -t Couverture_du_sol
                      -a SurfaceCS_Geometrie
@@ -17,9 +17,9 @@ The following image on the left gives an illustration of the obtained _uv3_ mode
 
 <br />
 <p align="center">
-<img src="https://github.com/nils-hamel/dalai-suite/blob/master/src/dalai-interlis-uv3/doc/example-1.jpg?raw=true" width="384">
+<img src="https://github.com/nils-hamel/dalai-suite/blob/master/src/dalai-interlis-uv3/doc/interlis-1.jpg?raw=true" width="384">
 &nbsp;
-<img src="https://github.com/nils-hamel/dalai-suite/blob/master/src/dalai-interlis-uv3/doc/example-2.jpg?raw=true" width="384">
+<img src="https://github.com/nils-hamel/dalai-suite/blob/master/src/dalai-interlis-uv3/doc/interlis-2.jpg?raw=true" width="384">
 <br />
 <i>Example of INTERLIS data converted in uv3 format on a Swiss land register model - Data : SITN</i>
 </p>

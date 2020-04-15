@@ -124,8 +124,8 @@
      *  The main function opens and reads the provided INTERLIS file and extract
      *  the targeted data before to convert and export them in uv3 format :
      *
-     *      ./dalai-interlis-uv3 --interlis/-i [input file]
-     *                           --uv3/-o [output file]
+     *      ./dalai-interlis-uv3 --input/-i [input file]
+     *                           --output/-o [output file]
      *                           --red/-r [uv3 record color]
      *                           --green/-g [uv3 record color]
      *                           --blue/-b [uv3 record color]

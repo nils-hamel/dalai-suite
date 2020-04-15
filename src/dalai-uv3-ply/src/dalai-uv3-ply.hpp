@@ -153,8 +153,8 @@
      *  The main function reads the provided uv3 file and converts it into a
      *  ply file :
      *
-     *      ./dalai-uv3-ply --uv3/-i [uv3 input file]
-     *                      --ply/-o [ply output file]
+     *      ./dalai-uv3-ply --input/-i [uv3 input file]
+     *                      --output/-o [ply output file]
      *                      --vertex-only,-v [conversion switch]
      *
      *  The function starts by allocating the required i/o buffers memory and

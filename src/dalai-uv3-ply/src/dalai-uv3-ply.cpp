@@ -340,7 +340,7 @@
     try {
 
         /* create input stream */
-        dl_istream.open( lc_read_string( argc, argv, "--uv3", "-i" ), std::ios::in | std::ios::ate | std::ios::binary );
+        dl_istream.open( lc_read_string( argc, argv, "--input", "-i" ), std::ios::in | std::ios::ate | std::ios::binary );
 
         /* check input stream */
         if ( dl_istream.is_open() == false ) {
@@ -359,7 +359,7 @@
         }
 
         /* create output stream */
-        dl_ostream.open( lc_read_string( argc, argv, "--ply", "-o" ), std::ios::out | std::ios::binary );
+        dl_ostream.open( lc_read_string( argc, argv, "--output", "-o" ), std::ios::out | std::ios::binary );
 
         /* check output stream */
         if ( dl_ostream.is_open() == false ) {

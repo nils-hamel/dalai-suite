@@ -560,7 +560,7 @@
     try {
 
         /* model variable */
-        dl_model_t dl_model( ( le_char_t * ) lc_read_string( argc, argv, "--uv3", "-i" ) );
+        dl_model_t dl_model( ( le_char_t * ) lc_read_string( argc, argv, "--input", "-i" ) );
 
         /* vision variable */
         dl_vision_t dl_vision( dl_model.ml_get_span() );

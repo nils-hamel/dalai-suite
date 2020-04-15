@@ -79,7 +79,7 @@
     try {
 
         /* create input stream */
-        dl_stream.open( lc_read_string( argc, argv, "--uv3", "-i" ), std::ios::in | std::ios::binary );
+        dl_stream.open( lc_read_string( argc, argv, "--input", "-i" ), std::ios::in | std::ios::binary );
 
         /* check stream */
         if ( dl_stream.is_open() != true ) {

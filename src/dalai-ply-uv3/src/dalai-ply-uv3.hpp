@@ -357,8 +357,8 @@
      *  The main function reads the provided ply file content and converts it
      *  into uv3 file :
      *
-     *      ./dalai-ply-uv3 --ply/-i [ply input file path]
-     *                      --uv3/-o [uv3 output file path]
+     *      ./dalai-ply-uv3 --input/-i [ply input file path]
+     *                      --output/-o [uv3 output file path]
      *
      *  The function starts by creating the class associated to the reading and
      *  analysis of the provided ply file. It then reads the content of the ply

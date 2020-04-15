@@ -106,7 +106,7 @@
      *  The main function reads the primitives stored in the provided uv3 file
      *  and displays them on the standard output :
      *
-     *      ./dalai-cat --uv3/-i [uv3 input file]
+     *      ./dalai-cat --input/-i [uv3 input file]
      *                  --index/-x [index size]
      *
      *  The main function reads the provided file and imports the primitives

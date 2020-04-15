@@ -907,10 +907,10 @@
     try {
 
         /* ply-object variable */
-        dl_ply_t dl_istream( ( le_char_t * ) lc_read_string( argc, argv, "--ply", "-i" ) );
+        dl_ply_t dl_istream( ( le_char_t * ) lc_read_string( argc, argv, "--input", "-i" ) );
 
         /* create stream */
-        dl_ostream.open( lc_read_string( argc, argv, "--uv3", "-o" ), std::ios::out | std::ios::binary );
+        dl_ostream.open( lc_read_string( argc, argv, "--output", "-o" ), std::ios::out | std::ios::binary );
 
         /* check stream */
         if ( dl_ostream.is_open() == false ) {

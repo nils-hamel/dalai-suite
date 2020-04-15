@@ -123,8 +123,8 @@
      *  The main function converts the provided las (asprs) file and converts
      *  it into uv3 stream :
      *
-     *      ./dalai-las-uv3 --las/-i [las input file]
-     *                      --uv3/-o [uv3 output file]
+     *      ./dalai-las-uv3 --input/-i [las input file]
+     *                      --output/-o [uv3 output file]
      *                      --classification/-c [extraction switch]
      *                      --color/-r [extraction switch]
      *                      --intensity/-e [extraction switch]
