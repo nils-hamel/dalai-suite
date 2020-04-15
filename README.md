@@ -34,7 +34,7 @@ The _dalai-suite_ comes also with tools dedicated to models visualization and la
 
 The _dalai-suite_ also comes with a set of tools dedicated to file format conversion that allows data coming in their specific formats to be converted in the _suite_ format.
 
-## Dalai-Suite
+## dalai-Suite
 
 Each implemented tool comes with its own documentation that explains the implemented solution and gives examples of usages and results :
 
