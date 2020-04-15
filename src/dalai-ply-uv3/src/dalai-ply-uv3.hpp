@@ -28,25 +28,37 @@
      *
      *  \section overview Overview
      *
-     *  The _dalai-suite_ is part of the Eratosthene Project and is dedicated to
-     *  3D models gathering, processing and format conversion. It allows to
-     *  consider the most common formats and to convert them into the project
-     *  common format. The _dalai-suite_ is mainly used for data gathering and
-     *  processing, allowing to make them compatible with remote Eratosthene
-     *  servers injection format.
+     *  The _dalai-suite_ offers a toolbox for large scale 3D models
+     *  manipulation, processing, conversion and geographical registration. It
+     *  is mainly designed to offers solutions suitable for models that can
+     *  weight hundreds of gigabytes and that are used in the domain of
+     *  environment survey and land registering. It was initially developed to
+     *  offer the required tools needed to allows massive data processing and
+     *  preparation for the _Eratosthene Project_.
      *
-     *  In addition, the project common format allows to apply the _dalai-suite_
-     *  solutions for 3D models processing. The suite offers solution for
-     *  massive 3D models cleaning, hashing and assisted geographical
-     *  registration. The suite also provides solution for 3D models display and
-     *  analysis.
+     *  The _dalai-suite_ uses a common and very simple format for all the
+     *  implemented tools that is also used for the _Eratosthene Project_. This
+     *  format offers a simple way of storing massive amount of graphical
+     *  primitives. This allows the _dalai-suite_ to manipulate all sort of 3D
+     *  models, from large scale point-based models to more refined vector
+     *  models.
+     *
+     *  The _dalai-suite_ comes also with tools dedicated to models
+     *  visualization and large scale models processing such as automatic
+     *  segmentation, cleaning, geographical transformation and assisted
+     *  geographical registration.
+     *
+     *  The _dalai-suite_ also comes with a set of tools dedicated to file
+     *  format conversion that allows data coming in their specific formats to
+     *  be converted in the _suite_ format.
      *
      *  \section copyright Copyright and License
      *
      *  **dalai-suite** - Nils Hamel <br >
-     *  Copyright (c) 2016-2019 DHLAB, EPFL
+     *  Copyright (c) 2016-2020 DHLAB, EPFL
      *
-     *  This program is licensed under the terms of the GNU GPLv3.
+     *  This program is licensed under the terms of the GNU GPLv3. Documentation
+     *  and illustrations are licensed under the terms of the CC BY 4.0.
      */
 
 /*
