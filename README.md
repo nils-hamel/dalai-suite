@@ -73,7 +73,7 @@ This program is licensed under the terms of the GNU GPLv3. Documentation and ill
 
 ## Dependencies
 
-The _dalai-suite_ comes with the following package dependencies (Ubuntu 16.04 LTS) :
+The _dalai-suite_ comes with the following package (Ubuntu 16.04 LTS) dependencies ([Instructions](DEPEND.md)) :
 
 * build-essential
 * liblas-c-dev
