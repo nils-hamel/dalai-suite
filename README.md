@@ -82,7 +82,7 @@ The _dalai-suite_ comes with the following package (Ubuntu 16.04 LTS) dependenci
 * libeigen3-dev
 * libgeographic-dev
 
-and the following external dependencies provided as sub-modules :
+and the following external dependencies provided as sub-modules ([Instructions](DEPEND.md)) :
 
 * liberatosthene 1.2
 
