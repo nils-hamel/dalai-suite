@@ -23,15 +23,16 @@
     MAKE_CCMP:=g++
 ifeq ($(MAKE_OSYS),Linux)
     MAKE_CLNK:=gcc-ar rcs
+    MAKE_FLNK:=-lm -lSDL2 -lGL -lGLU -flto
 else
 ifeq ($(MAKE_OSYS),Darwin)
     MAKE_CLNK:=ar -rv
+    MAKE_FLNK:=-lm -lSDL2 -framework OpenGL -flto
 endif
 endif
     MAKE_CDOC:=doxygen
 
     MAKE_FCMP:=-std=c++11 -O3 -Wall -Wno-deprecated -funsigned-char -I/usr/include/eigen3 -flto
-    MAKE_FLNK:=-lm -lSDL2 -lGL -lGLU -flto
 
 #
 #   makefile - configuration

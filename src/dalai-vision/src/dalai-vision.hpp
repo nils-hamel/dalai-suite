@@ -83,11 +83,17 @@
     # include <cstdlib>
     # include <cstring>
     # include <cmath>
-    # include <GL/gl.h>
-    # include <GL/glu.h>
     # include <SDL2/SDL.h>
     # include <common-include.hpp>
     # include <eratosthene-include.h>
+
+    #ifdef __APPLE__
+    #  include <OpenGL/gl.h>
+    #  include <OpenGL/glu.h>
+    #else
+    #  include <GL/gl.h>
+    #  include <GL/glu.h>
+    #endif
 
 /*
     header - preprocessor definitions
