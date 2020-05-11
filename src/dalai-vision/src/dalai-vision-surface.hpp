@@ -41,11 +41,18 @@
 
     # include <iostream>
     # include <cmath>
-    # include <GL/gl.h>
-    # include <GL/glu.h>
-    # include <Eigen/Dense>
     # include <common-include.hpp>
     # include <eratosthene-include.h>
+
+    #ifdef __APPLE__
+    #  include <OpenGL/gl.h>
+    #  include <OpenGL/glu.h>
+    #  include <eigen3/Eigen/Dense>
+    #else
+    #  include <GL/gl.h>
+    #  include <GL/glu.h>
+    #  include <Eigen/Dense>
+    #endif
 
 /*
     header - preprocessor definitions
