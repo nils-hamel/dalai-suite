@@ -11,6 +11,7 @@ sudo apt-get install build-essential liblas-c-dev mesa-common-dev libsdl2-dev li
 ```
 
 ### MacOS
+
 ```
 xcode-select --install
 brew install liblas mesa sdl2 eigen geographiclib

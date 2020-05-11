@@ -48,7 +48,6 @@
     # include <cmath>
     # include <common-include.hpp>
     # include <eratosthene-include.h>
-
     #ifdef __APPLE__
     #  include <OpenGL/gl.h>
     #  include <OpenGL/glu.h>
