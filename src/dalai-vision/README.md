@@ -32,14 +32,14 @@ As the interface is started, the following displays can be obtained :
 
 A minimal frame is also displayed with the model. The frame is in red for _x_ direction, green for _y_ and blue for _z_ ones. The axes of the frame are interrupted to show the estimated _minimum distance mean value_ size and one hundred time its value.
 
-The model can be manipulated through the mouse. To rotate the model, maintain the left-click and simply move the mouse. A _tarball_ approach is implemented for the rotation of the model. The mouse wheel is used to modify the distance to the model. If the _CONTROL_ or the _SHIFT_ key is maintained during model distance modification, it is speed-up or slowed, respectively. The model center of rotation can be set on any part of the model by using the left-double-click on the desired element. The keyboard actions are summarized as follows :
+The model can be manipulated through the mouse. To rotate the model, maintain the left-click and simply move the mouse. A _tarball_ approach is implemented for the rotation of the model. The mouse wheel is used to modify the distance to the model. If the **CONTROL** or the **SHIFT** key is maintained during model distance modification, it is speed-up or slowed, respectively. The model center of rotation can be set on any part of the model by using the left-double-click on the desired element. The keyboard actions are summarized as follows :
 
-* Key 1, 2, 3 and 4 : modify the model points rendering size
-* Key P : display model with points only
-* Key O : display model with point and lines only
-* Key I : display model with points, lines and polygons
+* Key **1**, **2**, **3** and **4** : modify the model points rendering size
+* Key **P** : display model with points only
+* Key **O** : display model with point and lines only
+* Key **I** : display model with points, lines and polygons
 
-The _ESCAPE_ key is used to end the visualization.
+The **ESCAPE** key is used to end the visualization.
 
 ## Surfaces Extrapolation and Optimal Intersection
 
@@ -57,10 +57,10 @@ As the model is loaded and visible in the interface, the user can choose a surfa
 </p>
 <br />
 
-As the surface display itself can make further points selection tricky, it can be hidden using the _TABULATION_ key to switch the surfaces display mode.
+As the surface display itself can make further points selection tricky, it can be hidden using the **TAB** key to switch the surfaces display mode.
 
-As the surface is defined, the keys _A_, _S_ and _D_ can be used to automatically add points to the surface. To do so, points sufficiently close to the surface are automatically added (the _minimum distance mean value_ is used in the proximity criterion). The three keys trigger the same operation but _A_ tends to decrease the amount of points, _S_ maintains it and _D_ tends to increase it. These keys presses can be repeated to collect all the desired points. If the surface is badly defined, this process can lead to undesired results, forcing the user to restart the operation.
+As the surface is defined, the keys **A**, **S** and **D** can be used to automatically add points to the surface. To do so, points sufficiently close to the surface are automatically added (the _minimum distance mean value_ is used in the proximity criterion). The three keys trigger the same operation but **A** tends to decrease the amount of points, **S** maintains it and **D** tends to increase it. These keys presses can be repeated to collect all the desired points. If the surface is badly defined, this process can lead to undesired results, forcing the user to restart the operation.
 
-The key _BACKSPACE_ can be used to clear all the point of a surface, making it disappears. All the presented operations apply on the active surface (the red one is the default one). You can set the red, green and blue surfaces as the active one by using the _Q_, _W_ and _E_ keys, respectively.
+The key **BACKSPACE** can be used to clear all the point of a surface, making it disappears. All the presented operations apply on the active surface (the red one is the default one). You can set the red, green and blue surfaces as the active one by using the **Q**, **W** and **E** keys, respectively.
 
-As three surfaces are defined and extrapolated with sufficient precision for the user, the optimal intersection computation can be triggered by hitting the _ENTER_ key. The result of the intersection, expressed in the model coordinates frame, is dump in the standard output (in which the tool is started).
+As three surfaces are defined and extrapolated with sufficient precision for the user, the optimal intersection computation can be triggered by hitting the **ENTER** key. The result of the intersection, expressed in the model coordinates frame, is dump in the standard output (in which the tool is started).
