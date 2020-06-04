@@ -7,7 +7,7 @@ The following sections give the installation instructions for the required distr
 ### Ubuntu 16.04 LTS
 
 ```
-sudo apt-get install build-essential liblas-c-dev mesa-common-dev libsdl2-dev libeigen3-dev libgeographic-dev build-essential doxygen
+sudo apt-get install build-essential liblas-c-dev mesa-common-dev libsdl2-dev libeigen3-dev libgeographic-dev doxygen
 ```
 
 ### MacOS

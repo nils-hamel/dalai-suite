@@ -1,6 +1,6 @@
 ## Overview
 
-The _dalai-suite_ offers a toolbox for large scale 3D models manipulation, processing, conversion and geographical registration. It is mainly designed to offers solutions suitable for models that can weight hundreds of gigabytes and that are used in the domain of environment survey and land registering. It was initially developed to offer the required tools needed to allows massive data processing and preparation for the [_Eratosthene Project_](https://github.com/nils-hamel/eratosthene-suite).
+The _dalai-suite_ offers a toolbox for large scale 3D models manipulation, processing, conversion and geographical registration. It is mainly designed to offers solutions suitable for models that can weight hundreds of gigabytes and that are used in the domain of environment survey and land registering. It was initially developed to offer the required tools needed to allows massive data processing and preparation for the [_eratosthene_](https://github.com/nils-hamel/eratosthene-suite) framework.
 
 The _dalai-suite_ uses a common and very simple format for all the implemented tools that is also used for the _Eratosthene Project_. This format offers a simple way of storing massive amount of graphical primitives. This allows the _dalai-suite_ to manipulate all sort of 3D models, from large scale point-based models to more refined vector models.
 
@@ -34,9 +34,9 @@ The _dalai-suite_ comes also with tools dedicated to models visualization and la
 
 The _dalai-suite_ also comes with a set of tools dedicated to file format conversion that allows data coming in their specific formats to be converted in the _suite_ format.
 
-## dalai-Suite
+## dalai-suite
 
-Each implemented tool comes with its own documentation that explains the implemented solution and gives examples of usages and results :
+Each implemented tool of the suite comes with its own documentation that explains the implemented solution and gives examples of usages and results :
 
 _Display tools_
 
