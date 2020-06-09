@@ -21,7 +21,7 @@
     /*! \file   common-geometry.hpp
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  dalai-suite - common library - geometry module
+     *  dalai-suite - common library - geometry
      */
 
 /*

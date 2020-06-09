@@ -19,4 +19,4 @@ brew install liblas mesa sdl2 eigen geographiclib
 
 ### liberatosthene
 
-Fulfill the requirements following the [instructions](https://github.com/nils-hamel/liberatosthene).
+Fulfill the requirements following the [instructions](https://github.com/nils-hamel/liberatosthene/blob/v1.3/DEPEND.md).

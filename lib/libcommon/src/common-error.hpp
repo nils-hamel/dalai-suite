@@ -21,7 +21,7 @@
     /*! \file   common-error.hpp
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  dalai-suite - common library - error module
+     *  dalai-suite - common library - error
      */
 
 /*

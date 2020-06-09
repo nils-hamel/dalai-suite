@@ -21,7 +21,7 @@
     /*! \file   common-temp.hpp
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  dalai-suite - common library - temporary module
+     *  dalai-suite - common library - temporary
      */
 
 /*

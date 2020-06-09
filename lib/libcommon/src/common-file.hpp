@@ -21,7 +21,7 @@
     /*! \file   common-file.hpp
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  dalai-suite - common library - file module
+     *  dalai-suite - common library - file
      */
 
 /*

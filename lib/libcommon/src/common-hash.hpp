@@ -21,7 +21,7 @@
     /*! \file   common-hash.hpp
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  dalai-suite - common library - hashing module
+     *  dalai-suite - common library - hashing
      */
 
 /*

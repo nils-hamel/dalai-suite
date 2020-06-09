@@ -21,7 +21,7 @@
     /*! \file   common-filter.hpp
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  dalai-suite - common library - filtering module
+     *  dalai-suite - common library - filtering
      */
 
 /*
