@@ -21,7 +21,7 @@
     /*! \file   dalai-vision-arcball.hpp
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  dalai-suite - vision - arcball module
+     *  dalai-suite - vision - arcball
      */
 
 /*

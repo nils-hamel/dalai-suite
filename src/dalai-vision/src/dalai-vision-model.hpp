@@ -21,7 +21,7 @@
     /*! \file   dalai-vision-model.hpp
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  dalai-suite - vision - model module
+     *  dalai-suite - vision - model
      */
 
 /*

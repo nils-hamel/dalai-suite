@@ -21,7 +21,7 @@
     /*! \file   dalai-vision-surface.hpp
      *  \author Nils Hamel <nils.hamel@bluewin.ch>
      *
-     *  dalai-suite - vision - surface module
+     *  dalai-suite - vision - surface
      */
 
 /*
