@@ -10,12 +10,24 @@ The following sections give the installation instructions for the required distr
 sudo apt-get install build-essential liblas-c-dev mesa-common-dev libsdl2-dev libeigen3-dev libgeographic-dev doxygen
 ```
 
-### MacOS
+### MacOS (Experimental)
+
+The dependencies are here installed through the _homebrew_ tool :
 
 ```
 xcode-select --install
-brew install liblas mesa sdl2 eigen geographiclib
+brew install liblas 
+brew install mesa 
+brew install sdl2 
+brew install eigen 
+brew install geographiclib
 ```
+
+If these dependencies are installed as a frameworks, it is necessary to change the line _MAKE_FLNK_ (39) of the _eratosthene-client_ software _Makefile_. Considering _SDL2_ installed as a framework, the correction is :
+
+    -lSDL2 replaced by -framework SDL2
+
+and the same for the other dependencies.
 
 ### liberatosthene
 
