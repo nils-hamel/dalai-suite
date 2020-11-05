@@ -20,7 +20,7 @@
  */
 
     /*! \file   dalai-uf3-uv3.hpp
-     *  \author Nils Hamel <nils.hamel@bluewin.ch>
+     *  \author Nils Hamel <nils.hamel@alumni.epfl.ch>
      *
      *  dalai-suite - uf3-uv3
      */

@@ -20,7 +20,7 @@
  */
 
     /*! \file   common-statistic.hpp
-     *  \author Nils Hamel <nils.hamel@bluewin.ch>
+     *  \author Nils Hamel <nils.hamel@alumni.epfl.ch>
      *
      *  dalai-suite - common library - statistic
      */

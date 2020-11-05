@@ -20,7 +20,7 @@
  */
 
     /*! \file   dalai-vision-model.hpp
-     *  \author Nils Hamel <nils.hamel@bluewin.ch>
+     *  \author Nils Hamel <nils.hamel@alumni.epfl.ch>
      *
      *  dalai-suite - vision - model
      */
