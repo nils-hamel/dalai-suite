@@ -1,8 +1,9 @@
 /*
  *  dalai-suite - interlis-uv3
  *
- *      Nils Hamel - nils.hamel@bluewin.ch
+ *      Nils Hamel - nils.hamel@alumni.epfl.ch
  *      Copyright (c) 2016-2020 DHLAB, EPFL
+ *      Copyright (c) 2020 Republic and Canton of Geneva
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -221,12 +222,12 @@
                         dl_mode = 5;
 
                     } else
-                    if ( dl_token.compare( "ARCP" ) == 0 ) {
+                    //if ( dl_token.compare( "ARCP" ) == 0 ) {
 
                         /* update mode */
-                        dl_mode = 6;
+                    //    dl_mode = 6;
 
-                    } else
+                    //} else
                     if ( dl_token.compare( "LIPT" ) == 0 ) {
 
                         /* update mode */
