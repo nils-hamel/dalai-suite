@@ -77,7 +77,7 @@ This program is licensed under the terms of the GNU GPLv3. Documentation and ill
 The _dalai-suite_ comes with the following package (Ubuntu 16.04 LTS) dependencies ([Instructions](DEPEND.md)) :
 
 * build-essential
-* liblas-c-dev
+* *liblas-c-dev*
 * mesa-common-dev
 * libsdl2-dev
 * libeigen3-dev
@@ -88,6 +88,8 @@ and the following external dependencies provided as sub-modules ([Instructions](
 * liberatosthene 1.3
 
 The code documentation is built using Doxygen.
+
+It's important to state that when working with Ubuntu 20.04 LTS or superior, the *liblas-c-dev* package is missing. Therefore the dalai-las-uv3 tool won't be working and it will break your installation. This way, in order to be able to work with all the other tools from dalai-suite, remove the dalai-las-uv3 folder in /dalai-suite/src/ (https://github.com/nils-hamel/dalai-suite/tree/master/src/dalai-las-uv3) before compilation (next step).
 
 ## Compilation
 
@@ -112,3 +114,18 @@ and the targets :
     $ make clean-all-doc && make all-doc
 
 to generate the documentation of the project and its sub-modules.
+
+## Possible issues
+
+If some issues are present whilst compiling dalai-suite, you could try the following:
+
+* Make sure you deleted dalai-las-uv3 folder if you're unable to install liblas-c-dev (usually for Ubuntu 20.04 or superior users)
+
+* try recompiling with 
+```
+    $ git clone https://github.com/nils-hamel/dalai-suite.git --recursive
+```
+* try the following before recompiling
+```
+    $ git submodule update --remote 
+```
